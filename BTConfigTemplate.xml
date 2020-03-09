@@ -1,0 +1,43 @@
+<mds-data controller-version="004-005-017-001">
+    <scope-list>
+        <scope scope-description="" scope-name="Default Scope"
+            scope-type="ALL_TIERS_IN_APP" scope-version="0"/>
+    </scope-list>
+    <rule-list>
+         <!--find and replace 1) TemplateRuleName 2) TemplateClassName and 3) TemplateMethodName -->
+       
+         <!--duplicate-this-section-start -->
+         <!-- .Net Example -->
+        <rule agent-type="DOT_NET_APPLICATION_SERVER" enabled="true"
+            priority="10" rule-description="" rule-name="TemplateRuleName"
+            rule-type="TX_MATCH_RULE" version="1">
+            <tx-match-rule>{"type":"CUSTOM","txautodiscoveryrule":{"autodiscoveryconfigs":[]},
+                "txcustomrule":{"type":"INCLUDE","txentrypointtype":"POCO","matchconditions":
+                {"type":"INSTRUMENTATION_PROBE","instrumentionprobe":{"javadefinition":
+                {"classmatch":{"type":"MATCHES_CLASS","classnamecondition":
+                {"type":"EQUALS","matchstrings":["TemplateClassName"]}},
+                "methodmatch":{"methodnamecondition":{"type":"EQUALS","matchstrings":["TemplateMethodName"]}},
+                "methodparamtypes":[]}}}],"actions":[],"properties":[{"type":"BOOLEAN","name":"POJO_BACKUP",
+                "booleanvalue":false,"ranges":[]}]},"agenttype":"DOT_NET_APPLICATION_SERVER"}
+            </tx-match-rule>
+        </rule>
+
+       <!--Java Example--> 
+       <rule agent-type="APPLICATION_SERVER" enabled="true"
+            priority="0" rule-description=""
+            rule-name="TemplateRuleName"
+            rule-type="TX_MATCH_RULE" version="1">
+            <tx-match-rule>{"type":"CUSTOM","txautodiscoveryrule":{"autodiscoveryconfigs":[]},"txcustomrule":{"type":"INCLUDE","txentrypointtype":"POJO","matchconditions":[{"type":"INSTRUMENTATION_PROBE","instrumentionprobe":{"javadefinition":{"classmatch":{"type":"MATCHES_CLASS","classnamecondition":{"type":"EQUALS","matchstrings":["TemplateClassName"]}},"methodmatch":{"methodnamecondition":{"type":"IS_NOT_EMPTY","matchstrings":[""]}},"methodparamtypes":[]}}}],"actions":[{"type":"POJO_SPLIT","pojosplit":{"advancedsplitconfig":[{"splitoperationtype":7}]}}],"properties":[{"type":"BOOLEAN","name":"POJO_BACKUP","booleanvalue":false,"ranges":[]}]},"agenttype":"APPLICATION_SERVER"}</tx-match-rule>
+       </rule>
+       <!--end-->
+
+         <!--duplicate-this-section-end -->
+    </rule-list>
+    <scope-rule-mapping-list>
+        <scope-rule-mapping scope-name="Default Scope">
+            <!-- add this line for each rule defined above-->
+            <rule rule-description="" rule-name="TemplateRuleName"/>
+            <!-- add this line for each rule defined above-->
+        </scope-rule-mapping>
+    </scope-rule-mapping-list>
+</mds-data>

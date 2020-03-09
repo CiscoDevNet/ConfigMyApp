@@ -1,0 +1,21 @@
+{ 
+    "overwrite_health_rules":"true",
+    "connection_details": [
+       {
+        "prod_controller": "https://customer1.saas.appdynamics.com",
+        "dev_controller" : "https://customer1-dev.saas.appdynamics.com",
+        "prod_username": "configmycustomer1",
+        "dev_username": "configmyapp@customer1-dev",
+        "prod_password":"pass",
+        "dev_password":"pass",
+        "prod_serverVizAppID":"2384",
+        "dev_serverVizAppID":"57803"
+       }
+     ]
+   }
+
+   
+
+
+
+
