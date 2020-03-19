@@ -9,7 +9,7 @@
         "server_viz_app_id":"2384"
        }
      ],
-
+     
      "non_prod_controller_details": [
       {
        "url" : "https://customer1-dev.saas.appdynamics.com",
@@ -18,11 +18,4 @@
        "server_viz_app_id":"57803"
       }
     ]
-  
    }
-
-   
-
-
-
-
