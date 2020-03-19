@@ -1,6 +1,5 @@
 # ConfigMyApp
  
-# ConfigMyApp
  
 ConfigMyApp is a Self-Service AppDynamics configuration tool, this tool is a your AppDynamamics config-as-code enabler - and it can be embeded into your deployment pipelines,  such as Jenkins and Harness. 
  
@@ -49,7 +48,9 @@ example, .
    with your POCO or POJO details.
 
  *- TemplateRuleName*
+ 
  *- TemplateClassName and*
+ 
  *- TemplateMethodName*
 
  - The <rule> section for each business transaction detection rule. The
