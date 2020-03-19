@@ -11,20 +11,22 @@
 
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
-# Change these params 
+[[ "$(command -v jq)" ]] || { echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2 ; sleep 5; exit 1; }
 
-overwrite_health_rules="true"
-prod_username="configmyapp@customer1"
-dev_username="configmyapp@customer1-dev"
+conf_file="testconfig.json"
 
-prod_password="pass"
-dev_password="pass"
+overwrite_health_rules=$(jq -r '.overwrite_health_rules' < ${conf_file})
 
-prod_controller="https://customer1.saas.appdynamics.com"
-dev_controller="https://customer1-dev.saas.appdynamics.com"
-
-prod_serverVizAppID="2384"
-dev_serverVizAppID="57803"
+prod_controller=$(jq -r ' .prod_controller_details[].url' < ${conf_file})
+prod_username=$(jq -r ' .prod_controller_details[].username' < ${conf_file})
+prod_password=$(jq -r ' .prod_controller_details[].password' < ${conf_file})
+prod_serverVizAppID=$(jq -r ' .prod_controller_details[].server_viz_app_id' < ${conf_file})
+#echo "Prod $prod_username >  $prod_controller >  $prod_password > $prod_serverVizAppID" 
+dev_controller=$(jq -r ' .non_prod_controller_details[].url' < ${conf_file})
+dev_username=$(jq -r ' .non_prod_controller_details[].username' < ${conf_file})
+dev_password=$(jq -r ' .non_prod_controller_details[].password' < ${conf_file})
+dev_serverVizAppID=$(jq -r ' .non_prod_controller_details[].server_viz_app_id' < ${conf_file})
+#echo "Dev $dev_controller >  $dev_username >  $dev_password > $dev_serverVizAppID" 
 
 # Do not change anything else beyond this point except you know what you're doing :) 
 vanilla_noDB="CustomDashboard_noDB_vanilla.json"
@@ -59,7 +61,7 @@ else
 fi
 
 
-if [ "$appName" == "--help" ]; then
+if [ "$appName" = "--help" ]; then
     echo ""
     echo "************************HELP*********************************************************************************************************************"
     echo "This Self Service Config tool configures application, server and business transaction health rules."
@@ -113,12 +115,12 @@ fi
 echo "You entered '$configbt' for transaction configuration"
 echo ""
 
-if [ "$appName" == "" ] || [ "$DBName" == "" ]; then 
+if [ "$appName" = "" ] || [ "$DBName" = "" ]; then 
     echo "You must define Application Name and Database Name, set DBName to no if you're not interested in DB monitoring"
     exit 1
 fi
 
-if [ "$controller" == "prod" ] || [ "$controller" == "production" ] || [ "$controller" == "PROD" ] || [ "$controller" == "PRODUCTION" ];  then
+if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$controller" = "PROD" ] || [ "$controller" = "PRODUCTION" ];  then
   hostname=${prod_controller}
   password=${prod_password}
   username=${prod_username}
@@ -166,7 +168,7 @@ sleep 3
 echo ""
 echo ""
 #Dashboard
-if [ "$DBName" == "NO" ] || [ "$DBName" == "no" ] || [ "$DBName" == "none" ] ; then
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] ; then
     #remove the DB section from the JSON file 
     echo "Applying Database settings..."
     sleep 1
@@ -182,7 +184,7 @@ sed -i -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" $
 
 response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile})
 
-if [[ "$response" == *"$appName"* ]]; then
+if [[ "$response" = *"$appName"* ]]; then
     echo  "*********************************************************************"
     echo      "The dashboard was created successfully. "
     echo       "Please check the $hostname controller "
@@ -201,7 +203,7 @@ echo "Restoring vanilla template files... please wait.."
 sleep 5
 #restore original template files for next use
 mv ${serverVizHealthRuleFile}.bak ${serverVizHealthRuleFile}
-if [ "$DBName" == "NO" ] || [ "$DBName" == "no" ] || [ "$DBName" == "none" ] ; then
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] ; then
   cp $templateFile $appName.$dt.json
   cp $vanilla_noDB $templateFile
  else
@@ -213,13 +215,13 @@ echo ""
 echo "Checking Transaction configurantion instruction..."
 sleep 2
 
-if [ "$configbt" == "configbt" ] || [ "$configbt" == "yes" ] || [ "$configbt" == "bt" ]; then
+if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ]; then
   FILE=$appName.xml
     if [ -f "$FILE" ]; then
         echo "$FILE exist"
         btendpoint="/controller/transactiondetection/${appName}/custom"
         response=$(curl -X POST --user ${username}:${password} ${hostname}${btendpoint} -F file=@${FILE})
-        if [[ "$response" == *"HTTP/1.1 200 OK"* ]]; then
+        if [[ "$response" = *"HTTP/1.1 200 OK"* ]]; then
            echo "Created Business transaction rules successfully"  
          else
            #echo "Error Occured in configuring business transactions"  
