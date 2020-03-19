@@ -1,21 +1,21 @@
 { 
-    "overwrite_health_rules":"true",
-    "connection_details": [
+    "overwrite_health_rules":true,
+
+    "prod_controller_details": [
        {
-        "prod_controller": "https://customer1.saas.appdynamics.com",
-        "dev_controller" : "https://customer1-dev.saas.appdynamics.com",
-        "prod_username": "configmycustomer1",
-        "dev_username": "configmyapp@customer1-dev",
-        "prod_password":"pass",
-        "dev_password":"pass",
-        "prod_serverVizAppID":"2384",
-        "dev_serverVizAppID":"57803"
+        "url": "https://customer1.saas.appdynamics.com",
+        "username": "configmycustomer1",
+        "password":"pass",
+        "server_viz_app_id":"2384"
        }
-     ]
+     ],
+     
+     "non_prod_controller_details": [
+      {
+       "url" : "https://customer1-dev.saas.appdynamics.com",
+       "username": "configmyapp@customer1-dev",
+       "password":"pass",
+       "server_viz_app_id":"57803"
+      }
+    ]
    }
-
-   
-
-
-
-
