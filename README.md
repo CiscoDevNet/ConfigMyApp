@@ -1,6 +1,5 @@
 # ConfigMyApp
  
- 
 ConfigMyApp is a Self-Service AppDynamics configuration tool, this tool is a your AppDynamamics config-as-code enabler - and it can be embeded into your deployment pipelines,  such as Jenkins and Harness. 
  
 ConfigMyApp automatically configures an AppDynamics application by applying the following configurations: 
@@ -12,6 +11,7 @@ ConfigMyApp automatically configures an AppDynamics application by applying the 
  - Automated enablement of NetworkViz *in scope*
  
  **Prerequisites**
+ 
  `jq` is required. Download and install `jq` from https://stedolan.github.io/jq/download/ 
 
 You may run this script in a silent mode, or in an interactive mode: 
