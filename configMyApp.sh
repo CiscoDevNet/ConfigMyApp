@@ -38,6 +38,9 @@ dev_serverVizAppID=$(jq -r ' .non_prod_controller_details[].server_viz_app_id' <
 vanilla_noDB="./dashboards/CustomDashboard_noDB_vanilla.json"
 vanilla="./dashboards/CustomDashboard_vanilla.json"
 
+vanilla_noSIM="./dashboards/CustomDashboard_noSIM_vanilla.json"
+vanilla_noDB_noSIM="./dashboards/CustomDashboard_noDB_noSIM_vanilla.json"
+
 #init HR templates
 serverVizHealthRuleFile="./healthrules/ServerHealthRules.xml"
 applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
@@ -126,6 +129,31 @@ fi
 echo "You entered '$configbt' for transaction configuration"
 echo ""
 
+if [ "$5" != "" ]; then
+    includeSIM=$5
+else
+    echo ""
+    echo "Include Server Visibility?"
+    read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
+fi
+
+if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ]; then
+    includeSIM="true"
+elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ]; then
+    includeSIM="false"
+else
+    echo "You must enter valid yes/no value, set includeSIM to no if you're not interested in Server Visibility"
+    exit 1
+fi
+
+if [ "$includeSIM" = "true" ] && [ "$prod_serverVizAppID" = "" ] && [ "$dev_serverVizAppID" = "" ]; then
+    echo "Server visibility application ID must be defined when SIM is enabled. Set includeSIM value to no if you are not interested in SIM moitoring."
+    exit 1
+fi
+
+echo "Server Visibility is set to '$includeSIM'"
+echo ""
+
 if [ "$appName" = "" ] || [ "$DBName" = "" ]; then
     echo "You must define Application Name and Database Name, set DBName to no if you're not interested in DB monitoring"
     exit 1
@@ -152,13 +180,15 @@ url=${hostname}${endpoint}
 echo "Import Dash URL $url"
 echo ""
 echo ""
-echo "Creating Server Viz Health Rules..."
-sleep 3
 
 #ServerViz health rules
-sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
-curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile}
-sleep 4
+if [ "$includeSIM" = "true" ]; then
+    echo "Creating Server Viz Health Rules..."
+    sleep 3
+    sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
+    curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile}
+    sleep 4
+fi
 #Application health rules
 echo "Creating ${appName} Health Rules..."
 sleep 4
@@ -166,9 +196,10 @@ sleep 4
 echo "URL ecoding App Name"
 sleep 1
 encodeAppName=$(IOURLEncoder $appName)
-echo "Encoded AppName is :  $encodeAppName"
+echo "Encoded AppName is: $encodeAppName"
 echo ""
 echo ""
+echo "curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule}"
 curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule}
 sleep 1
 echo ""
@@ -177,20 +208,34 @@ echo "Processing Dashboard Template."
 sleep 3
 echo ""
 echo ""
+
 #Dashboard
-echo "Applying Database settings..."
+echo "Applying Database and SIM settings..."
 sleep 1
 if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ]; then
-    templateFile="$vanilla_noDB"
+
+    if [ "$includeSIM" = "true" ]; then
+        templateFile="$vanilla_noDB"
+    else
+        templateFile="$vanilla_noDB_noSIM"
+    fi
     #sed -i.DBbak -e '885,948d;1201,1242d' ${templateFile}
 else
-    templateFile="$vanilla"
+    if [ "$includeSIM" = "true" ]; then
+        templateFile="$vanilla"
+    else
+        templateFile="$vanilla_noSIM"
+    fi
 fi
+
+echo "Template file is: $templateFile"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 #take a backup  as .bak, then find and replace
 sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
 
+echo "Create dashboard request: curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile}"
+#curl -v -X POST --user ${username}:${password} ${url} -F file=@${templateFile}
 response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile})
 
 if [[ "$response" = *"$appName"* ]]; then
@@ -214,10 +259,18 @@ mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
 cp "${templateFile}" "./dashboards/uploaded/${appName}"."${dt}".json
 
 if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
-    #cp $vanilla_noDB $templateFile
-    mv "${templateFile}".bak "${vanilla_noDB}"
+    if [ "$includeSIM" = "true" ]; then
+        #cp $vanilla_noDB $templateFile
+        mv "${templateFile}".bak "${vanilla_noDB}"
+    else
+        mv "${templateFile}".bak "${vanilla_noDB_noSIM}"
+    fi
 else
-    mv "${templateFile}".bak "${vanilla}"
+    if [ "$includeSIM" = "true"]; then
+        mv "${templateFile}".bak "${vanilla}"
+    else
+        mv "${templateFile}".bak "${vanilla_noSIM}"
+    fi
 fi
 
 echo ""
