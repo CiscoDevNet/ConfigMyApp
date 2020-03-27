@@ -25,15 +25,21 @@ prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
 prod_password=$(jq -r ' .prod_controller_details[].password' <${conf_file})
 prod_serverVizAppID=$(jq -r ' .prod_controller_details[].server_viz_app_id' <${conf_file})
-#echo "Prod $prod_username >  $prod_controller >  $prod_password > $prod_serverVizAppID"
+
+prod_proxy_url=$(jq -r ' .prod_controller_details[].proxy_ur'l <${conf_file})
+prod_proxy_port=$(jq -r ' .prod_controller_details[].proxy_port' <${conf_file})
+
 dev_controller=$(jq -r ' .non_prod_controller_details[].url' <${conf_file})
 dev_username=$(jq -r ' .non_prod_controller_details[].username' <${conf_file})
 dev_password=$(jq -r ' .non_prod_controller_details[].password' <${conf_file})
 dev_serverVizAppID=$(jq -r ' .non_prod_controller_details[].server_viz_app_id' <${conf_file})
+
+dev_proxy_url=$(jq -r ' .non_prod_controller_details[].proxy_ur'l <${conf_file})
+dev_proxy_port=$(jq -r ' .non_prod_controller_details[].proxy_port' <${conf_file})
+
 #echo "Dev $dev_controller >  $dev_username >  $dev_password > $dev_serverVizAppID"
 
 # Do not change anything else beyond this point except you know what you're doing :)
-
 #init Dashboard templates
 vanilla_noDB="./dashboards/CustomDashboard_noDB_vanilla.json"
 vanilla="./dashboards/CustomDashboard_vanilla.json"
@@ -132,19 +138,34 @@ if [ "$appName" = "" ] || [ "$DBName" = "" ]; then
 fi
 
 if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$controller" = "PROD" ] || [ "$controller" = "PRODUCTION" ]; then
-    hostname=${prod_controller}
-    password=${prod_password}
-    username=${prod_username}
-    serverVizAppID=${prod_serverVizAppID}
-else
-    hostname=${dev_controller}
-    password=${dev_password}
-    username=${dev_username}
-    serverVizAppID=${dev_serverVizAppID}
+    hostname="${prod_controller}"
+    password="${prod_password}"
+    username="${prod_username}"
+    serverVizAppID="${prod_serverVizAppID}"
+    proxy_url="${prod_proxy_url}"
+    proxy_port="${prod_proxy_port}"
 
+else
+    hostname="${dev_controller}"
+    password="${dev_password}"
+    username="${dev_username}"
+    serverVizAppID="${dev_serverVizAppID}"
+    proxy_url="${dev_proxy_url}"
+    proxy_port="${dev_proxy_port}"
 fi
 
 echo "Using $hostname controller"
+echo ""
+ echo "Using proxy - $proxy_url:$proxy_port"
+#jq sets empty strings to null istead of NULL
+if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ]  || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then 
+    echo "No HTTP Proxy is configured. Skipping proxy configuration..." 
+    proxy_details=""
+else 
+    echo "Found HTTP Proxy configuration, using... " 
+    echo "Proxy URL = $proxy_url , Proxy Port = $proxy_port"
+    proxy_details="-x $proxy_url:$proxy_port"
+fi
 
 endpoint="/controller/CustomDashboardImportExportServlet"
 url=${hostname}${endpoint}
@@ -157,7 +178,7 @@ sleep 3
 
 #ServerViz health rules
 sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
-curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile}
+curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile} $proxy_details
 sleep 4
 #Application health rules
 echo "Creating ${appName} Health Rules..."
@@ -169,7 +190,7 @@ encodeAppName=$(IOURLEncoder $appName)
 echo "Encoded AppName is :  $encodeAppName"
 echo ""
 echo ""
-curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule}
+curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} $proxy_details
 sleep 1
 echo ""
 echo ""
@@ -180,7 +201,7 @@ echo ""
 #Dashboard
 echo "Applying Database settings..."
 sleep 1
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ]; then
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
     templateFile="$vanilla_noDB"
     #sed -i.DBbak -e '885,948d;1201,1242d' ${templateFile}
 else
@@ -191,7 +212,7 @@ dt=$(date '+%Y-%m-%d_%H-%M-%S')
 #take a backup  as .bak, then find and replace
 sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
 
-response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile})
+response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile} $proxy_details)
 
 if [[ "$response" = *"$appName"* ]]; then
     echo "*********************************************************************"
@@ -231,7 +252,7 @@ if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "b
     if [ -f "${FILE}" ]; then
         echo "${FILE} exist"
         btendpoint="/controller/transactiondetection/${appName}/custom"
-        response=$(curl -X POST --user ${username}:${password} ${hostname}${btendpoint} -F file=@${FILE})
+        response=$(curl -X POST --user ${username}:${password} ${hostname}${btendpoint} -F file=@${FILE} $proxy_details)
         if [[ "$response" = *"HTTP/1.1 200 OK"* ]]; then
             echo "Created Business transaction rules successfully"
         else

@@ -1,12 +1,14 @@
 { 
     "overwrite_health_rules":true,
-
+    
     "prod_controller_details": [
        {
         "url": "https://customer1.saas.appdynamics.com",
         "username": "configmycustomer1",
         "password":"pass",
-        "server_viz_app_id":"2384"
+        "server_viz_app_id":"2384",
+        "proxy_url": "",
+        "proxy_port": ""
        }
      ],
      
@@ -15,7 +17,9 @@
        "url" : "https://customer1-dev.saas.appdynamics.com",
        "username": "configmyapp@customer1-dev",
        "password":"pass",
-       "server_viz_app_id":"57803"
+       "server_viz_app_id":"57803",
+       "proxy_url": "",
+       "proxy_port": ""
       }
     ]
    }
