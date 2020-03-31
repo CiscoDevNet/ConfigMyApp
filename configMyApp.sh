@@ -109,8 +109,17 @@ fi
 
 echo "You entered '$DBName' for Database collector name"
 echo ""
+
 if [ "$3" != "" ]; then
-    controller=$3
+    includeSIM=$3
+else
+    echo ""
+    echo "Include Server Visibility?"
+    read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
+fi
+
+if [ "$4" != "" ]; then
+    controller=$4
 else
     echo ""
     echo "What's your application environment?"
@@ -120,8 +129,9 @@ fi
 echo "You entered '$controller' for application evironment"
 echo ""
 
-if [ "$4" != "" ]; then
-    configbt=$4
+
+if [ "$5" != "" ]; then
+    configbt=$5
 else
     configbt="no"
 fi
@@ -129,13 +139,7 @@ fi
 echo "You entered '$configbt' for transaction configuration"
 echo ""
 
-if [ "$5" != "" ]; then
-    includeSIM=$5
-else
-    echo ""
-    echo "Include Server Visibility?"
-    read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
-fi
+# end input params
 
 if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ]; then
     includeSIM="true"
@@ -180,6 +184,17 @@ url=${hostname}${endpoint}
 echo "Import Dash URL $url"
 echo ""
 echo ""
+
+# check if app exists
+echo "Check if app exists: curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON"
+allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON)
+
+applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<< $allApplications)
+
+if [ "$applicationObject" = "" ]; then
+    echo "Application '"$appName"' not found."
+    exit 1
+fi
 
 #ServerViz health rules
 if [ "$includeSIM" = "true" ]; then
@@ -234,9 +249,9 @@ dt=$(date '+%Y-%m-%d_%H-%M-%S')
 #take a backup  as .bak, then find and replace
 sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
 
-echo "Create dashboard request: curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile}"
-#curl -v -X POST --user ${username}:${password} ${url} -F file=@${templateFile}
-response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${templateFile})
+echo "Create dashboard"
+#echo "Create dashboard request: curl -X POST --user ${username}:${password} "${url}" -F file=@${templateFile}"
+response=$(curl -X POST --user ${username}:${password} "${url}" -F file=@${templateFile})
 
 if [[ "$response" = *"$appName"* ]]; then
     echo "*********************************************************************"
