@@ -198,6 +198,15 @@ fi
 
 #ServerViz health rules
 if [ "$includeSIM" = "true" ]; then
+
+    # check if server visibility application id exists
+    httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID})
+
+    if [[ $httpCode -lt 200 ]] || [[ $httpCode -gt 299 ]]; then
+        echo "Server visibility application id '"$serverVizAppID"' not found."
+        exit 1 
+    fi
+
     echo "Creating Server Viz Health Rules..."
     sleep 3
     sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
