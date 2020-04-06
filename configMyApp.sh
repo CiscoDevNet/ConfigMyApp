@@ -49,6 +49,8 @@ applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
 templateAppName="ChangeApplicationName"
 templateDBName="ChangeDBName"
 
+tempFolder="temp"
+
 bt_folder="./business_transactions"
 
 IOURLEncoder() {
@@ -68,6 +70,37 @@ IOURLEncoder() {
     echo "${encoded}"  # You can either set a return variable (FASTER)
     REPLY="${encoded}" #+or echo the result (EASIER)... or both... :p
 }
+
+function func_check_http_status {
+    local http_code=$1
+    local message_on_failure=$2
+    if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
+        echo $message_on_failure
+        func_cleanup
+        exit 1 
+    fi
+}
+
+function func_copy_file_and_replace_values {
+    local file_path=$1
+    local app_name=$2
+    local db_name=$3
+
+    # make a temp file
+    file_name="$(basename -- $file_path)"
+    mkdir -p "$tempFolder" && cp -r $file_path ./$tempFolder/$file_name
+
+    # replace values
+    sed -i.original -e "s/${templateAppName}/${app_name}/g; s/${templateDBName}/${db_name}/g" "${tempFolder}/${file_name}"
+
+    echo "done"
+}
+
+function func_cleanup {
+    # remove all from temp folder
+    rm -rf $tempFolder
+}
+
 
 if [ "$1" != "" ]; then
     appName=$1
@@ -173,7 +206,6 @@ else
     password=${dev_password}
     username=${dev_username}
     serverVizAppID=${dev_serverVizAppID}
-
 fi
 
 echo "Using $hostname controller"
@@ -202,16 +234,19 @@ if [ "$includeSIM" = "true" ]; then
     # check if server visibility application id exists
     httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID})
 
-    if [[ $httpCode -lt 200 ]] || [[ $httpCode -gt 299 ]]; then
-        echo "Server visibility application id '"$serverVizAppID"' not found."
-        exit 1 
-    fi
+    func_check_http_status httpCode "Server visibility application id '"$serverVizAppID"' not found."
 
     echo "Creating Server Viz Health Rules..."
-    sleep 3
+
+    #here
+
     sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
-    curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile}
-    sleep 4
+
+
+    httpCode=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile})
+
+    func_check_http_status httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+
 fi
 #Application health rules
 echo "Creating ${appName} Health Rules..."
@@ -223,11 +258,12 @@ encodeAppName=$(IOURLEncoder $appName)
 echo "Encoded AppName is: $encodeAppName"
 echo ""
 echo ""
-echo "curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule}"
-curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule}
+httpCode=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule})
+func_check_http_status httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
 sleep 1
 echo ""
 echo ""
+
 echo "Processing Dashboard Template."
 sleep 3
 echo ""
@@ -255,8 +291,12 @@ fi
 echo "Template file is: $templateFile"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
-#take a backup  as .bak, then find and replace
+#take a backup as .bak, then find and replace
+# TODO instead of creating backup and retoring, work on a new temp copy - no need to restore backups
 sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
+
+echo "sleep"
+sleep 1000
 
 echo "Create dashboard"
 #echo "Create dashboard request: curl -X POST --user ${username}:${password} "${url}" -F file=@${templateFile}"
