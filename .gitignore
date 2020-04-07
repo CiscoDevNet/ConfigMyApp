@@ -1,4 +1,4 @@
 
 testconfig.json
-dashboards/uploaded/*.json
+dashboards/uploaded/*
 .DS_Store

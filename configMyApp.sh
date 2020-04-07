@@ -71,37 +71,6 @@ IOURLEncoder() {
     REPLY="${encoded}" #+or echo the result (EASIER)... or both... :p
 }
 
-function func_check_http_status {
-    local http_code=$1
-    local message_on_failure=$2
-    if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
-        echo $message_on_failure
-        func_cleanup
-        exit 1 
-    fi
-}
-
-function func_copy_file_and_replace_values {
-    local file_path=$1
-    local app_name=$2
-    local db_name=$3
-
-    # make a temp file
-    file_name="$(basename -- $file_path)"
-    mkdir -p "$tempFolder" && cp -r $file_path ./$tempFolder/$file_name
-
-    # replace values
-    sed -i.original -e "s/${templateAppName}/${app_name}/g; s/${templateDBName}/${db_name}/g" "${tempFolder}/${file_name}"
-
-    echo "done"
-}
-
-function func_cleanup {
-    # remove all from temp folder
-    rm -rf $tempFolder
-}
-
-
 if [ "$1" != "" ]; then
     appName=$1
 else
@@ -162,7 +131,6 @@ fi
 echo "You entered '$controller' for application evironment"
 echo ""
 
-
 if [ "$5" != "" ]; then
     configbt=$5
 else
@@ -171,9 +139,9 @@ fi
 
 echo "You entered '$configbt' for transaction configuration"
 echo ""
-
 # end input params
 
+# validate input params
 if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ]; then
     includeSIM="true"
 elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ]; then
@@ -210,6 +178,40 @@ fi
 
 echo "Using $hostname controller"
 
+# functions >>>
+function func_check_http_status {
+    local http_code=$1
+    local message_on_failure=$2
+    echo "HTTP status code: $http_code"
+    if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
+        echo $message_on_failure
+        func_cleanup
+        exit 1 
+    fi
+}
+
+function func_copy_file_and_replace_values {
+    local filePath=$1
+    #local appName=$2 # todo
+    #local DBName=$3
+
+    # make a temp file
+    fileName="$(basename -- $filePath)"
+    mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
+
+    # replace values
+    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
+    
+    # return full file path
+    echo "${tempFolder}/${fileName}"
+}
+
+function func_cleanup {
+    # remove all from temp folder
+    rm -rf $tempFolder
+}
+
+# start importing >>>
 endpoint="/controller/CustomDashboardImportExportServlet"
 url=${hostname}${endpoint}
 
@@ -224,8 +226,7 @@ allApplications=$(curl --user ${username}:${password} ${hostname}/controller/res
 applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<< $allApplications)
 
 if [ "$applicationObject" = "" ]; then
-    echo "Application '"$appName"' not found."
-    exit 1
+    func_check_http_status 404 "Application '"$appName"' not found."
 fi
 
 #ServerViz health rules
@@ -234,20 +235,19 @@ if [ "$includeSIM" = "true" ]; then
     # check if server visibility application id exists
     httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID})
 
-    func_check_http_status httpCode "Server visibility application id '"$serverVizAppID"' not found."
+    func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found."
 
     echo "Creating Server Viz Health Rules..."
 
-    #here
+    #sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
+    pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
+    
+    httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile})
 
-    sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
-
-
-    httpCode=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${serverVizHealthRuleFile})
-
-    func_check_http_status httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+    func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
 
 fi
+
 #Application health rules
 echo "Creating ${appName} Health Rules..."
 sleep 4
@@ -257,16 +257,15 @@ sleep 1
 encodeAppName=$(IOURLEncoder $appName)
 echo "Encoded AppName is: $encodeAppName"
 echo ""
-echo ""
-httpCode=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule})
-func_check_http_status httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
+httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule})
+
+func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
+
 sleep 1
-echo ""
 echo ""
 
 echo "Processing Dashboard Template."
 sleep 3
-echo ""
 echo ""
 
 #Dashboard
@@ -292,50 +291,53 @@ echo "Template file is: $templateFile"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 #take a backup as .bak, then find and replace
-# TODO instead of creating backup and retoring, work on a new temp copy - no need to restore backups
-sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
-
-echo "sleep"
-sleep 1000
+# sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
+pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
 
 echo "Create dashboard"
-#echo "Create dashboard request: curl -X POST --user ${username}:${password} "${url}" -F file=@${templateFile}"
-response=$(curl -X POST --user ${username}:${password} "${url}" -F file=@${templateFile})
+sleep 3
 
-if [[ "$response" = *"$appName"* ]]; then
-    echo "*********************************************************************"
-    echo "The dashboard was created successfully. "
-    echo "Please check the $hostname controller "
-    echo "The Dashboard name is '$appName:App Visibility Pane' "
-    echo "*********************************************************************"
-else
-    echo "Error occured in creating dashboard. See details below:"
-    echo "$response"
-fi
+httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile})
+
+func_check_http_status $httpCode "Error occured while creating dashboard."
+
+#if [[ "$response" = *"$appName"* ]]; then
+#    echo "*********************************************************************"
+#    echo "The dashboard was created successfully. "
+#    echo "Please check the $hostname controller "
+#    echo "The Dashboard name is '$appName:App Visibility Pane' "
+#    echo "*********************************************************************"
+#else
+#    echo "Error occured in creating dashboard. See details below:"
+#    echo "$response"
+#fi
 
 echo ""
 echo ""
 sleep 3
 echo "Restoring vanilla template files... please wait.."
-sleep 5
-#restore original template files for next use
-mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
-cp "${templateFile}" "./dashboards/uploaded/${appName}"."${dt}".json
+#sleep 5
 
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
-    if [ "$includeSIM" = "true" ]; then
-        #cp $vanilla_noDB $templateFile
-        mv "${templateFile}".bak "${vanilla_noDB}"
-    else
-        mv "${templateFile}".bak "${vanilla_noDB_noSIM}"
-    fi
-else
-    if [ "$includeSIM" = "true"]; then
-        mv "${templateFile}".bak "${vanilla}"
-    else
-        mv "${templateFile}".bak "${vanilla_noSIM}"
-    fi
-fi
+#restore original template files for next use
+#mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
+cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
+
+#if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
+#    if [ "$includeSIM" = "true" ]; then
+#        #cp $vanilla_noDB $templateFile
+#        mv "${templateFile}".bak "${vanilla_noDB}"
+#    else
+#        mv "${templateFile}".bak "${vanilla_noDB_noSIM}"
+#    fi
+#else
+#    if [ "$includeSIM" = "true"]; then
+#        mv "${templateFile}".bak "${vanilla}"
+#    else
+#        mv "${templateFile}".bak "${vanilla_noSIM}"
+#    fi
+#fi
+
+func_cleanup
 
 echo ""
 echo ""
