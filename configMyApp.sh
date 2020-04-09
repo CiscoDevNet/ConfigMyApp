@@ -20,6 +20,7 @@
 conf_file="testconfig.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
+are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
 
 prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
@@ -174,6 +175,11 @@ else
     password=${dev_password}
     username=${dev_username}
     serverVizAppID=${dev_serverVizAppID}
+fi
+
+# decode passwords if encoded
+if [ "$are_passwords_encoded" = "true" ]; then
+    password=$(eval echo ${password} | base64 --decode) 
 fi
 
 echo "Using $hostname controller"

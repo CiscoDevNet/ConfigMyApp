@@ -1,6 +1,6 @@
 { 
     "overwrite_health_rules":true,
-
+    "are_passwords_encoded": true,
     "prod_controller_details": [
        {
         "url": "https://customer1.saas.appdynamics.com",
@@ -14,7 +14,7 @@
       {
        "url" : "https://customer1-dev.saas.appdynamics.com",
        "username": "configmyapp@customer1-dev",
-       "password":"pass",
+       "password":"YXBwZHluYW1pY3MK",
        "server_viz_app_id":"57803"
       }
     ]
