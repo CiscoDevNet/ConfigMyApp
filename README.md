@@ -1,6 +1,6 @@
 # ConfigMyApp
-
-ConfigMyApp is a Self-Service AppDynamics configuration tool, this tool is a your AppDynamamics config-as-code enabler - and it can be embedded into your deployment pipelines,  such as Jenkins and Harness. 
+ 
+ConfigMyApp is a Self-Service AppDynamics configuration tool, this tool is a your AppDynamamics config-as-code enabler - and it can be embeded into your deployment pipelines,  such as Jenkins and Harness. 
  
 ConfigMyApp automatically configures an AppDynamics application by applying the following configurations: 
  - Health rule creation for Server Visibility to monitor CPU and memory
@@ -8,24 +8,11 @@ ConfigMyApp automatically configures an AppDynamics application by applying the 
    and nodes health  
  - Automated creation of Dashboards  Automated creation of transaction
    detection rules
-
+ - Automated enablement of NetworkViz *in scope*
+ 
  **Prerequisites**
  
  `jq` is required. Download and install `jq` from https://stedolan.github.io/jq/download/ 
-
- **Set Up**
- 1. Add a logo image and a backaground image to the branding folder. 
- 2. Using your favourite text editor, open config.json and fill in the configuration properties:
-
-  | **Config Property Name** | **Description** |
-  | --- | --- |
-  | overwrite_health_rules  | Set to true to have health rules in the posted data overwrite existing health rules with the same name. The default is true. |
-  | url  | The full URL of your AppDynamics controller |
-  | username  | The service account username |
-  | password  | The service account password  |
-  | server_viz_app_id  | Login to the controller, click the Servers tab and copy the value of the application ID from the URL |
-  | proxy_url  | Define HTTP proxy host if in use, otherwise leave it blank.  |
-  | proxy_port | Define proxy port if `proxy_url` is not blank |
 
 You may run this script in a silent mode, or in an interactive mode: 
 
@@ -82,6 +69,3 @@ This requires the template rule name to be an exact match of application-name. F
 
 Note: After deploying this script, you’re expected to modify the subgroup of the server visibility health rules.  Navigate to Servers – Health Rules, type the application name in the search box, you should now see two health rules – for CPU and Memory. Modify the affected entities for each health rule by changing the subgroups from root to the appropriate subgroup of servers for the application. Type the application name in the search to find the appropriate subgroups. 
 
-**RBAC**
-
-TODO - ConfigMyApp service account roles. 
