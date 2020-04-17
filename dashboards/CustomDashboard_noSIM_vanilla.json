@@ -1,7 +1,7 @@
 {
     "schemaVersion": null,
     "dashboardFormatVersion": "4.0",
-    "name": "ChangeApplicationName:App Visibility Pane (no DB)",
+    "name": "ChangeApplicationName:App Visibility Pane (no SIM)",
     "description": null,
     "properties": null,
     "templateEntityType": "APPLICATION_COMPONENT_NODE",
@@ -146,12 +146,12 @@
         {
             "widgetType": "ImageWidget",
             "title": null,
-            "height": 122,
+            "height": 124,
             "width": 122,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 789,
-            "y": 74,
+            "x": 852,
+            "y": 77,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -188,12 +188,12 @@
         {
             "widgetType": "HealthListWidget",
             "title": "Nodes Health",
-            "height": 172,
-            "width": 200,
+            "height": 173,
+            "width": 202,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 1013,
-            "y": 24,
+            "x": 811,
+            "y": 30,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -225,15 +225,17 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "applicationReference": {
-                "applicationName": "ChangeApplicationName",
-                "entityType": "APPLICATION",
-                "entityName": "ChangeApplicationName",
-                "scopingEntityType": null,
-                "scopingEntityName": null,
-                "subtype": null
-            },
-            "entityReferences": [],
+            "applicationReference": null,
+            "entityReferences": [
+                {
+                    "applicationName": "ChangeApplicationName",
+                    "entityType": "APPLICATION",
+                    "entityName": "ChangeApplicationName",
+                    "scopingEntityType": null,
+                    "scopingEntityName": null,
+                    "subtype": null
+                }
+            ],
             "entityType": "APPLICATION_COMPONENT_NODE",
             "entitySelectionType": "ALL",
             "iconSize": 18,
@@ -247,14 +249,56 @@
             "aggregationType": "RATIO"
         },
         {
-            "widgetType": "HealthListWidget",
-            "title": "Tiers Health",
-            "height": 171,
-            "width": 201,
+            "widgetType": "ImageWidget",
+            "title": null,
+            "height": 124,
+            "width": 122,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 747,
-            "y": 29,
+            "x": 666,
+            "y": 76,
+            "label": null,
+            "description": null,
+            "drillDownUrl": null,
+            "useMetricBrowserAsDrillDown": true,
+            "drillDownActionType": null,
+            "backgroundColor": 16777215,
+            "backgroundColors": null,
+            "backgroundColorsStr": "16777215,16777215",
+            "color": 1646891,
+            "fontSize": 12,
+            "useAutomaticFontSize": false,
+            "borderEnabled": false,
+            "borderThickness": 0,
+            "borderColor": 14408667,
+            "backgroundAlpha": 1,
+            "showValues": false,
+            "formatNumber": true,
+            "numDecimals": 0,
+            "removeZeros": true,
+            "compactMode": false,
+            "showTimeRange": false,
+            "renderIn3D": false,
+            "showLegend": null,
+            "legendPosition": null,
+            "legendColumnCount": null,
+            "startTime": null,
+            "endTime": null,
+            "minutesBeforeAnchorTime": 15,
+            "isGlobal": true,
+            "propertiesMap": null,
+            "dataSeriesTemplates": null,
+            "imageURL": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgMTI2IDEyNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpieD0iaHR0cHM6Ly9ib3h5LXN2Zy5jb20iPgogIDxkZWZzPgogICAgPGJ4Omd1aWRlIHg9IjYyLjAzMSIgeT0iMTUuNzkzIiBhbmdsZT0iMCIvPgogICAgPGJ4Omd1aWRlIHg9IjU5LjU3NyIgeT0iNjIuMDc1IiBhbmdsZT0iOTAiLz4KICA8L2RlZnM+CiAgPGVsbGlwc2Ugc3R5bGU9ImZpbGw6IG5vbmU7IHN0cm9rZTogcmdiYSgyMTQsIDIxNCwgMjE0LCAwLjM1KTsgc3Ryb2tlLXdpZHRoOiA2cHg7IiB0cmFuc2Zvcm09Im1hdHJpeCgtMC42OTMzOCwgMC43MjA1NzIsIC0wLjcyMDU3MiwgLTAuNjkzMzgsIDIxOC4zNDk1MzMsIDY3Ljk3MTM2NykiIGN4PSIxMDQuMTkyIiBjeT0iMTE2LjQxNSIgcng9IjU3LjA4NCIgcnk9IjU3LjA4NCIvPgo8L3N2Zz4="
+        },
+        {
+            "widgetType": "HealthListWidget",
+            "title": "Tiers Health",
+            "height": 172,
+            "width": 204,
+            "minHeight": 0,
+            "minWidth": 0,
+            "x": 624,
+            "y": 32,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -286,15 +330,17 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "applicationReference": {
-                "applicationName": "ChangeApplicationName",
-                "entityType": "APPLICATION",
-                "entityName": "ChangeApplicationName",
-                "scopingEntityType": null,
-                "scopingEntityName": null,
-                "subtype": null
-            },
-            "entityReferences": [],
+            "applicationReference": null,
+            "entityReferences": [
+                {
+                    "applicationName": "ChangeApplicationName",
+                    "entityType": "APPLICATION",
+                    "entityName": "ChangeApplicationName",
+                    "scopingEntityType": null,
+                    "scopingEntityName": null,
+                    "subtype": null
+                }
+            ],
             "entityType": "APPLICATION_COMPONENT",
             "entitySelectionType": "ALL",
             "iconSize": 18,
@@ -539,52 +585,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "CURRENT",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Calls per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "LEFT",
             "margin": 4,
@@ -681,12 +682,12 @@
         {
             "widgetType": "ImageWidget",
             "title": null,
-            "height": 120,
-            "width": 120,
+            "height": 124,
+            "width": 124,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 535,
-            "y": 75,
+            "x": 1036,
+            "y": 76,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -722,13 +723,13 @@
         },
         {
             "widgetType": "HealthListWidget",
-            "title": "Servers Health",
-            "height": 170,
+            "title": "Databases Health",
+            "height": 171,
             "width": 201,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 492,
-            "y": 29,
+            "x": 993,
+            "y": 32,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -760,33 +761,18 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "applicationReference": {
-                "applicationName": "Server & Infrastructure Monitoring",
-                "entityType": "APPLICATION",
-                "entityName": "Server & Infrastructure Monitoring",
-                "scopingEntityType": null,
-                "scopingEntityName": null,
-                "subtype": null
-            },
+            "applicationReference": null,
             "entityReferences": [
                 {
-                    "applicationName": "Server & Infrastructure Monitoring",
-                    "entityType": "POLICY",
-                    "entityName": "ChangeApplicationName: Memory Usage is too high",
-                    "scopingEntityType": null,
-                    "scopingEntityName": null,
-                    "subtype": null
-                },
-                {
-                    "applicationName": "Server & Infrastructure Monitoring",
-                    "entityType": "POLICY",
-                    "entityName": "ChangeApplicationName: CPU Usage is too high",
-                    "scopingEntityType": null,
-                    "scopingEntityName": null,
+                    "applicationName": "Database Monitoring",
+                    "entityType": "DB_SERVER",
+                    "entityName": "ChangeDBName",
+                    "scopingEntityType": "DB_MONITOR_CONFIG",
+                    "scopingEntityName": "ChangeDBName",
                     "subtype": null
                 }
             ],
-            "entityType": "POLICY",
+            "entityType": "DB_SERVER",
             "entitySelectionType": "SPECIFIED",
             "iconSize": 18,
             "iconPosition": "LEFT",
@@ -931,50 +917,8 @@
             "width": 50,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 566,
-            "y": 110,
-            "label": null,
-            "description": null,
-            "drillDownUrl": null,
-            "useMetricBrowserAsDrillDown": true,
-            "drillDownActionType": null,
-            "backgroundColor": 16777215,
-            "backgroundColors": null,
-            "backgroundColorsStr": "16777215,16777215",
-            "color": 1646891,
-            "fontSize": 12,
-            "useAutomaticFontSize": false,
-            "borderEnabled": false,
-            "borderThickness": 0,
-            "borderColor": 14408667,
-            "backgroundAlpha": 1,
-            "showValues": false,
-            "formatNumber": true,
-            "numDecimals": 0,
-            "removeZeros": true,
-            "compactMode": false,
-            "showTimeRange": false,
-            "renderIn3D": false,
-            "showLegend": null,
-            "legendPosition": null,
-            "legendColumnCount": null,
-            "startTime": null,
-            "endTime": null,
-            "minutesBeforeAnchorTime": 15,
-            "isGlobal": true,
-            "propertiesMap": null,
-            "dataSeriesTemplates": null,
-            "imageURL": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyBpZD0iaWNvblBhdGgiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTkuNSAxMWMuODI1IDAgMS41LjY3NSAxLjUgMS41djNjMCAuODI1LS42NzUgMS41LTEuNSAxLjVIMTN2MS45OTloN2ExIDEgMCAxIDEgMCAySDRhMSAxIDAgMSAxIDAtMmg3VjE3SDQuNWMtLjgyNSAwLTEuNS0uNjc1LTEuNS0xLjV2LTNjMC0uODI1LjY3NS0xLjUgMS41LTEuNWgxNXptLS41IDR2LTJINXYyaDE0em0uNS0xMmMuODI1IDAgMS41LjY3NSAxLjUgMS41djNjMCAuODI1LS42NzUgMS41LTEuNSAxLjVoLTE1QzMuNjc1IDkgMyA4LjMyNSAzIDcuNXYtM0MzIDMuNjc1IDMuNjc1IDMgNC41IDNoMTV6TTUgNXYyaDE0VjVINXoiIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ii8+Cjwvc3ZnPg=="
-        },
-        {
-            "widgetType": "ImageWidget",
-            "title": null,
-            "height": 50,
-            "width": 50,
-            "minHeight": 0,
-            "minWidth": 0,
-            "x": 826,
-            "y": 110,
+            "x": 706,
+            "y": 116,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -1015,8 +959,8 @@
             "width": 50,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 1086,
-            "y": 106,
+            "x": 885,
+            "y": 112,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -1053,12 +997,54 @@
         {
             "widgetType": "ImageWidget",
             "title": null,
-            "height": 91,
-            "width": 89,
+            "height": 50,
+            "width": 50,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 5,
-            "y": 11,
+            "x": 1068,
+            "y": 112,
+            "label": null,
+            "description": null,
+            "drillDownUrl": null,
+            "useMetricBrowserAsDrillDown": true,
+            "drillDownActionType": null,
+            "backgroundColor": 16777215,
+            "backgroundColors": null,
+            "backgroundColorsStr": "16777215,16777215",
+            "color": 1646891,
+            "fontSize": 12,
+            "useAutomaticFontSize": false,
+            "borderEnabled": false,
+            "borderThickness": 0,
+            "borderColor": 14408667,
+            "backgroundAlpha": 1,
+            "showValues": false,
+            "formatNumber": true,
+            "numDecimals": 0,
+            "removeZeros": true,
+            "compactMode": false,
+            "showTimeRange": false,
+            "renderIn3D": false,
+            "showLegend": null,
+            "legendPosition": null,
+            "legendColumnCount": null,
+            "startTime": null,
+            "endTime": null,
+            "minutesBeforeAnchorTime": 15,
+            "isGlobal": true,
+            "propertiesMap": null,
+            "dataSeriesTemplates": null,
+            "imageURL": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyBpZD0iaWNvblBhdGgiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNNC40MDIgMTcuMzQydi0yLjc1NGwuMTU3LjA4M2MuNzY4LjQxMiAxLjcwOC43MzggMi43NTIuOTc4IDEuNDQuMzMzIDMuMDY1LjUwNiA0LjY4OS41MDZzMy4yNDktLjE3MyA0LjY5LS41MDZjMS4wNDMtLjI0IDEuOTgyLS41NjYgMi43NTMtLjk3OGwuMTU1LS4wODN2Mi43NTRjMCAuNzk0LTIuODg0IDIuMjU2LTcuNTk4IDIuMjU2cy03LjU5OC0xLjQ2Mi03LjU5OC0yLjI1NnpNMTkuNTk4IDYuNjU4YzAgLjQ3OC0xLjA1IDEuMTk2LTIuOTA5IDEuNjkyLTEuMjMuMzMtMi44MTIuNTY0LTQuNjg5LjU2NC0xLjg3OCAwLTMuNDU5LS4yMzUtNC42OS0uNTY0LTEuODU4LS40OTYtMi45MDgtMS4yMTQtMi45MDgtMS42OTIgMC0uNzk2IDIuODg0LTIuMjU1IDcuNTk4LTIuMjU1czcuNTk4IDEuNDU5IDcuNTk4IDIuMjU1em0wIDUuMzQyYzAgLjQ3OC0xLjA1IDEuMTk2LTIuOTA5IDEuNjkzLTEuMjMuMzI5LTIuODEyLjU2My00LjY4OS41NjMtMS44NzggMC0zLjQ1OS0uMjM0LTQuNjktLjU2My0xLjg1OC0uNDk3LTIuOTA4LTEuMjE1LTIuOTA4LTEuNjkzVjkuMjQ1Yy4wNTEuMDI5LjEwNC4wNTYuMTU3LjA4NC43NjguNDEgMS43MDguNzM3IDIuNzUyLjk3OSAxLjQzOS4zMzIgMy4wNjUuNTA1IDQuNjg5LjUwNXMzLjI1LS4xNzMgNC42OS0uNTA1YzEuMDQ0LS4yNDIgMS45ODMtLjU2OCAyLjc1My0uOTc5LjA1MS0uMDI4LjEwNC0uMDU0LjE1NS0uMDg0VjEyek0xMiAyLjUwM2MtNC4xNjYgMC04LjM3MiAxLjExMy05LjMwMiAzLjI1MS0uMjAyLjUzNC0uMTk1LjkwNC0uMTk1LjkwNHYxMC42ODRjMCAuMzIuMDcuNjIuMTk1LjkwNC45MyAyLjEzNyA1LjEzNiAzLjI1MSA5LjMwMiAzLjI1MSA0LjE2NiAwIDguMzcyLTEuMTE0IDkuMzAyLTMuMjUuMTI0LS4yODUuMTk1LS41ODQuMTk1LS45MDVWNi42NThjMC0yLjcyOC00Ljc3Ny00LjE1NS05LjQ5Ny00LjE1NXoiIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ii8+Cjwvc3ZnPg=="
+        },
+        {
+            "widgetType": "ImageWidget",
+            "title": null,
+            "height": 91,
+            "width": 88,
+            "minHeight": 0,
+            "minWidth": 0,
+            "x": 16,
+            "y": 13,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -1161,9 +1147,9 @@
             "borderColor": 14408667,
             "backgroundAlpha": 0,
             "showValues": false,
-            "formatNumber": null,
+            "formatNumber": true,
             "numDecimals": 0,
-            "removeZeros": null,
+            "removeZeros": true,
             "compactMode": false,
             "showTimeRange": false,
             "renderIn3D": false,
@@ -1175,152 +1161,7 @@
             "minutesBeforeAnchorTime": 15,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "COLUMN",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            10066176
-                        ]
-                    },
-                    "name": "Series 1",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Calls per Minute"
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": null,
-                        "useActiveBaseline": true,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Calls/min"
-                    },
-                    "axisPosition": "LEFT"
-                },
-                {
-                    "seriesType": "COLUMN",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            10027008
-                        ]
-                    },
-                    "name": "Series 2",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Errors per Minute"
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Errors/min"
-                    },
-                    "axisPosition": null
-                },
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            255
-                        ]
-                    },
-                    "name": "Series 3",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Average Response Time (ms)"
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Avg. Response Time"
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "verticalAxisLabel": null,
             "hideHorizontalAxis": null,
             "horizontalAxisLabel": null,
@@ -1360,9 +1201,9 @@
             "borderColor": 14408667,
             "backgroundAlpha": 1,
             "showValues": false,
-            "formatNumber": null,
+            "formatNumber": true,
             "numDecimals": 0,
-            "removeZeros": null,
+            "removeZeros": true,
             "compactMode": false,
             "showTimeRange": false,
             "renderIn3D": false,
@@ -1375,15 +1216,17 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "applicationReference": {
-                "applicationName": "ChangeApplicationName",
-                "entityType": "APPLICATION",
-                "entityName": "ChangeApplicationName",
-                "scopingEntityType": null,
-                "scopingEntityName": null,
-                "subtype": null
-            },
-            "entityReferences": [],
+            "applicationReference": null,
+            "entityReferences": [
+                {
+                    "applicationName": "ChangeApplicationName",
+                    "entityType": "APPLICATION",
+                    "entityName": "ChangeApplicationName",
+                    "scopingEntityType": null,
+                    "scopingEntityName": null,
+                    "subtype": null
+                }
+            ],
             "entityType": "BUSINESS_TRANSACTION",
             "entitySelectionType": "ALL",
             "iconSize": 22,
@@ -1435,52 +1278,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "CURRENT",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Average Response Time (ms)"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "LEFT",
             "margin": 4,
@@ -1525,52 +1323,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "CURRENT",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Errors per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "LEFT",
             "margin": 4,
@@ -1645,9 +1398,9 @@
             "borderColor": 14408667,
             "backgroundAlpha": 0,
             "showValues": true,
-            "formatNumber": null,
+            "formatNumber": true,
             "numDecimals": 0,
-            "removeZeros": null,
+            "removeZeros": true,
             "compactMode": false,
             "showTimeRange": false,
             "renderIn3D": false,
@@ -1659,196 +1412,7 @@
             "minutesBeforeAnchorTime": 15,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Error",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "SUM",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Errors per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Error Calls"
-                    },
-                    "axisPosition": null
-                },
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            26316
-                        ]
-                    },
-                    "name": "Series 1",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Number of Slow Calls"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Slow Calls"
-                    },
-                    "axisPosition": null
-                },
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            13369344
-                        ]
-                    },
-                    "name": "Stall",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Stall Count"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Stall Calls"
-                    },
-                    "axisPosition": null
-                },
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": {
-                        "colors": [
-                            16776960
-                        ]
-                    },
-                    "name": "Very Slow",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Number of Very Slow Calls"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_CUSTOM",
-                        "metricDisplayNameCustomFormat": "Very Slow Calls"
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "showLabels": false,
             "showPercentValues": false
         },
@@ -1891,52 +1455,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "CURRENT",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Exceptions per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "LEFT",
             "margin": 4,
@@ -1949,8 +1468,8 @@
             "width": 249,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 272,
-            "y": 133,
+            "x": 242,
+            "y": 145,
             "label": "Total Calls <br> In the last ${t}",
             "description": null,
             "drillDownUrl": null,
@@ -1981,52 +1500,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "SUM",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Calls per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "CENTER",
             "margin": 4,
@@ -2039,8 +1513,8 @@
             "width": 130,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 348,
-            "y": 94,
+            "x": 320,
+            "y": 107,
             "label": "<strong>${v}",
             "description": null,
             "drillDownUrl": null,
@@ -2071,52 +1545,7 @@
             "minutesBeforeAnchorTime": -1,
             "isGlobal": true,
             "propertiesMap": null,
-            "dataSeriesTemplates": [
-                {
-                    "seriesType": "LINE",
-                    "metricType": "OVERALL_APPLICATION",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 0",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": {
-                            "matchCriteriaType": "SpecificEntities",
-                            "entityType": "APPLICATION",
-                            "agentTypes": null,
-                            "entityNames": [
-                                {
-                                    "applicationName": "ChangeApplicationName",
-                                    "entityType": "APPLICATION",
-                                    "entityName": "ChangeApplicationName",
-                                    "scopingEntityType": null,
-                                    "scopingEntityName": null,
-                                    "subtype": null
-                                }
-                            ],
-                            "summary": true
-                        },
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Logical",
-                            "functionType": "SUM",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "relativeMetricPath": "Calls per Minute"
-                        },
-                        "rollupMetricData": true,
-                        "expressionString": null,
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "ChangeApplicationName",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
-                }
-            ],
+            "dataSeriesTemplates": null,
             "text": null,
             "textAlign": "LEFT",
             "margin": 4,
@@ -2163,48 +1592,6 @@
             "propertiesMap": null,
             "dataSeriesTemplates": null,
             "imageURL": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgODMwIDE0IiB3aWR0aD0iODMwcHgiIGhlaWdodD0iMTRweCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iODMwIiBoZWlnaHQ9IjE0IiBzdHlsZT0icG9pbnRlci1ldmVudHM6IG5vbmU7IHZpc2liaWxpdHk6IGhpZGRlbjsiPgogICAgPHRpdGxlPmJnPC90aXRsZT4KICA8L3JlY3Q+CiAgPGxpbmUgc3R5bGU9InN0cm9rZTogcmdiKDI1NSwgMjU1LCAyNTUpOyBzdHJva2Utd2lkdGg6IDJweDsgZmlsbDogbm9uZTsgc3Ryb2tlLW1pdGVybGltaXQ6IDI7IHN0cm9rZS1kYXNoYXJyYXk6IDMsIDEsIDIsIDEsIDM7IiB4MT0iMTAiIHkxPSI3IiB4Mj0iODIwIiB5Mj0iNyIvPgogIDxjaXJjbGUgc3R5bGU9ImZpbGw6IHJnYigyNTUsIDI1NSwgMjU1KTsiIGN4PSIxMC40NCIgY3k9IjYuOTQiIHI9IjUuNDQiLz4KICA8Y2lyY2xlIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7IiBjeD0iODE1LjQ0IiBjeT0iNi45NCIgcj0iNS40NCIvPgo8L3N2Zz4="
-        },
-        {
-            "widgetType": "ImageWidget",
-            "title": null,
-            "height": 121,
-            "width": 120,
-            "minHeight": 0,
-            "minWidth": 0,
-            "x": 1054,
-            "y": 69,
-            "label": null,
-            "description": null,
-            "drillDownUrl": null,
-            "useMetricBrowserAsDrillDown": true,
-            "drillDownActionType": null,
-            "backgroundColor": 16777215,
-            "backgroundColors": null,
-            "backgroundColorsStr": "16777215,16777215",
-            "color": 1646891,
-            "fontSize": 12,
-            "useAutomaticFontSize": false,
-            "borderEnabled": false,
-            "borderThickness": 0,
-            "borderColor": 14408667,
-            "backgroundAlpha": 1,
-            "showValues": false,
-            "formatNumber": true,
-            "numDecimals": 0,
-            "removeZeros": true,
-            "compactMode": false,
-            "showTimeRange": false,
-            "renderIn3D": false,
-            "showLegend": null,
-            "legendPosition": null,
-            "legendColumnCount": null,
-            "startTime": null,
-            "endTime": null,
-            "minutesBeforeAnchorTime": 15,
-            "isGlobal": true,
-            "propertiesMap": null,
-            "dataSeriesTemplates": null,
-            "imageURL": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgMTI2IDEyNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpieD0iaHR0cHM6Ly9ib3h5LXN2Zy5jb20iPgogIDxkZWZzPgogICAgPGJ4Omd1aWRlIHg9IjYyLjAzMSIgeT0iMTUuNzkzIiBhbmdsZT0iMCIvPgogICAgPGJ4Omd1aWRlIHg9IjU5LjU3NyIgeT0iNjIuMDc1IiBhbmdsZT0iOTAiLz4KICA8L2RlZnM+CiAgPGVsbGlwc2Ugc3R5bGU9ImZpbGw6IG5vbmU7IHN0cm9rZTogcmdiYSgyMTQsIDIxNCwgMjE0LCAwLjM1KTsgc3Ryb2tlLXdpZHRoOiA2cHg7IiB0cmFuc2Zvcm09Im1hdHJpeCgtMC42OTMzOCwgMC43MjA1NzIsIC0wLjcyMDU3MiwgLTAuNjkzMzgsIDIxOC4zNDk1MzMsIDY3Ljk3MTM2NykiIGN4PSIxMDQuMTkyIiBjeT0iMTE2LjQxNSIgcng9IjU3LjA4NCIgcnk9IjU3LjA4NCIvPgo8L3N2Zz4="
         }
     ],
     "warRoom": false,
