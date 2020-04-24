@@ -92,12 +92,12 @@ function encode_image() {
         exit 1
     fi
 
-    echo "Image extension '$image_extension' of '$image_path' ....."
+    #echo "Image extension '$image_extension' of '$image_path' ....."
     
     local image_prefix="data:image/jpg;base64,"
     local encoded_image="$(base64 $image_path)"
 
-    echo "${image_prefix} ${encoded_image} |colrm 101 "
+    echo "${image_prefix} ${encoded_image}"
 
     #echo "${image_prefix} ${encoded_image}"
 }
@@ -254,11 +254,14 @@ function func_copy_file_and_replace_values {
 
     encodedImageUrl="$(encode_image $image_background_path)"
 
-    # s/${templateBackgroundImageName}/${encodedImageUrl}/g;
+    echo "\"$encodedImageUrl\""  > "${tempFolder}/backgroundImage.txt"
 
-    # replace values
+    # replace application adn database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
-    
+
+    # replace background picture
+    sed -i.bkp -e "/ChangeImageUrlBackground/r ./${tempFolder}/backgroundImage.txt" -e "/ChangeImageUrlBackground/d" "${tempFolder}/${fileName}"
+
     # return full file path
     echo "${tempFolder}/${fileName}"
 }
@@ -366,7 +369,9 @@ pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
 echo "Create dashboard"
 sleep 3
 
-httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+# echo "curl -X POST --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details}"
+
+httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
 
 func_check_http_status $httpCode "Error occured while creating dashboard."
 
