@@ -182,6 +182,12 @@ echo ""
 # end input params
 
 # validate input params
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
+    inludeDB="false"
+else 
+    inludeDB="true"
+fi
+
 if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
     includeSIM="true"
 elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
@@ -248,8 +254,10 @@ function func_copy_file_and_replace_values {
 
     encodedImageUrl="$(encode_image $image_background_path)"
 
+    # s/${templateBackgroundImageName}/${encodedImageUrl}/g;
+
     # replace values
-    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateBackgroundImageName}/${encodedImageUrl}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
+    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
     
     # return full file path
     echo "${tempFolder}/${fileName}"
@@ -332,7 +340,7 @@ echo ""
 #Dashboard
 echo "Applying Database and SIM settings..."
 sleep 1
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
+if [ "$inludeDB" = "false" ]; then
 
     if [ "$includeSIM" = "true" ]; then
         templateFile="$vanilla_noDB"
