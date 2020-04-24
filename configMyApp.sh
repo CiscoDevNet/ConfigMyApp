@@ -53,8 +53,11 @@ applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
 #init template placeholder
 templateAppName="ChangeApplicationName"
 templateDBName="ChangeDBName"
+templateBackgroundImageName="ChangeImageUrlBackground"
 
 tempFolder="temp"
+
+image_background_path="./branding/background.jpg"
 
 bt_folder="./business_transactions"
 
@@ -74,6 +77,38 @@ IOURLEncoder() {
     done
     echo "${encoded}"  # You can either set a return variable (FASTER)
     REPLY="${encoded}" #+or echo the result (EASIER)... or both... :p
+}
+
+function encode_image() {
+    local image_path=$1
+
+    $(chmod 775 $image_path)
+
+    image_extension="$(file -b $image_path | awk '{print $1}')"
+
+    if [ $(is_image_valid $image_extension) = "False" ]; 
+    then 
+        echo "Image extension '$image_extension' of an '$image_path' not supported."
+        exit 1
+    fi
+
+    echo "Image extension '$image_extension' of '$image_path' ....."
+    
+    local image_prefix="data:image/jpg;base64,"
+    local encoded_image="$(base64 $image_path)"
+
+    echo "${image_prefix} ${encoded_image} |colrm 101 "
+
+    #echo "${image_prefix} ${encoded_image}"
+}
+
+
+function is_image_valid() {
+    declare -a image_extension_collection=("JPG" "JPEG" "PNG")    
+
+    local image_extension=$1
+
+    if [[ ${image_extension_collection[$image_extension]} ]]; then echo "True"; else "False"; fi
 }
 
 if [ "$1" != "" ]; then
@@ -206,15 +241,15 @@ function func_check_http_status {
 
 function func_copy_file_and_replace_values {
     local filePath=$1
-    #local appName=$2 # todo
-    #local DBName=$3
 
     # make a temp file
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
+    encodedImageUrl="$(encode_image $image_background_path)"
+
     # replace values
-    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
+    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateBackgroundImageName}/${encodedImageUrl}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
     
     # return full file path
     echo "${tempFolder}/${fileName}"
