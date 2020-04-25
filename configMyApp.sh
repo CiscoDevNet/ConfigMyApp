@@ -58,6 +58,7 @@ templateBackgroundImageName="ChangeImageUrlBackground"
 tempFolder="temp"
 
 image_background_path="./branding/background.jpg"
+image_logo_path="./branding/logo.png"
 
 bt_folder="./business_transactions"
 
@@ -252,15 +253,20 @@ function func_copy_file_and_replace_values {
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    encodedImageUrl="$(encode_image $image_background_path)"
+    encodedBackgroundImageUrl="$(encode_image $image_background_path)"
+    encodedLogoImageUrl="$(encode_image $image_logo_path)"
 
-    echo "\"$encodedImageUrl\""  > "${tempFolder}/backgroundImage.txt"
+    echo "\"$encodedBackgroundImageUrl\""  > "${tempFolder}/backgroundImage.txt"
+    echo "\"$encodedLogoImageUrl\""  > "${tempFolder}/logoImage.txt"
 
     # replace application adn database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
 
     # replace background picture
     sed -i.bkp -e "/ChangeImageUrlBackground/r ./${tempFolder}/backgroundImage.txt" -e "/ChangeImageUrlBackground/d" "${tempFolder}/${fileName}"
+
+    # replace logo
+    sed -i.bkp -e "/ChangeImageUrlLogo/r ./${tempFolder}/logoImage.txt" -e "/ChangeImageUrlLogo/d" "${tempFolder}/${fileName}"
 
     # return full file path
     echo "${tempFolder}/${fileName}"
