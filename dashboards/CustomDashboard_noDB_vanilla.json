@@ -57,7 +57,8 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "imageURL": "ChangeImageUrlBackground"
+            "imageURL": 
+                "ChangeImageUrlBackground"
         },
         {
             "widgetType": "ImageWidget",
@@ -1090,7 +1091,8 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": null,
-            "imageURL": "ChangeImageUrlLogo"        },
+            "imageURL": 
+                "ChangeImageUrlLogo"        },
         {
             "widgetType": "TextWidget",
             "title": null,
