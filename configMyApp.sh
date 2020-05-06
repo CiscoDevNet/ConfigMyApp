@@ -71,6 +71,7 @@ image_logo_path="./branding/logo-white.png"
 
 bt_folder="./business_transactions"
 
+dt=$(date '+%Y-%m-%d_%H-%M-%S')
 IOURLEncoder() {
     local string="${1}"
     local strlen=${#string}
@@ -249,6 +250,8 @@ if [ "$are_passwords_encoded" = "true" ]; then
 fi
 
 echo "Using $hostname controller"
+echo ""
+echo ""
 
 function func_check_http_status {
     local http_code=$1
@@ -294,6 +297,8 @@ function func_cleanup {
 
 #Process proxy details
 #jq sets empty strings to null istead of NULL
+echo "Please wait while we check if you've configured any proxies with ConfigMyApp" 
+sleep 1
 if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ]  || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then 
     echo "No HTTP Proxy is configured. Skipping proxy configuration..." 
     proxy_details=""
@@ -308,19 +313,26 @@ fi
 endpoint="/controller/CustomDashboardImportExportServlet"
 url=${hostname}${endpoint}
 
-echo "Import Dash URL $url"
 echo ""
 echo ""
 
 # check if app exists
-echo "Check if app exists: curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details}"
+echo "Checking if ${appName} business application exist in ${hostname}..."
+echo ""
+echo ""
+sleep 1
+
 allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details}) 
 
 applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<< $allApplications)
 
 if [ "$applicationObject" = "" ]; then
-    func_check_http_status 404 "Application '"$appName"' not found."
+    func_check_http_status 404 "Application '"$appName"' not found. Aborting..."
 fi
+
+echo "Found ${appName} business application"
+echo ""
+echo ""
 
 #ServerViz health rules
 if [ "$includeSIM" = "true" ]; then
@@ -328,20 +340,38 @@ if [ "$includeSIM" = "true" ]; then
     # check if server visibility application id exists
     httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
 
-    func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found."
+    func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
 
-    echo "Creating Server Viz Health Rules..."
-
-    #sed -i.bak -e "s/${templateAppName}/${appName}/g" ${serverVizHealthRuleFile}
-    pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
+    echo "Creating Server Viz Health Rules...Please wait"
+    echo ""
     
-    httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+    pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
 
-    func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+    viz_res=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+    
+    if [[ "$viz_res" == *"successfully"* ]]; then
+     echo "*********************************************************************"
+     echo "$viz_res"
+     echo "*********************************************************************"
+else
+     msg="An Error occured whilst importing Server Viz Health rules. Please refer to the error.log file for further details"
+     echo " ${dt} ERROR  $msg" >> error.log
+     echo " ${dt} ERROR  $viz_res" >> error.log
+     echo "$msg"
+     echo "$viz_res"
+     echo ""
+     sleep 1
+     echo "The script execution will continue"
+     echo ""
+    
+fi
+    #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+    #func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
 
 fi
 
 #Application health rules
+echo ""
 echo "Creating ${appName} Health Rules..."
 sleep 4
 #URL Encode AppDName
@@ -353,16 +383,17 @@ echo ""
 httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
 
 func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
-
-sleep 1
 echo ""
+sleep 1
+echo "done"
 
+echo ""
 echo "Processing Dashboard Template."
 sleep 3
 echo ""
 
 #Dashboard
-echo "Applying Database and SIM settings..."
+echo "Applying Database and SIM settings to the dashboard template..."
 sleep 1
 if [ "$inludeDB" = "false" ]; then
 
@@ -371,7 +402,6 @@ if [ "$inludeDB" = "false" ]; then
     else
         templateFile="$vanilla_noDB_noSIM"
     fi
-    #sed -i.DBbak -e '885,948d;1201,1242d' ${templateFile}
 else
     if [ "$includeSIM" = "true" ]; then
         templateFile="$vanilla"
@@ -380,32 +410,37 @@ else
     fi
 fi
 
-echo "Template file is: $templateFile"
+echo "done"
+echo ""
+#echo "Template file is: $templateFile"
 
-dt=$(date '+%Y-%m-%d_%H-%M-%S')
-#take a backup as .bak, then find and replace
-# sed -i.bak -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" ${templateFile}
 pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
-
-echo "Create dashboard"
+echo "Creating dashboard in the controller"
 sleep 3
 
-# echo "curl -X POST --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details}"
+response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
 
-httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+# commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created 
+#httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+#func_check_http_status $httpCode "Error occured while creating dashboard."
 
-func_check_http_status $httpCode "Error occured while creating dashboard."
+expected_response = '"success":true'
 
-#if [[ "$response" = *"$appName"* ]]; then
-#    echo "*********************************************************************"
-#    echo "The dashboard was created successfully. "
-#    echo "Please check the $hostname controller "
-#    echo "The Dashboard name is '$appName:App Visibility Pane' "
-#    echo "*********************************************************************"
-#else
-#    echo "Error occured in creating dashboard. See details below:"
-#    echo "$response"
-#fi
+if [[ "$response" == *"$expected_response"* ]]; then
+     echo "*********************************************************************"
+     echo "The dashboard was created successfully. "
+     echo "Please check the $hostname controller "
+     echo "The Dashboard name is '$appName:App Visibility Pane' "
+     echo "*********************************************************************"
+else
+     msg="An Error occured whilst creating the dashboard. Please refer to the error.log file for further details"
+     echo " ${dt} ERROR $msg" >> error.log
+     echo " ${dt} ERROR $response" >> error.log
+     echo "$msg"
+     echo "$response"
+     echo ""
+     sleep 1
+fi
 
 echo ""
 echo ""
@@ -414,7 +449,6 @@ echo "Restoring vanilla template files... please wait.."
 #sleep 5
 
 #restore original template files for next use
-#mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
 cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
 
 func_cleanup
