@@ -140,13 +140,15 @@ if [ "$appName" = "--help" ]; then
     echo "You may run this script in a silent mode, or in an interactive mode: "
     echo ""
     echo ""
-    echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name  <environment>"
+    echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name> <server_viz> <environment>"
     echo "* application_name : This represents the business application name in the AppDynamics controlleer. It should be an exact match"
     echo ""
     echo "* database_name : Get the name of the database collector for this application from Databases menu. If this application is not associated to any database, enter no, or none"
     echo ""
+    echo "* server_viz : Enter yes to configure server viz health rules"
+    echo ""
     echo "* environment : Enter one of prod, uat, test, dev, etc. This represents the environment of your application and will determine the Controller to use"
-    echo "For example: ./configMyApp.sh fusion-crosstrade-uat crosstrade-qa-cluster-db dev or ./configMyApp.sh fusion-crosstrade-uat none prod "
+    echo "For example: ./configMyApp.sh AD-DevOps 'Ecomm Oracle DB' yes dev or ./configMyApp.sh AD-DevOps no no prod "
     echo "         "
     echo ""
     echo "2)  Interactive Mode: Simply execute configMyApp.sh and follow the onscreen instructions "
@@ -415,21 +417,6 @@ echo "Restoring vanilla template files... please wait.."
 #restore original template files for next use
 #mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
 cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
-
-#if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
-#    if [ "$includeSIM" = "true" ]; then
-#        #cp $vanilla_noDB $templateFile
-#        mv "${templateFile}".bak "${vanilla_noDB}"
-#    else
-#        mv "${templateFile}".bak "${vanilla_noDB_noSIM}"
-#    fi
-#else
-#    if [ "$includeSIM" = "true"]; then
-#        mv "${templateFile}".bak "${vanilla}"
-#    else
-#        mv "${templateFile}".bak "${vanilla_noSIM}"
-#    fi
-#fi
 
 func_cleanup
 
