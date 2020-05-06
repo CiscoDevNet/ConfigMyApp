@@ -53,12 +53,8 @@ applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
 #init template placeholder
 templateAppName="ChangeApplicationName"
 templateDBName="ChangeDBName"
-templateBackgroundImageName="ChangeImageUrlBackground"
 
 tempFolder="temp"
-
-image_background_path="./branding/background.jpg"
-image_logo_path="./branding/logo.png"
 
 bt_folder="./business_transactions"
 
@@ -78,38 +74,6 @@ IOURLEncoder() {
     done
     echo "${encoded}"  # You can either set a return variable (FASTER)
     REPLY="${encoded}" #+or echo the result (EASIER)... or both... :p
-}
-
-function encode_image() {
-    local image_path=$1
-
-    $(chmod 775 $image_path)
-
-    image_extension="$(file -b $image_path | awk '{print $1}')"
-
-    if [ $(is_image_valid $image_extension) = "False" ]; 
-    then 
-        echo "Image extension '$image_extension' of an '$image_path' not supported."
-        exit 1
-    fi
-
-    #echo "Image extension '$image_extension' of '$image_path' ....."
-    
-    local image_prefix="data:image/jpg;base64,"
-    local encoded_image="$(base64 $image_path)"
-
-    echo "${image_prefix} ${encoded_image}"
-
-    #echo "${image_prefix} ${encoded_image}"
-}
-
-
-function is_image_valid() {
-    declare -a image_extension_collection=("JPG" "JPEG" "PNG")    
-
-    local image_extension=$1
-
-    if [[ ${image_extension_collection[$image_extension]} ]]; then echo "True"; else "False"; fi
 }
 
 if [ "$1" != "" ]; then
@@ -183,12 +147,6 @@ echo ""
 # end input params
 
 # validate input params
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
-    inludeDB="false"
-else 
-    inludeDB="true"
-fi
-
 if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
     includeSIM="true"
 elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
@@ -248,26 +206,16 @@ function func_check_http_status {
 
 function func_copy_file_and_replace_values {
     local filePath=$1
+    #local appName=$2 # todo
+    #local DBName=$3
 
     # make a temp file
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    encodedBackgroundImageUrl="$(encode_image $image_background_path)"
-    encodedLogoImageUrl="$(encode_image $image_logo_path)"
-
-    echo "\"$encodedBackgroundImageUrl\""  > "${tempFolder}/backgroundImage.txt"
-    echo "\"$encodedLogoImageUrl\""  > "${tempFolder}/logoImage.txt"
-
-    # replace application adn database name
+    # replace values
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
-
-    # replace background picture
-    sed -i.bkp -e "/ChangeImageUrlBackground/r ./${tempFolder}/backgroundImage.txt" -e "/ChangeImageUrlBackground/d" "${tempFolder}/${fileName}"
-
-    # replace logo
-    sed -i.bkp -e "/ChangeImageUrlLogo/r ./${tempFolder}/logoImage.txt" -e "/ChangeImageUrlLogo/d" "${tempFolder}/${fileName}"
-
+    
     # return full file path
     echo "${tempFolder}/${fileName}"
 }
@@ -349,7 +297,7 @@ echo ""
 #Dashboard
 echo "Applying Database and SIM settings..."
 sleep 1
-if [ "$inludeDB" = "false" ]; then
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
 
     if [ "$includeSIM" = "true" ]; then
         templateFile="$vanilla_noDB"
@@ -375,9 +323,7 @@ pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
 echo "Create dashboard"
 sleep 3
 
-# echo "curl -X POST --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details}"
-
-httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
 
 func_check_http_status $httpCode "Error occured while creating dashboard."
 
