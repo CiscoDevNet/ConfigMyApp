@@ -9,10 +9,18 @@
 #./configMyApp.sh fusion-equities-prod no prod
 #./configMyApp.sh fusion-pot-prod no prod
 
+#./configMyApp.sh AD-DevOps 'E-Commerce Oracle' yes prod
+
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
 [[ "$(command -v jq)" ]] || {
     echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2
+    sleep 5
+    exit 1
+}
+
+[[ "$(command -v base64)" ]] || {
+    echo "base64 is not installed. Please ensure that you have 'base64' installed on this machine. Aborting..." 1>&2
     sleep 5
     exit 1
 }
@@ -53,8 +61,13 @@ applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
 #init template placeholder
 templateAppName="ChangeApplicationName"
 templateDBName="ChangeDBName"
+templateBackgroundImageName="ChangeImageUrlBackground"
+templatLogoImageName="ChangeImageUrlLogo"
 
 tempFolder="temp"
+
+image_background_path="./branding/background.jpg"
+image_logo_path="./branding/logo-white.png"
 
 bt_folder="./business_transactions"
 
@@ -76,6 +89,43 @@ IOURLEncoder() {
     REPLY="${encoded}" #+or echo the result (EASIER)... or both... :p
 }
 
+function encode_image() {
+    local image_path=$1
+
+    $(chmod 775 $image_path)
+
+    image_extension="$(file -b $image_path | awk '{print $1}')"
+
+    if [ $(is_image_valid $image_extension) = "False" ]; 
+    then 
+        echo "Image extension '$image_extension' of an '$image_path' not supported."
+        exit 1
+    fi
+
+    #echo "Image extension '$image_extension' of '$image_path' ....."
+    local image_prefix="data:image/png;base64,"
+    echo | base64 -w0 > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+    # GNU coreutils base64, '-w' supported
+      local encoded_image="$(base64 -w 0 $image_path)"
+      #local encoded_image="$(openssl base64 -A -in $image_path)"
+    else
+      # MacOS Openssl base64, no wrapping by default 
+      local encoded_image="$(base64 $image_path)"
+    fi
+
+    echo "${image_prefix} ${encoded_image}"
+}
+
+
+function is_image_valid() {
+    declare -a image_extension_collection=("JPG" "JPEG" "PNG")    
+
+    local image_extension=$1
+
+    if [[ ${image_extension_collection[$image_extension]} ]]; then echo "True"; else "False"; fi
+}
+
 if [ "$1" != "" ]; then
     appName=$1
 else
@@ -90,13 +140,15 @@ if [ "$appName" = "--help" ]; then
     echo "You may run this script in a silent mode, or in an interactive mode: "
     echo ""
     echo ""
-    echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name  <environment>"
+    echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name> <server_viz> <environment>"
     echo "* application_name : This represents the business application name in the AppDynamics controlleer. It should be an exact match"
     echo ""
     echo "* database_name : Get the name of the database collector for this application from Databases menu. If this application is not associated to any database, enter no, or none"
     echo ""
+    echo "* server_viz : Enter yes to configure server viz health rules"
+    echo ""
     echo "* environment : Enter one of prod, uat, test, dev, etc. This represents the environment of your application and will determine the Controller to use"
-    echo "For example: ./configMyApp.sh fusion-crosstrade-uat crosstrade-qa-cluster-db dev or ./configMyApp.sh fusion-crosstrade-uat none prod "
+    echo "For example: ./configMyApp.sh AD-DevOps 'Ecomm Oracle DB' yes dev or ./configMyApp.sh AD-DevOps no no prod "
     echo "         "
     echo ""
     echo "2)  Interactive Mode: Simply execute configMyApp.sh and follow the onscreen instructions "
@@ -147,6 +199,12 @@ echo ""
 # end input params
 
 # validate input params
+if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
+    inludeDB="false"
+else 
+    inludeDB="true"
+fi
+
 if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
     includeSIM="true"
 elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
@@ -192,7 +250,6 @@ fi
 
 echo "Using $hostname controller"
 
-# functions >>>
 function func_check_http_status {
     local http_code=$1
     local message_on_failure=$2
@@ -206,16 +263,26 @@ function func_check_http_status {
 
 function func_copy_file_and_replace_values {
     local filePath=$1
-    #local appName=$2 # todo
-    #local DBName=$3
 
     # make a temp file
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    # replace values
+    encodedBackgroundImageUrl="$(encode_image $image_background_path)"
+    encodedLogoImageUrl="$(encode_image $image_logo_path)"
+
+    echo "\"$encodedBackgroundImageUrl\""  > "${tempFolder}/backgroundImage.txt"
+    echo "\"$encodedLogoImageUrl\""  > "${tempFolder}/logoImage.txt"
+
+    # replace application and database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
-    
+
+    # replace background picture
+    sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
+
+    # replace logo
+    sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
+
     # return full file path
     echo "${tempFolder}/${fileName}"
 }
@@ -297,7 +364,7 @@ echo ""
 #Dashboard
 echo "Applying Database and SIM settings..."
 sleep 1
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
+if [ "$inludeDB" = "false" ]; then
 
     if [ "$includeSIM" = "true" ]; then
         templateFile="$vanilla_noDB"
@@ -323,7 +390,9 @@ pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
 echo "Create dashboard"
 sleep 3
 
-httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+# echo "curl -X POST --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details}"
+
+httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
 
 func_check_http_status $httpCode "Error occured while creating dashboard."
 
@@ -347,21 +416,6 @@ echo "Restoring vanilla template files... please wait.."
 #restore original template files for next use
 #mv "${serverVizHealthRuleFile}".bak "${serverVizHealthRuleFile}"
 cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
-
-#if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "none" ] || [ "$DBName" = "None" ] || [ "$DBName" = "No" ]; then
-#    if [ "$includeSIM" = "true" ]; then
-#        #cp $vanilla_noDB $templateFile
-#        mv "${templateFile}".bak "${vanilla_noDB}"
-#    else
-#        mv "${templateFile}".bak "${vanilla_noDB_noSIM}"
-#    fi
-#else
-#    if [ "$includeSIM" = "true"]; then
-#        mv "${templateFile}".bak "${vanilla}"
-#    else
-#        mv "${templateFile}".bak "${vanilla_noSIM}"
-#    fi
-#fi
 
 func_cleanup
 

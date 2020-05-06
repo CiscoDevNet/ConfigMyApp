@@ -1,0 +1,54 @@
+<mds-data controller-version="020-004-000-001">
+    <scope-list>
+        <scope scope-description="" scope-name="Default Scope"
+            scope-type="ALL_TIERS_IN_APP" scope-version="0"/>
+    </scope-list>
+    <rule-list>
+        <rule agent-type="NATIVE_WEB_SERVER" enabled="true" priority="0"
+            rule-description="Web Server Auto Discovery Rule"
+            rule-name="Web Server Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="0">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"WEB","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namevaluepairs":[]}}]},"agenttype":"NATIVE_WEB_SERVER"}</tx-match-rule>
+        </rule>
+        <rule agent-type="DOT_NET_APPLICATION_SERVER" enabled="true"
+            priority="0" rule-description=".NET Auto Discovery Rule"
+            rule-name=".NET Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="1">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"POCO","monitoringenabled":true,"discoveryenabled":false,"namingschemetype":"SIMPLE_CLASS_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"DOTNET_JMS","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"DESTINATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"ASP_DOTNET","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"usefulluri":false,"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namingconfiguration":{},"namevaluepairs":[]}},{"txentrypointtype":"DOTNET_REMOTING","monitoringenabled":true,"discoveryenabled":false,"namingschemetype":"SIMPLE_CLASS_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"ASP_DOTNET_WEB_SERVICE","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"SERVICE_NAME_AND_OPERATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"WCF","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"SERVICE_NAME_AND_OPERATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}}]},"agenttype":"DOT_NET_APPLICATION_SERVER"}</tx-match-rule>
+        </rule>
+        <rule agent-type="NODE_JS_SERVER" enabled="true" priority="0"
+            rule-description="Node.js Auto Discovery Rule"
+            rule-name="Node.js Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="0">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"NODEJS_WEB","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namevaluepairs":[]}}]},"agenttype":"NODE_JS_SERVER"}</tx-match-rule>
+        </rule>
+        <rule agent-type="PHP_APPLICATION_SERVER" enabled="true"
+            priority="0" rule-description="Php Auto Discovery Rule"
+            rule-name="Php Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="0">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"PHP_WORDPRESS","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"DEFAULT","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"PHP_WEB","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namevaluepairs":[]}},{"txentrypointtype":"PHP_DRUPAL","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"DEFAULT","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"PHP_MVC","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"ACTION_CLASS_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"PHP_CLI","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"DEFAULT","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"PHP_WEB_SERVICE","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"SERVICE_NAME_AND_OPERATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}}]},"agenttype":"PHP_APPLICATION_SERVER"}</tx-match-rule>
+        </rule>
+        <rule agent-type="APPLICATION_SERVER" enabled="true"
+            priority="0" rule-description="Java Auto Discovery Rule"
+            rule-name="Java Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="0">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"SPRING_BEAN","monitoringenabled":true,"discoveryenabled":false,"namingschemetype":"BEAN_ID_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"STRUTS_ACTION","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"ACTION_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"WEB_SERVICE","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"SERVICE_NAME_AND_OPERATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"BINARY_REMOTING","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"SIMPLE_CLASS_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"POJO","monitoringenabled":true,"discoveryenabled":false,"namingschemetype":"FULLY_QUALIFIED_CLASS_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"SERVLET","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namevaluepairs":[]}},{"txentrypointtype":"JMS","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"DESTINATION_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}},{"txentrypointtype":"EJB","monitoringenabled":true,"discoveryenabled":false,"namingschemetype":"EJB_NAME_AND_METHOD_NAME","httpautodiscovery":{"usefulluri":true,"namevaluepairs":[]}}]},"agenttype":"APPLICATION_SERVER"}</tx-match-rule>
+        </rule>
+        <rule agent-type="PYTHON_SERVER" enabled="true" priority="0"
+            rule-description="Python Auto Discovery Rule"
+            rule-name="Python Auto Discovery Rule"
+            rule-type="TX_MATCH_RULE" version="0">
+            <tx-match-rule>{"type":"AUTOMATIC_DISCOVERY","txautodiscoveryrule":{"autodiscoveryconfigs":[{"txentrypointtype":"PYTHON_WEB","monitoringenabled":true,"discoveryenabled":true,"namingschemetype":"URI","httpautodiscovery":{"parturisegments":{"type":"FIRST","numsegments":2,"selectedsegments":[]},"namevaluepairs":[]}}]},"agenttype":"PYTHON_SERVER"}</tx-match-rule>
+        </rule>
+    </rule-list>
+    <scope-rule-mapping-list>
+        <scope-rule-mapping scope-name="Default Scope">
+            <rule rule-description="Web Server Auto Discovery Rule" rule-name="Web Server Auto Discovery Rule"/>
+            <rule rule-description=".NET Auto Discovery Rule" rule-name=".NET Auto Discovery Rule"/>
+            <rule rule-description="Node.js Auto Discovery Rule" rule-name="Node.js Auto Discovery Rule"/>
+            <rule rule-description="Php Auto Discovery Rule" rule-name="Php Auto Discovery Rule"/>
+            <rule rule-description="Java Auto Discovery Rule" rule-name="Java Auto Discovery Rule"/>
+            <rule rule-description="Python Auto Discovery Rule" rule-name="Python Auto Discovery Rule"/>
+        </scope-rule-mapping>
+    </scope-rule-mapping-list>
+</mds-data>
