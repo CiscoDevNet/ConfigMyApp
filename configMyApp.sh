@@ -9,10 +9,18 @@
 #./configMyApp.sh fusion-equities-prod no prod
 #./configMyApp.sh fusion-pot-prod no prod
 
+#./configMyApp.sh AD-DevOps 'E-Commerce Oracle' yes prod
+
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
 [[ "$(command -v jq)" ]] || {
     echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2
+    sleep 5
+    exit 1
+}
+
+[[ "$(command -v base64)" ]] || {
+    echo "base64 is not installed. Please ensure that you have 'base64' installed on this machine. Aborting..." 1>&2
     sleep 5
     exit 1
 }
@@ -54,11 +62,12 @@ applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
 templateAppName="ChangeApplicationName"
 templateDBName="ChangeDBName"
 templateBackgroundImageName="ChangeImageUrlBackground"
+templatLogoImageName="ChangeImageUrlLogo"
 
 tempFolder="temp"
 
 image_background_path="./branding/background.jpg"
-image_logo_path="./branding/logo.png"
+image_logo_path="./branding/logo-white.png"
 
 bt_folder="./business_transactions"
 
@@ -94,13 +103,18 @@ function encode_image() {
     fi
 
     #echo "Image extension '$image_extension' of '$image_path' ....."
-    
-    local image_prefix="data:image/jpg;base64,"
-    local encoded_image="$(base64 $image_path)"
+    local image_prefix="data:image/png;base64,"
+    echo | base64 -w0 > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+    # GNU coreutils base64, '-w' supported
+      local encoded_image="$(base64 -w 0 $image_path)"
+      #local encoded_image="$(openssl base64 -A -in $image_path)"
+    else
+      # MacOS Openssl base64, no wrapping by default 
+      local encoded_image="$(base64 $image_path)"
+    fi
 
     echo "${image_prefix} ${encoded_image}"
-
-    #echo "${image_prefix} ${encoded_image}"
 }
 
 
@@ -259,14 +273,14 @@ function func_copy_file_and_replace_values {
     echo "\"$encodedBackgroundImageUrl\""  > "${tempFolder}/backgroundImage.txt"
     echo "\"$encodedLogoImageUrl\""  > "${tempFolder}/logoImage.txt"
 
-    # replace application adn database name
+    # replace application and database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
 
     # replace background picture
-    sed -i.bkp -e "/ChangeImageUrlBackground/r ./${tempFolder}/backgroundImage.txt" -e "/ChangeImageUrlBackground/d" "${tempFolder}/${fileName}"
+    sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
 
     # replace logo
-    sed -i.bkp -e "/ChangeImageUrlLogo/r ./${tempFolder}/logoImage.txt" -e "/ChangeImageUrlLogo/d" "${tempFolder}/${fileName}"
+    sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
 
     # return full file path
     echo "${tempFolder}/${fileName}"
