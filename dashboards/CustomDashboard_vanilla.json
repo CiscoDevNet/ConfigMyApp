@@ -1,7 +1,7 @@
 {
     "schemaVersion": null,
     "dashboardFormatVersion": "4.0",
-    "name": "ChangeApplicationName:App Visibility Pane",
+    "name": "ChangeApplicationName:App Visibility Pane ",
     "description": null,
     "properties": null,
     "templateEntityType": "APPLICATION_COMPONENT_NODE",
