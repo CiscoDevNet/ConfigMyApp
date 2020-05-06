@@ -250,7 +250,6 @@ fi
 
 echo "Using $hostname controller"
 
-# functions >>>
 function func_check_http_status {
     local http_code=$1
     local message_on_failure=$2
