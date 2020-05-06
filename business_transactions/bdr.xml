@@ -1,0 +1,33 @@
+ <!--this file must not be manualy edited --> 
+ <mds-data controller-version="004-005-017-001">
+    <scope-list>
+        <scope scope-description="" scope-name="Default Scope"
+            scope-type="ALL_TIERS_IN_APP" scope-version="0"/>
+    </scope-list>
+    <rule-list>
+
+    <!-- DOTNET RULES -->
+         <!-- com.appdynamics.health.DotNetgetStatus -->
+        <rule agent-type="DOT_NET_APPLICATION_SERVER" enabled="true" priority="0" rule-description="DotNetgetStatus :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="DotNetgetStatus" rule-type="TX_MATCH_RULE" version="1"> <tx-match-rule>{"type":"CUSTOM","txautodiscoveryrule":{"autodiscoveryconfigs":[]}, "txcustomrule":{"type":"INCLUDE","txentrypointtype":"POCO","matchconditions": {"type":"INSTRUMENTATION_PROBE","instrumentionprobe":{"javadefinition": {"classmatch":{"type":"MATCHES_CLASS","classnamecondition": {"type":"STARTS_WITH","matchstrings":["com.appdynamics.health"]}}, "methodmatch":{"methodnamecondition":{"type":"EQUALS","matchstrings":["getStatus"]}}, "methodparamtypes":[]}}}],"actions":[],"properties":[{"type":"BOOLEAN","name":"POJO_BACKUP", "booleanvalue":false,"ranges":[]}]},"agenttype":"DOT_NET_APPLICATION_SERVER"} </tx-match-rule> </rule>
+         <!-- 2com.appdynamics.health.DotNetgetStatus2 -->
+        <rule agent-type="DOT_NET_APPLICATION_SERVER" enabled="true" priority="0" rule-description="DotNetgetStatus2 :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="DotNetgetStatus2" rule-type="TX_MATCH_RULE" version="1"> <tx-match-rule>{"type":"CUSTOM","txautodiscoveryrule":{"autodiscoveryconfigs":[]}, "txcustomrule":{"type":"INCLUDE","txentrypointtype":"POCO","matchconditions": {"type":"INSTRUMENTATION_PROBE","instrumentionprobe":{"javadefinition": {"classmatch":{"type":"MATCHES_CLASS","classnamecondition": {"type":"STARTS_WITH","matchstrings":["2com.appdynamics.health"]}}, "methodmatch":{"methodnamecondition":{"type":"CONTAINS","matchstrings":["getStatus"]}}, "methodparamtypes":[]}}}],"actions":[],"properties":[{"type":"BOOLEAN","name":"POJO_BACKUP", "booleanvalue":false,"ranges":[]}]},"agenttype":"DOT_NET_APPLICATION_SERVER"} </tx-match-rule> </rule>
+
+
+    <!-- JAVA RULES -->   
+        <!-- com.appdynamics.health.JavagetStatus -->
+        <rule agent-type="APPLICATION_SERVER" enabled="true" priority="0" rule-description="JavagetStatus :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="JavagetStatus" rule-type="TX_MATCH_RULE" version="1"> <tx-match-rule>{"type":"CUSTOM","txcustomrule":{"type":"INCLUDE","txentrypointtype":"POJO","matchconditions": [{"type":"INSTRUMENTATION_PROBE","instrumentionprobe":{"javadefinition":{"classmatch":{"type":"MATCHES_CLASS", "classnamecondition":{"type":"STARTS_WITH","matchstrings":["com.appdynamics.health"]}}, "methodmatch":{"methodnamecondition":{"type":"EQUALS","matchstrings":["getStatus"]}}, "methodparamtypes":[]}}}],"actions":[],"properties":[{"type":"BOOLEAN","name":"POJO_BACKUP","booleanvalue":false, "ranges":[]}]},"agenttype":"APPLICATION_SERVER"} </tx-match-rule> </rule>
+
+    
+    </rule-list>
+    <scope-rule-mapping-list>
+        <scope-rule-mapping scope-name="Default Scope">
+            <!-- POJO SCOPES -->
+        <rule rule-description="JavagetStatus :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="JavagetStatus"/>
+
+            <!-- POCO SCOPES -->
+        <rule rule-description="DotNetgetStatus :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="DotNetgetStatus"/>
+        <rule rule-description="DotNetgetStatus2 :Created on Fri Apr 24 22:00:56 BST 2020 by ConfigMyApp" rule-name="DotNetgetStatus2"/>
+            
+        </scope-rule-mapping>
+    </scope-rule-mapping-list>
+</mds-data>

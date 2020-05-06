@@ -1,13 +1,13 @@
 { 
     "overwrite_health_rules":true,
-    "are_passwords_encoded": true,
+    "are_passwords_encoded": false,
     
     "prod_controller_details": [
        {
-        "url": "https://customer1.saas.appdynamics.com",
-        "username": "configmycustomer1",
-        "password":"pass",
-        "server_viz_app_id":"2384",
+        "url": "http://demo1.appdynamics.com",
+        "username": "snowdemo@customer1",
+        "password":"demo1234",
+        "server_viz_app_id":"68",
         "proxy_url": "",
         "proxy_port": ""
        }

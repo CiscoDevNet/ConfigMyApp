@@ -1,0 +1,23 @@
+ <!--this file must not be manualy edited --> 
+<mds-data controller-version="004-005-017-001">
+    <scope-list>
+        <scope scope-description="" scope-name="Default Scope"
+            scope-type="ALL_TIERS_IN_APP" scope-version="0"/>
+    </scope-list>
+    <rule-list>
+
+    <!-- DOTNET RULES -->
+    <!--DOTNET-PLACEHOLDER-->   
+
+    <!-- JAVA RULES -->   
+    <!--JAVA-PLACEHOLDER--> 
+    
+    </rule-list>
+    <scope-rule-mapping-list>
+        <scope-rule-mapping scope-name="Default Scope">
+            <!-- add this line for each rule defined above-->
+            <rule rule-description="" rule-name="TemplateRuleName"/>
+            <!-- add this line for each rule defined above-->
+        </scope-rule-mapping>
+    </scope-rule-mapping-list>
+</mds-data>
