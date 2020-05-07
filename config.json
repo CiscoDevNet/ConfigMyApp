@@ -4,10 +4,10 @@
     
     "prod_controller_details": [
        {
-        "url": "http://demo1.appdynamics.com",
-        "username": "snowdemo@customer1",
-        "password":"demo1234",
-        "server_viz_app_id":"68",
+        "url": "http://controller204-2040noss-rmqbqgqi.appd-cx.com:8090",
+        "username": "username@customer1",
+        "password":"password",
+        "server_viz_app_id":"3",
         "proxy_url": "",
         "proxy_port": ""
        }

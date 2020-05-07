@@ -9,7 +9,7 @@
 #./configMyApp.sh fusion-equities-prod no prod
 #./configMyApp.sh fusion-pot-prod no prod
 
-#./configMyApp.sh AD-DevOps 'E-Commerce Oracle' yes prod
+#./configMyApp.sh IoTHub ConfigMyApp yes prod
 
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
@@ -97,30 +97,28 @@ function encode_image() {
 
     image_extension="$(file -b $image_path | awk '{print $1}')"
 
-    if [ $(is_image_valid $image_extension) = "False" ]; 
-    then 
+    if [ $(is_image_valid $image_extension) = "False" ]; then
         echo "Image extension '$image_extension' of an '$image_path' not supported."
         exit 1
     fi
 
     #echo "Image extension '$image_extension' of '$image_path' ....."
     local image_prefix="data:image/png;base64,"
-    echo | base64 -w0 > /dev/null 2>&1
+    echo | base64 -w0 >/dev/null 2>&1
     if [ $? -eq 0 ]; then
-    # GNU coreutils base64, '-w' supported
-      local encoded_image="$(base64 -w 0 $image_path)"
-      #local encoded_image="$(openssl base64 -A -in $image_path)"
+        # GNU coreutils base64, '-w' supported
+        local encoded_image="$(base64 -w 0 $image_path)"
+        #local encoded_image="$(openssl base64 -A -in $image_path)"
     else
-      # MacOS Openssl base64, no wrapping by default 
-      local encoded_image="$(base64 $image_path)"
+        # MacOS Openssl base64, no wrapping by default
+        local encoded_image="$(base64 $image_path)"
     fi
 
     echo "${image_prefix} ${encoded_image}"
 }
 
-
 function is_image_valid() {
-    declare -a image_extension_collection=("JPG" "JPEG" "PNG")    
+    declare -a image_extension_collection=("JPG" "JPEG" "PNG")
 
     local image_extension=$1
 
@@ -202,7 +200,7 @@ echo ""
 # validate input params
 if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
     inludeDB="false"
-else 
+else
     inludeDB="true"
 fi
 
@@ -246,25 +244,25 @@ fi
 
 # decode passwords if encoded
 if [ "$are_passwords_encoded" = "true" ]; then
-    password=$(eval echo ${password} | base64 --decode) 
+    password=$(eval echo ${password} | base64 --decode)
 fi
 
 echo "Using $hostname controller"
 echo ""
 echo ""
 
-function func_check_http_status {
+function func_check_http_status() {
     local http_code=$1
     local message_on_failure=$2
     echo "HTTP status code: $http_code"
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
         echo $message_on_failure
         func_cleanup
-        exit 1 
+        exit 1
     fi
 }
 
-function func_copy_file_and_replace_values {
+function func_copy_file_and_replace_values() {
     local filePath=$1
 
     # make a temp file
@@ -274,8 +272,8 @@ function func_copy_file_and_replace_values {
     encodedBackgroundImageUrl="$(encode_image $image_background_path)"
     encodedLogoImageUrl="$(encode_image $image_logo_path)"
 
-    echo "\"$encodedBackgroundImageUrl\""  > "${tempFolder}/backgroundImage.txt"
-    echo "\"$encodedLogoImageUrl\""  > "${tempFolder}/logoImage.txt"
+    echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
+    echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
 
     # replace application and database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
@@ -290,26 +288,24 @@ function func_copy_file_and_replace_values {
     echo "${tempFolder}/${fileName}"
 }
 
-function func_cleanup {
+function func_cleanup() {
     # remove all from temp folder
     rm -rf $tempFolder
 }
 
 #Process proxy details
 #jq sets empty strings to null istead of NULL
-echo "Please wait while we check if you've configured any proxies with ConfigMyApp" 
+echo "Please wait while we check if you've configured any proxies with ConfigMyApp"
 sleep 1
-if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ]  || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then 
-    echo "No HTTP Proxy is configured. Skipping proxy configuration..." 
+if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ] || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then
+    echo "No HTTP Proxy is configured. Skipping proxy configuration..."
     proxy_details=""
-else 
-    echo "Found HTTP Proxy configuration, using... " 
+else
+    echo "Found HTTP Proxy configuration, using... "
     echo "Proxy URL = $proxy_url , Proxy Port = $proxy_port"
     proxy_details="-x $proxy_url:$proxy_port"
 fi
 
-
-# start importing >>>
 endpoint="/controller/CustomDashboardImportExportServlet"
 url=${hostname}${endpoint}
 
@@ -322,9 +318,9 @@ echo ""
 echo ""
 sleep 1
 
-allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details}) 
+allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
 
-applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<< $allApplications)
+applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<<$allApplications)
 
 if [ "$applicationObject" = "" ]; then
     func_check_http_status 404 "Application '"$appName"' not found. Aborting..."
@@ -334,153 +330,154 @@ echo "Found ${appName} business application"
 echo ""
 echo ""
 
-#ServerViz health rules
-if [ "$includeSIM" = "true" ]; then
+if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt" = "btonly" ] || [ "$configbt" = "onlybt" ]; then
 
-    # check if server visibility application id exists
-    httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
-
-    func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
-
-    echo "Creating Server Viz Health Rules...Please wait"
     echo ""
-    
-    pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
-
-    viz_res=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-    
-    if [[ "$viz_res" == *"successfully"* ]]; then
-     echo "*********************************************************************"
-     echo "$viz_res"
-     echo "*********************************************************************"
+    echo "You entered $configbt. This instruction will ONLY configure business transaction in $appName"
+    echo "Application health rules, SIM health rules, dashboard, etc will not be created..."
+    echo ""
+    echo "Please wait while we process your Business transaction configuration settings from the JSON file"
+    echo ""
+    sleep 2
+    source ./configBT.sh "$appName"
 else
-     msg="An Error occured whilst importing Server Viz Health rules. Please refer to the error.log file for further details"
-     echo " ${dt} ERROR  $msg" >> error.log
-     echo " ${dt} ERROR  $viz_res" >> error.log
-     echo "$msg"
-     echo "$viz_res"
-     echo ""
-     sleep 1
-     echo "The script execution will continue"
-     echo ""
-    
-fi
-    #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-    #func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+    #proceed as normal
 
-fi
-
-#Application health rules
-echo ""
-echo "Creating ${appName} Health Rules..."
-sleep 4
-#URL Encode AppDName
-echo "URL ecoding App Name"
-sleep 1
-encodeAppName=$(IOURLEncoder $appName)
-echo "Encoded AppName is: $encodeAppName"
-echo ""
-httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
-
-func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
-echo ""
-sleep 1
-echo "done"
-
-echo ""
-echo "Processing Dashboard Template."
-sleep 3
-echo ""
-
-#Dashboard
-echo "Applying Database and SIM settings to the dashboard template..."
-sleep 1
-if [ "$inludeDB" = "false" ]; then
-
+    #ServerViz health rules
     if [ "$includeSIM" = "true" ]; then
-        templateFile="$vanilla_noDB"
-    else
-        templateFile="$vanilla_noDB_noSIM"
-    fi
-else
-    if [ "$includeSIM" = "true" ]; then
-        templateFile="$vanilla"
-    else
-        templateFile="$vanilla_noSIM"
-    fi
-fi
 
-echo "done"
-echo ""
-#echo "Template file is: $templateFile"
+        # check if server visibility application id exists
+        httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
 
-pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
-echo "Creating dashboard in the controller"
-sleep 3
+        func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
 
-response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
+        echo "Creating Server Viz Health Rules...Please wait"
+        echo ""
 
-# commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created 
-#httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
-#func_check_http_status $httpCode "Error occured while creating dashboard."
+        pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
 
-expected_response = '"success":true'
+        viz_res=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
 
-if [[ "$response" == *"$expected_response"* ]]; then
-     echo "*********************************************************************"
-     echo "The dashboard was created successfully. "
-     echo "Please check the $hostname controller "
-     echo "The Dashboard name is '$appName:App Visibility Pane' "
-     echo "*********************************************************************"
-else
-     msg="An Error occured whilst creating the dashboard. Please refer to the error.log file for further details"
-     echo " ${dt} ERROR $msg" >> error.log
-     echo " ${dt} ERROR $response" >> error.log
-     echo "$msg"
-     echo "$response"
-     echo ""
-     sleep 1
-fi
-
-echo ""
-echo ""
-sleep 3
-echo "Restoring vanilla template files... please wait.."
-#sleep 5
-
-#restore original template files for next use
-cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
-
-func_cleanup
-
-echo ""
-echo ""
-echo "Done"
-echo "Checking Transaction configurantion instruction..."
-sleep 2
-
-if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ]; then
-    FILE="${bt_folder}/${appName}".xml
-    if [ -f "${FILE}" ]; then
-        echo "${FILE} exist"
-        btendpoint="/controller/transactiondetection/${appName}/custom"
-        response=$(curl -X POST --user ${username}:${password} ${hostname}${btendpoint} -F file=@${FILE} ${proxy_details})
-        if [[ "$response" = *"HTTP/1.1 200 OK"* ]]; then
-            echo "Created Business transaction rules successfully"
+        if [[ "$viz_res" == *"successfully"* ]]; then
+            echo "*********************************************************************"
+            echo "$viz_res"
+            echo "*********************************************************************"
         else
-            #echo "Error Occured in configuring business transactions"
-            #echo $response
-            echo "Created Business transaction rules successfully"
+            msg="An Error occured whilst importing Server Viz Health rules. Please refer to the error.log file for further details"
+            echo " ${dt} ERROR  An Error occured whilst importing Server Viz Health rules" >>error.log
+            echo " ${dt} ERROR  $viz_res" >>error.log
+            echo "$msg"
+            echo "$viz_res"
+            echo ""
+            sleep 1
+            echo "The script execution will continue"
+            echo ""
+
+        fi
+        #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+        #func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+
+    fi
+
+    #Application health rules
+    echo ""
+    echo "Creating ${appName} Health Rules..."
+    sleep 4
+    #URL Encode AppDName
+    echo "URL ecoding App Name"
+    sleep 1
+    encodeAppName=$(IOURLEncoder $appName)
+    echo "Encoded AppName is: $encodeAppName"
+    echo ""
+    httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
+
+    func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
+    echo ""
+    sleep 1
+    echo "done"
+
+    echo ""
+    echo "Processing Dashboard Template."
+    sleep 3
+    echo ""
+
+    #Dashboard
+    echo "Applying Database and SIM settings to the dashboard template..."
+    sleep 1
+    if [ "$inludeDB" = "false" ]; then
+
+        if [ "$includeSIM" = "true" ]; then
+            templateFile="$vanilla_noDB"
+        else
+            templateFile="$vanilla_noDB_noSIM"
         fi
     else
-        echo "$FILE does not exist"
-        echo "Not configuring business transaction rules"
+        if [ "$includeSIM" = "true" ]; then
+            templateFile="$vanilla"
+        else
+            templateFile="$vanilla_noSIM"
+        fi
     fi
-else
-    echo "Not configuring business transaction rules"
-fi
-sleep 5
 
-echo ""
-echo ""
-echo "Done!"
+    echo "done"
+    echo ""
+
+    pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
+    echo "Creating dashboard in the controller"
+    sleep 3
+
+    response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
+
+    # commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created
+    #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
+    #func_check_http_status $httpCode "Error occured while creating dashboard."
+
+    expected_response='"success":true'
+
+    if [[ "$response" == *"$expected_response"* ]]; then
+        echo "*********************************************************************"
+        echo "The dashboard was created successfully. "
+        echo "Please check the $hostname controller "
+        echo "The Dashboard name is '$appName:App Visibility Pane' "
+        echo "*********************************************************************"
+    else
+        msg="An Error occured whilst creating the dashboard. Please refer to the error.log file for further details"
+        echo " ${dt} ERROR  An Error occured whilst creating the dashboard" >> error.log
+        echo " ${dt} ERROR $response" >>error.log
+        echo "$msg"
+        echo "$response"
+        echo ""
+        sleep 1
+    fi
+
+    echo ""
+    echo ""
+    sleep 3
+    echo "Restoring vanilla template files... please wait.."
+    #sleep 5
+
+    #restore original template files for next use
+    cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
+
+    func_cleanup
+
+    echo ""
+    echo ""
+    echo "Checking Transaction configurantion instruction..."
+    sleep 2
+
+    if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ] || [ "$configbt" = "BT" ] || [ "$configbt" = "yes" ]; then
+        source ./configBT.sh "$appName"
+    else
+        echo ""
+        echo ""
+        echo "BT Configuration is set to false, not configuring BT"
+    fi
+    sleep 5
+
+    echo ""
+    echo ""
+    echo "Done!"
+
+#end of btconfigonly
+fi
