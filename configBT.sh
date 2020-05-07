@@ -171,6 +171,10 @@ if [ -f "$bt_file_path" ]; then
         echo ""
         sleep 1
     fi
+    #clean up 
+    mkdir -p $bt_folder/uploaded
+    mv $bt_file_path $bt_folder/uploaded
+    
 else
     echo "$bt_file_path does not exist"
     echo ""
