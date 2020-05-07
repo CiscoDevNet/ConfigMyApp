@@ -457,6 +457,8 @@ else
     #sleep 5
 
     #restore original template files for next use
+    mkdir -p ./dashboards/uploaded
+
     cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
 
     func_cleanup
