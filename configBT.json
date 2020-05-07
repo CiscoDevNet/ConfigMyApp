@@ -1,0 +1,39 @@
+{ 
+    "java_pojo_rules": [
+       {
+        "rule_name": "JavagetStatus",
+        "class_name": "com.appdynamics.health",
+        "class_matching_condition":"STARTS_WITH",
+        "method_name": "getStatus",
+        "method_matching_condition":"EQUALS",
+        "priority":"0"
+       }
+     ],
+
+     "dotnet_poco_rules": [
+      {
+        "rule_name": "DotNetgetStatus",
+        "class_name": "com.appdynamics.health",
+        "class_matching_condition":"STARTS_WITH",
+        "method_name": "getStatus",
+        "method_matching_condition":"EQUALS",
+        "priority":"0"
+       },
+       {
+        "rule_name": "DotNetgetStatus2",
+        "class_name": "2com.appdynamics.health",
+        "class_matching_condition":"STARTS_WITH",
+        "method_name": "getStatus",
+        "method_matching_condition":"CONTAINS",
+        "priority":"0"
+       },
+       {
+        "rule_name": "DotNetgetStatus3",
+        "class_name": "com.appdynamics.health.me3",
+        "class_matching_condition":"ENDS_WITH",
+        "method_name": "getStatus",
+        "method_matching_condition":"CONTAINS",
+        "priority":"10"
+       }
+    ]
+   }

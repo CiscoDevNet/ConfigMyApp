@@ -1,21 +1,24 @@
-{ 
-    "overwrite_health_rules":true,
-
-    "prod_controller_details": [
-       {
-        "url": "https://customer1.saas.appdynamics.com",
-        "username": "configmycustomer1",
-        "password":"pass",
-        "server_viz_app_id":"2384"
-       }
-     ],
-     
-     "non_prod_controller_details": [
-      {
-       "url" : "https://customer1-dev.saas.appdynamics.com",
-       "username": "configmyapp@customer1-dev",
-       "password":"pass",
-       "server_viz_app_id":"57803"
-      }
-    ]
-   }
+{
+  "overwrite_health_rules": true,
+  "are_passwords_encoded": false,
+  "prod_controller_details": [
+    {
+      "url": "http://controller204-2040noss-rmqbqgqi.appd-cx.com:8090",
+      "username": "username@customer1",
+      "password": "password",
+      "server_viz_app_id": "3",
+      "proxy_url": "",
+      "proxy_port": ""
+    }
+  ],
+  "non_prod_controller_details": [
+    {
+      "url": "https://customer1-dev.saas.appdynamics.com",
+      "username": "configmyapp@customer1-dev",
+      "password": "***REMOVED***",
+      "server_viz_app_id": "57803",
+      "proxy_url": "",
+      "proxy_port": ""
+    }
+  ]
+}
