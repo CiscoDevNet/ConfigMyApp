@@ -363,7 +363,24 @@ else
     if [ "$includeSIM" = "true" ]; then
 
         # check if server visibility application id exists
-        # TODO
+        # TODO - what if multiple servViz apps?
+
+        # Check if SIM app exists >>
+        # Authentication 
+        SESSION_ID_COOKIE_FILE=$(mktemp -t cookie.XXXXXXXX)
+        cookie_response=$(curl -s -c $SESSION_ID_COOKIE_FILE --user ${username}:${password} -X GET ${hostname}/controller/auth?action=login)
+
+        #Token from Authentication (to be used with rest calls)
+        CSRF_HEADER="X-CSRF-TOKEN: $(cat $SESSION_ID_COOKIE_FILE | sed -n 's/.*X-CSRF-TOKEN[[:blank:]]*\(\w*\)/\1/p')"
+
+        restUiApplications=$(curl -v -s -b $SESSION_ID_COOKIE_FILE -H "$CSRF_HEADER" "$@" -H "Accept: application/json" -H "Content-type: application/json" -X GET ${hostname}/controller/restui/applicationManagerUiBean/getApplicationsAllTypes)
+
+        serverVizApplicationObject=$(jq --arg serverVizAppID "$serverVizAppID" '.simApplication | select(.id == '$serverVizAppID')' <<< $restUiApplications)
+
+        if [ "$serverVizApplicationObject" = "" ]; then
+            func_check_http_status 404 "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
+        fi
+
         httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
 
         func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
