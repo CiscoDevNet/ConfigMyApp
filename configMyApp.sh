@@ -262,6 +262,21 @@ function func_check_http_status() {
     fi
 }
 
+function func_check_http_response(){
+    local http_message_body="$1"
+    local string_success_response_contains="$2"
+    if [[ "$http_message_body" =~ "$string_success_response_contains" ]]; then # contains
+            echo "*********************************************************************"
+            echo "Success"
+            echo "*********************************************************************"
+        else
+            echo "${dt} ERROR "{$http_message_body}"" >> error.log
+            echo "ERROR $http_message_body"
+            func_cleanup
+            exit 1
+        fi
+}
+
 function func_copy_file_and_replace_values() {
     local filePath=$1
 
@@ -318,6 +333,7 @@ echo ""
 echo ""
 sleep 1
 
+
 allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
 
 applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<<$allApplications)
@@ -347,6 +363,7 @@ else
     if [ "$includeSIM" = "true" ]; then
 
         # check if server visibility application id exists
+        # TODO
         httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
 
         func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
@@ -356,26 +373,9 @@ else
 
         pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
 
-        viz_res=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-
-        if [[ "$viz_res" == *"successfully"* ]]; then
-            echo "*********************************************************************"
-            echo "$viz_res"
-            echo "*********************************************************************"
-        else
-            msg="An Error occured whilst importing Server Viz Health rules. Please refer to the error.log file for further details"
-            echo " ${dt} ERROR  An Error occured whilst importing Server Viz Health rules" >>error.log
-            echo " ${dt} ERROR  $viz_res" >>error.log
-            echo "$msg"
-            echo "$viz_res"
-            echo ""
-            sleep 1
-            echo "The script execution will continue"
-            echo ""
-
-        fi
-        #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-        #func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
+        response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+        
+        func_check_http_response "\{$response}" "successfully"
 
     fi
 
@@ -389,9 +389,9 @@ else
     encodeAppName=$(IOURLEncoder $appName)
     echo "Encoded AppName is: $encodeAppName"
     echo ""
-    httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
+    response=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
 
-    func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
+    func_check_http_response "\{$response}" "successfully"
     echo ""
     sleep 1
     echo "done"
@@ -432,31 +432,22 @@ else
     #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
     #func_check_http_status $httpCode "Error occured while creating dashboard."
 
+    #echo "RESPONSE $response"
+
     expected_response='"success":true'
 
-    if [[ "$response" == *"$expected_response"* ]]; then
-        echo "*********************************************************************"
-        echo "The dashboard was created successfully. "
-        echo "Please check the $hostname controller "
-        echo "The Dashboard name is '$appName:App Visibility Pane' "
-        echo "*********************************************************************"
-    else
-        msg="An Error occured whilst creating the dashboard. Please refer to the error.log file for further details"
-        echo " ${dt} ERROR  An Error occured whilst creating the dashboard" >> error.log
-        echo " ${dt} ERROR $response" >>error.log
-        echo "$msg"
-        echo "$response"
-        echo ""
-        sleep 1
-    fi
+    func_check_http_response "\{$response}" $expected_response
 
-    echo ""
+    echo "*********************************************************************"
+    echo "The dashboard was created successfully. "
+    echo "Please check the $hostname controller "
+    echo "The Dashboard name is '$appName:App Visibility Pane' "
+    echo "*********************************************************************"
+
     echo ""
     sleep 3
-    echo "Restoring vanilla template files... please wait.."
-    #sleep 5
 
-    #restore original template files for next use
+    # save used uploaded files
     mkdir -p ./dashboards/uploaded
 
     cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
