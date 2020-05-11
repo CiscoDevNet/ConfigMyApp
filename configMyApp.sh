@@ -381,10 +381,6 @@ else
             func_check_http_status 404 "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
         fi
 
-        httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
-
-        func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
-
         echo "Creating Server Viz Health Rules...Please wait"
         echo ""
 
