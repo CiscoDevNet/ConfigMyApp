@@ -334,7 +334,7 @@ echo ""
 sleep 1
 
 
-allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
+allApplications=$(curl -s --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
 
 applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<<$allApplications)
 
@@ -361,11 +361,7 @@ else
 
     #ServerViz health rules
     if [ "$includeSIM" = "true" ]; then
-
-        # check if server visibility application id exists
-        # TODO - what if multiple servViz apps?
-
-        # Check if SIM app exists >>
+        # Check if SIM app exists & get application id
         # Authentication 
         SESSION_ID_COOKIE_FILE=$(mktemp -t cookie.XXXXXXXX)
         cookie_response=$(curl -s -c $SESSION_ID_COOKIE_FILE --user ${username}:${password} -X GET ${hostname}/controller/auth?action=login)
@@ -373,12 +369,12 @@ else
         #Token from Authentication (to be used with rest calls)
         CSRF_HEADER="X-CSRF-TOKEN: $(cat $SESSION_ID_COOKIE_FILE | sed -n 's/.*X-CSRF-TOKEN[[:blank:]]*\(\w*\)/\1/p')"
 
-        restUiApplications=$(curl -v -s -b $SESSION_ID_COOKIE_FILE -H "$CSRF_HEADER" "$@" -H "Accept: application/json" -H "Content-type: application/json" -X GET ${hostname}/controller/restui/applicationManagerUiBean/getApplicationsAllTypes)
+        restUiApplications=$(curl -s -b $SESSION_ID_COOKIE_FILE -H "$CSRF_HEADER" "$@" -H "Accept: application/json" -H "Content-type: application/json" -X GET ${hostname}/controller/restui/applicationManagerUiBean/getApplicationsAllTypes)
 
-        serverVizApplicationObject=$(jq --arg serverVizAppID "$serverVizAppID" '.simApplication | select(.id == '$serverVizAppID')' <<< $restUiApplications)
+        serverVizApplicationId=$(jq '.simApplication | select(.id != null) | .id' <<< $restUiApplications)
 
-        if [ "$serverVizApplicationObject" = "" ]; then
-            func_check_http_status 404 "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
+        if [ "$serverVizApplicationId" = "" ]; then
+            func_check_http_status 404 "Server visibility application not found. Aborting..."
         fi
 
         echo "Creating Server Viz Health Rules...Please wait"
@@ -386,7 +382,7 @@ else
 
         pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
 
-        response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+        response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizApplicationId}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
         
         func_check_http_response "\{$response}" "successfully"
 
@@ -402,7 +398,7 @@ else
     encodeAppName=$(IOURLEncoder $appName)
     echo "Encoded AppName is: $encodeAppName"
     echo ""
-    response=$(curl -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
+    response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
 
     func_check_http_response "\{$response}" "successfully"
     echo ""
@@ -439,7 +435,7 @@ else
     echo "Creating dashboard in the controller"
     sleep 3
 
-    response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
+    response=$(curl -s -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
 
     # commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created
     #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
