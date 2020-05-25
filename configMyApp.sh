@@ -29,6 +29,7 @@ conf_file="config.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
 are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
+enable_branding=$(jq -r '.enable_branding' <${conf_file})
 
 prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
@@ -284,20 +285,22 @@ function func_copy_file_and_replace_values() {
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    encodedBackgroundImageUrl="$(encode_image $image_background_path)"
-    encodedLogoImageUrl="$(encode_image $image_logo_path)"
+    if [ "$enable_branding" = "true" ]; then
+        encodedBackgroundImageUrl="$(encode_image $image_background_path)"
+        encodedLogoImageUrl="$(encode_image $image_logo_path)"
 
-    echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
-    echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
+        echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
+        echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
+
+        # replace background picture
+        sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
+
+        # replace logo
+        sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
+    fi
 
     # replace application and database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
-
-    # replace background picture
-    sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
-
-    # replace logo
-    sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
 
     # return full file path
     echo "${tempFolder}/${fileName}"

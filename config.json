@@ -1,7 +1,7 @@
 { 
     "overwrite_health_rules":true,
     "are_passwords_encoded": false,
-    
+    "enable_branding": true,
     "prod_controller_details": [
        {
         "url": "http://controller204-2040noss-rmqbqgqi.appd-cx.com:8090",
