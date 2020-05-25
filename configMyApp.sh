@@ -29,7 +29,10 @@ conf_file="config.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
 are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
-enable_branding=$(jq -r '.enable_branding' <${conf_file})
+
+enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
+image_logo_path=$(jq -r ' .branding[].logo_path' <${conf_file})
+image_background_path=$(jq -r ' .branding[].image_background_path' <${conf_file})
 
 prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
@@ -67,8 +70,7 @@ templatLogoImageName="ChangeImageUrlLogo"
 
 tempFolder="temp"
 
-image_background_path="./branding/background.jpg"
-image_logo_path="./branding/logo-white.png"
+
 
 bt_folder="./business_transactions"
 
