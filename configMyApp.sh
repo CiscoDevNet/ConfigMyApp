@@ -367,18 +367,21 @@ else
     #ServerViz health rules
     if [ "$includeSIM" = "true" ]; then
         # Check if SIM app exists & get application id
-        # Authentication 
-        SESSION_ID_COOKIE_FILE=$(mktemp -t cookie.XXXXXXXX)
-        cookie_response=$(curl -s -c $SESSION_ID_COOKIE_FILE --user ${username}:${password} -X GET ${hostname}/controller/auth?action=login)
 
-        #Token from Authentication (to be used with rest calls)
-        CSRF_HEADER="X-CSRF-TOKEN: $(cat $SESSION_ID_COOKIE_FILE | sed -n 's/.*X-CSRF-TOKEN[[:blank:]]*\(\w*\)/\1/p')"
+        if [ "$serverVizAppID" == "" ]; then
+             # Authentication 
+            SESSION_ID_COOKIE_FILE=$(mktemp -t cookie.XXXXXXXX)
+            cookie_response=$(curl -s -c $SESSION_ID_COOKIE_FILE --user ${username}:${password} -X GET ${hostname}/controller/auth?action=login)
 
-        restUiApplications=$(curl -s -b $SESSION_ID_COOKIE_FILE -H "$CSRF_HEADER" "$@" -H "Accept: application/json" -H "Content-type: application/json" -X GET ${hostname}/controller/restui/applicationManagerUiBean/getApplicationsAllTypes)
+            #Token from Authentication (to be used with rest calls)
+            CSRF_HEADER="X-CSRF-TOKEN: $(cat $SESSION_ID_COOKIE_FILE | sed -n 's/.*X-CSRF-TOKEN[[:blank:]]*\(\w*\)/\1/p')"
 
-        serverVizApplicationId=$(jq '.simApplication | select(.id != null) | .id' <<< $restUiApplications)
+            restUiApplications=$(curl -s -b $SESSION_ID_COOKIE_FILE -H "$CSRF_HEADER" "$@" -H "Accept: application/json" -H "Content-type: application/json" -X GET ${hostname}/controller/restui/applicationManagerUiBean/getApplicationsAllTypes)
 
-        if [ "$serverVizApplicationId" = "" ]; then
+            serverVizAppID=$(jq '.simApplication | select(.id != null) | .id' <<< $restUiApplications)
+        fi
+
+        if [ "$serverVizAppID" = "" ]; then
             func_check_http_status 404 "Server visibility application not found. Aborting..."
         fi
 
@@ -387,7 +390,7 @@ else
 
         pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
 
-        response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizApplicationId}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
+        response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
         
         func_check_http_response "\{$response}" "successfully"
 
