@@ -59,8 +59,8 @@ vanilla_noSIM="./dashboards/CustomDashboard_noSIM_vanilla.json"
 vanilla_noDB_noSIM="./dashboards/CustomDashboard_noDB_noSIM_vanilla.json"
 
 #init HR templates
-serverVizHealthRuleFile="./healthrules/ServerHealthRules.xml"
-applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
+serverVizHealthRuleFile="./healthrules/ServerVisibility/*.json"
+applicationHealthRule="./healthrules/Application/*.json"
 
 #init template placeholder
 templateAppName="ChangeApplicationName"
@@ -257,7 +257,7 @@ echo ""
 function func_check_http_status() {
     local http_code=$1
     local message_on_failure=$2
-    echo "HTTP status code: $http_code"
+    #echo "HTTP status code: $http_code"
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
         echo $message_on_failure
         func_cleanup
@@ -313,6 +313,33 @@ function func_cleanup() {
     rm -rf $tempFolder
 }
 
+function func_import_health_rules(){
+    local appId=$1
+    local folderPath=$2
+
+     # get all current health rules for application
+    allHealthRules=$(curl -s --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules ${proxy_details})
+
+    for f in $folderPath; do 
+
+        # get health rule name from json file
+        healthRuleName=$(jq -r  '.name' <$f)
+        # use it to get health rule id (if exists)
+        healthRuleId=$(jq --arg hrName "$healthRuleName" '.[] | select(.name == $hrName) | .id' <<<$allHealthRules)
+
+        # create new if health rule id does not exist
+        if [ "${healthRuleId}" == "" ]; then
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+            func_check_http_status $httpCode "Error occured while importing server health rules."
+        # overwrite existing health rule only if flag is true
+        elif [ "$overwrite_health_rules" = "true" ]; then
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+            func_check_http_status $httpCode "Error occured while importing server health rules."
+        fi
+
+    done
+}
+
 #Process proxy details
 #jq sets empty strings to null istead of NULL
 echo "Please wait while we check if you've configured any proxies with ConfigMyApp"
@@ -366,45 +393,21 @@ if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt"
 else
     #proceed as normal
 
-    #ServerViz health rules
+    #Server Visibility health rules
     if [ "$includeSIM" = "true" ]; then
-        echo "Creating Server Viz Health Rules...Please wait"
+        echo "Creating Server Visibility Health Rules...Please wait"
         echo ""
 
-        # check if health rule already exists (by name)
-        allHealthRules=$(curl -s --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules ${proxy_details})
-
-        for f in ./healthrules/ServerVisibility/*.json; do 
-            
-            healthRuleName=$(jq -r  '.name' <$f)
-
-            healthRuleId=$(jq --arg hrName "$healthRuleName" '.[] | select(.name == $hrName) | .id' <<<$allHealthRules)
-
-            if [ "${healthRuleId}" == "" ]; then
-                echo "EMPTY"
-                httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
-                func_check_http_status $httpCode "Error occured while importing server health rules."
-            elif [ "$overwrite_health_rules" = "true" ]; then
-                echo "EXISTS"
-                httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
-                func_check_http_status $httpCode "Error occured while importing server health rules."
-            fi
-        done
+        func_import_health_rules $appId "${serverVizHealthRuleFile}"
     fi
 
     #Application health rules
     echo ""
     echo "Creating ${appName} Health Rules..."
-    sleep 4
-    #URL Encode AppDName
-    echo "URL ecoding App Name"
     sleep 1
-    encodeAppName=$(IOURLEncoder $appName)
-    echo "Encoded AppName is: $encodeAppName"
-    echo ""
-    response=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
 
-    func_check_http_response "\{$response}" "successfully"
+    func_import_health_rules $appId "${applicationHealthRule}"
+
     echo ""
     sleep 1
     echo "done"

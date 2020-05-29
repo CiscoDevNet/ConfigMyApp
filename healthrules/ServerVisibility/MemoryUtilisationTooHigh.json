@@ -1,5 +1,4 @@
 {
-    "id": 89,
     "name": "Server Health: Memory Utilisation is too high",
     "enabled": true,
     "useDataFromLastNMinutes": 30,
