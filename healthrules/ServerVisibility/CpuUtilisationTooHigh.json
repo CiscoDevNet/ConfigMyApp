@@ -26,7 +26,7 @@
             "metricEvalDetail": {
               "metricEvalDetailType": "SPECIFIC_TYPE",
               "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
-              "compareValue": 92
+              "compareValue": 90
             }
           },
           "triggerEnabled": false,
