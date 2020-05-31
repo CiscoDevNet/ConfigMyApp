@@ -280,6 +280,14 @@ function func_check_http_response(){
         fi
 }
 
+function func_find_file_by_name() {
+    local imgName=$1
+
+    result=$(find ./branding -name "*${imgName}*.[png|jpg|jpeg]*" | head -n 1)
+
+    echo $result
+}
+
 function func_copy_file_and_replace_values() {
     local filePath=$1
 
@@ -288,6 +296,7 @@ function func_copy_file_and_replace_values() {
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
     if [ "$enable_branding" = "true" ]; then
+
         encodedBackgroundImageUrl="$(encode_image $image_background_path)"
         encodedLogoImageUrl="$(encode_image $image_logo_path)"
 
@@ -438,7 +447,19 @@ else
     echo "done"
     echo ""
 
+    # check if images are configured, and add default if not
+    if [ "$enable_branding" = "true" ]; then
+        if [ -z "${image_background_path}" ]; then
+            image_background_path=$(func_find_file_by_name "background")
+        fi
+
+        if [ -z "${image_logo_path}" ]; then
+            image_logo_path=$(func_find_file_by_name "logo")
+        fi
+    fi
+
     pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
+    
     echo "Creating dashboard in the controller"
     sleep 3
 
