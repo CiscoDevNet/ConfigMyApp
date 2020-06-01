@@ -3,7 +3,7 @@
   "are_passwords_encoded": false,
   "branding": [
     {
-      "enabled": false,
+      "enabled": true,
       "logo_path": "./branding/logo.png",
       "image_background_path": "./branding/background.jpg"
     }
@@ -20,10 +20,10 @@
   ],
   "non_prod_controller_details": [
     {
-      "url": "https://customer1-dev.saas.appdynamics.com",
-      "username": "configmyapp@customer1-dev",
-      "password": "***REMOVED***",
-      "server_viz_app_id": "57803",
+      "url": "http://aleksandracustommetric-khgjgvot.appd-cx.com:8090",
+      "username": "appd@customer1",
+      "password": "appd",
+      "server_viz_app_id": "3",
       "proxy_url": "",
       "proxy_port": ""
     }
