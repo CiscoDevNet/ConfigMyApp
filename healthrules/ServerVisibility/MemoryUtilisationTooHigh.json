@@ -16,7 +16,7 @@
             "conditionExpression": null,
             "conditions": [
                 {
-                    "name": "IMPORTED Memory Utilisation is too high",
+                    "name": "Memory Utilisation is too high",
                     "shortName": "A",
                     "evaluateToTrueOnNoData": false,
                     "evalDetail": {
