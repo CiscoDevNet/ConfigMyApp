@@ -28,14 +28,14 @@ phases:
         outputVars: ''
         publishAsVar: false
         scriptString: "echo \"Hello world!\"\napt-get -y install git\napt-get -y install\
-          \ jq\napt-get -y install -f \napt-get -y install ia32-libs-multiarch\ngit\
-          \ --version\nlsb_release -a\necho \"remote\"\ngit config remote.origin.url\
-          \ https://github.com/Appdynamics/ConfigMyApp.git\necho \"Cloning repo...\"\
-          \ \ngit config --global credential.helper cache\ngit clone https://AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24@github.com/Appdynamics/ConfigMyApp.git\
-          \ -b features/jenkins_pipeline --single-branch ConfigMyApp9\necho \"Cloned\"\
-          \nls\nwhoami\nls ./ConfigMyApp9\necho \"Execute script...\"\nchmod 755 ./ConfigMyApp9/configMyApp.sh\n\
-          chmod 755 ./ConfigMyApp9/config.json\n./ConfigMyApp9/configMyApp.sh TPV\
-          \ no no dev\necho \"Done.\""
+          \ jq\napt-get -y install -f \ngit --version\nuname -m\necho \"remote\"\n\
+          git config remote.origin.url https://github.com/Appdynamics/ConfigMyApp.git\n\
+          echo \"Cloning repo...\" \ngit config --global credential.helper cache\n\
+          git clone https://AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24@github.com/Appdynamics/ConfigMyApp.git\
+          \ -b features/jenkins_pipeline --single-branch ConfigMyApp10\necho \"Cloned\"\
+          \nls\nwhoami\nls ./ConfigMyApp10\necho \"Execute script...\"\nchmod 755\
+          \ ./ConfigMyApp10/configMyApp.sh\nchmod 755 ./ConfigMyApp10/config.json\n\
+          ./ConfigMyApp10/configMyApp.sh TPV no no dev\necho \"Done.\""
         scriptType: BASH
         sshKeyRef: null
         sweepingOutputName: null
