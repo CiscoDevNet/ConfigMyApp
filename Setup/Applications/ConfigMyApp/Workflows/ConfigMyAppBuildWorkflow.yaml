@@ -18,8 +18,6 @@ phases:
   - type: COLLECT_ARTIFACT
     name: Collect Artifact
     steps:
-    - type: ARTIFACT_COLLECTION
-      name: Artifact Collection
     - type: SHELL_SCRIPT
       name: Shell Script
       properties:
