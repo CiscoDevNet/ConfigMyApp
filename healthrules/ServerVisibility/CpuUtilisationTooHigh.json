@@ -1,5 +1,5 @@
 {
-  "name": "IMPORTED 2 Server Health: CPU Utilisation is too high",
+  "name": "Server Health: CPU Utilisation is too high",
   "enabled": true,
   "useDataFromLastNMinutes": 30,
   "waitTimeAfterViolation": 30,
@@ -16,7 +16,7 @@
       "conditionExpression": null,
       "conditions": [
         {
-          "name": "IMPORTED CPU Utilisation is too high",
+          "name": "CPU Utilisation is too high",
           "shortName": "A",
           "evaluateToTrueOnNoData": false,
           "evalDetail": {
