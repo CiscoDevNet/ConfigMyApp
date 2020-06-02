@@ -28,8 +28,9 @@ phases:
         outputVars: ''
         publishAsVar: false
         scriptString: "echo \"Hello world!\"\napt-get -y install git\ngit --version\n\
-          echo \"Cloning repo...\" \ngit clone https://github.com/Appdynamics/ConfigMyApp.git\
-          \ -b features/jenkins_pipeline --single-branch ConfigMyApp2 -u AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24\
+          echo \"Cloning repo...\" \ngit config --global credential.helper cache\n\
+          git clone https://github.com/Appdynamics/ConfigMyApp.git -b features/jenkins_pipeline\
+          \ --single-branch ConfigMyApp2 -u AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24\
           \ --bare\necho \"Cloned\"\nwhoami\n./ConfigMyApp2/configMyApp.sh TPV no\
           \ no dev\necho \"Done.\""
         scriptType: BASH
