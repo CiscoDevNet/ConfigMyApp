@@ -30,6 +30,7 @@ phases:
         scriptString: |-
           echo "Hello world!"
           apt-get -y install git
+          apt-get install sudo -y
           git --version
           echo "Cloning repo..."
           sudo git clone https://github.com/Appdynamics/ConfigMyApp.git -b features/jenkins_pipeline --single-branch ConfigMyApp2 -u AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24 --bare
