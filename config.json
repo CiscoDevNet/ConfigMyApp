@@ -4,8 +4,8 @@
   "branding": [
     {
       "enabled": true,
-      "logo_path": "./branding/logo.png",
-      "image_background_path": "./branding/background.jpg"
+      "logo_path": "logo.png",
+      "image_background_path": "background.jpg"
     }
   ],
   "prod_controller_details": [
