@@ -1,6 +1,7 @@
 version: '2'
 services:
   jenkins-service:
+    container_name: jenkinsservice
     build: .
     ports:
       - 8080:8080
