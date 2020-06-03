@@ -13,6 +13,8 @@
 
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
+#./configMyApp.sh IoTHub no no dev configbtonly
+
 [[ "$(command -v jq)" ]] || {
     echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2
     sleep 5
@@ -21,6 +23,12 @@
 
 [[ "$(command -v base64)" ]] || {
     echo "base64 is not installed. Please ensure that you have 'base64' installed on this machine. Aborting..." 1>&2
+    sleep 5
+    exit 1
+}
+
+[[ "$(command -v awk)" ]] || {
+    echo "awk is not installed, ConfigMyApp requires awk to be installed. Aborting..." 1>&2
     sleep 5
     exit 1
 }
