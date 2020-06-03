@@ -69,9 +69,6 @@ templateBackgroundImageName="ChangeImageUrlBackground"
 templatLogoImageName="ChangeImageUrlLogo"
 
 tempFolder="temp"
-
-
-
 bt_folder="./business_transactions"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
