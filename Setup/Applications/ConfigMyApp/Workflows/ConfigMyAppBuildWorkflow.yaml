@@ -1,0 +1,63 @@
+harnessApiVersion: '1.0'
+type: BUILD
+notificationRules:
+- conditions:
+  - FAILED
+  executionScope: WORKFLOW
+  notificationGroupAsExpression: false
+  userGroupAsExpression: false
+  userGroupIds:
+  - YqN5jEuwQLeE7FSQitFG9A
+phases:
+- daemonSet: false
+  name: Phase 1
+  phaseSteps:
+  - type: PREPARE_STEPS
+    name: Prepare Steps
+    stepsInParallel: false
+  - type: COLLECT_ARTIFACT
+    name: Collect Artifact
+    steps:
+    - type: SHELL_SCRIPT
+      name: Shell Script
+      properties:
+        commandPath: null
+        connectionAttributes: null
+        executeOnDelegate: true
+        host: null
+        outputVars: ''
+        publishAsVar: false
+        scriptString: "#!/bin/bash\necho \"Hello world!\"\napt-get -y install git\n\
+          apt-get -y install jq\napt-get -y install -f \ngit --version\nuname -m\n\
+          echo \"remote\"\ngit config remote.origin.url https://github.com/Appdynamics/ConfigMyApp.git\n\
+          echo \"Cloning repo...\" \ngit config --global credential.helper cache\n\
+          git clone https://AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24@github.com/Appdynamics/ConfigMyApp.git\
+          \ -b features/jenkins_pipeline --single-branch ConfigMyApp12\necho \"Cloned\"\
+          \nls\nwhoami\nls ./ConfigMyApp12\necho \"Execute script...\"\nchmod 775\
+          \ ./ConfigMyApp12/configMyApp.sh\nchmod 775 ./ConfigMyApp12/config.json\n\
+          chmod +x ./ConfigMyApp12/config.json\ncat ./ConfigMyApp12/config.json\n\
+          ./ConfigMyApp12/configMyApp.sh TPV no no dev\necho \"Done.\""
+        scriptType: BASH
+        sshKeyRef: null
+        sweepingOutputName: null
+        sweepingOutputScope: null
+        tags: null
+        templateExpressions: null
+        templateUuid: null
+        templateVariables: null
+        templateVersion: null
+        timeoutMillis: 180000
+    stepsInParallel: false
+  - type: WRAP_UP
+    name: Wrap Up
+    stepsInParallel: false
+  provisionNodes: false
+  statefulSet: false
+templatized: false
+userVariables:
+- type: TEXT
+  allowedValues: dev,qa,prod,test
+  fixed: true
+  mandatory: true
+  name: APP_ENVIRONMENT
+  value: dev
