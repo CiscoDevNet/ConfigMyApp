@@ -13,7 +13,6 @@
       "url": "http://controller204-2040noss-rmqbqgqi.appd-cx.com:8090",
       "username": "username@customer1",
       "password": "password",
-      "server_viz_app_id": "3",
       "proxy_url": "",
       "proxy_port": ""
     }
@@ -23,7 +22,6 @@
       "url": "http://aleksandracustommetric-khgjgvot.appd-cx.com:8090",
       "username": "appd@customer1",
       "password": "appd",
-      "server_viz_app_id": "3",
       "proxy_url": "",
       "proxy_port": ""
     }
