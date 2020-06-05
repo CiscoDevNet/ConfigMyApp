@@ -9,9 +9,11 @@
 #./configMyApp.sh fusion-equities-prod no prod
 #./configMyApp.sh fusion-pot-prod no prod
 
-#./configMyApp.sh IoTHub ConfigMyApp yes prod
+#./configMyApp.sh IoTHub ConfigMyApp yes dev
 
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
+
+#./configMyApp.sh IoTHub no no dev configbtonly
 
 [[ "$(command -v jq)" ]] || {
     echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2
@@ -25,25 +27,31 @@
     exit 1
 }
 
-conf_file="config.json"
+[[ "$(command -v awk)" ]] || {
+    echo "awk is not installed, ConfigMyApp requires awk to be installed. Aborting..." 1>&2
+    sleep 5
+    exit 1
+}
+
+conf_file="testconfig.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
 are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
 
+enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
+image_logo_path="./branding/$(jq -r ' .branding[].logo_file_name' <${conf_file})"
+image_background_path="./branding/$(jq -r ' .branding[].background_file_name' <${conf_file})"
+
 prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
 prod_password=$(jq -r ' .prod_controller_details[].password' <${conf_file})
-prod_serverVizAppID=$(jq -r ' .prod_controller_details[].server_viz_app_id' <${conf_file})
-#echo "Prod $prod_username >  $prod_controller >  $prod_password > $prod_serverVizAppID"
+
 dev_controller=$(jq -r ' .non_prod_controller_details[].url' <${conf_file})
 dev_username=$(jq -r ' .non_prod_controller_details[].username' <${conf_file})
 dev_password=$(jq -r ' .non_prod_controller_details[].password' <${conf_file})
-dev_serverVizAppID=$(jq -r ' .non_prod_controller_details[].server_viz_app_id' <${conf_file})
 
 dev_proxy_url=$(jq -r ' .non_prod_controller_details[].proxy_ur'l <${conf_file})
 dev_proxy_port=$(jq -r ' .non_prod_controller_details[].proxy_port' <${conf_file})
-
-#echo "Dev $dev_controller >  $dev_username >  $dev_password > $dev_serverVizAppID"
 
 # Do not change anything else beyond this point except you know what you're doing :)
 
@@ -55,8 +63,8 @@ vanilla_noSIM="./dashboards/CustomDashboard_noSIM_vanilla.json"
 vanilla_noDB_noSIM="./dashboards/CustomDashboard_noDB_noSIM_vanilla.json"
 
 #init HR templates
-serverVizHealthRuleFile="./healthrules/ServerHealthRules.xml"
-applicationHealthRule="./healthrules/ApplicationHealthRules.xml"
+serverVizHealthRuleFile="./healthrules/ServerVisibility/*.json"
+applicationHealthRule="./healthrules/Application/*.json"
 
 #init template placeholder
 templateAppName="ChangeApplicationName"
@@ -65,10 +73,6 @@ templateBackgroundImageName="ChangeImageUrlBackground"
 templatLogoImageName="ChangeImageUrlLogo"
 
 tempFolder="temp"
-
-image_background_path="./branding/background.jpg"
-image_logo_path="./branding/logo-white.png"
-
 bt_folder="./business_transactions"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
@@ -213,11 +217,6 @@ else
     exit 1
 fi
 
-if [ "$includeSIM" = "true" ] && [ "$prod_serverVizAppID" = "" ] && [ "$dev_serverVizAppID" = "" ]; then
-    echo "Server visibility application ID must be defined when SIM is enabled. Set includeSIM value to no if you are not interested in SIM moitoring."
-    exit 1
-fi
-
 echo "Server Visibility is set to '$includeSIM'"
 echo ""
 
@@ -230,14 +229,12 @@ if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$control
     hostname=${prod_controller}
     password=${prod_password}
     username=${prod_username}
-    serverVizAppID=${prod_serverVizAppID}
     proxy_url="${prod_proxy_url}"
     proxy_port="${prod_proxy_port}"
 else
     hostname=${dev_controller}
     password=${dev_password}
     username=${dev_username}
-    serverVizAppID=${dev_serverVizAppID}
     proxy_url="${dev_proxy_url}"
     proxy_port="${dev_proxy_port}"
 fi
@@ -254,12 +251,35 @@ echo ""
 function func_check_http_status() {
     local http_code=$1
     local message_on_failure=$2
-    echo "HTTP status code: $http_code"
+    #echo "HTTP status code: $http_code"
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
         echo $message_on_failure
         func_cleanup
         exit 1
     fi
+}
+
+function func_check_http_response(){
+    local http_message_body="$1"
+    local string_success_response_contains="$2"
+    if [[ "$http_message_body" =~ "$string_success_response_contains" ]]; then # contains
+            echo "*********************************************************************"
+            echo "Success"
+            echo "*********************************************************************"
+        else
+            echo "${dt} ERROR "{$http_message_body}"" >> error.log
+            echo "ERROR $http_message_body"
+            func_cleanup
+            exit 1
+        fi
+}
+
+function func_find_file_by_name() {
+    local imgName=$1
+
+    result=$(find ./branding -name "*${imgName}*.[png|jpg|jpeg]*" | head -n 1)
+
+    echo $result
 }
 
 function func_copy_file_and_replace_values() {
@@ -269,20 +289,23 @@ function func_copy_file_and_replace_values() {
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    encodedBackgroundImageUrl="$(encode_image $image_background_path)"
-    encodedLogoImageUrl="$(encode_image $image_logo_path)"
+    if [ "$enable_branding" = "true" ]; then
 
-    echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
-    echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
+        encodedBackgroundImageUrl="$(encode_image $image_background_path)"
+        encodedLogoImageUrl="$(encode_image $image_logo_path)"
+
+        echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
+        echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
+
+        # replace background picture
+        sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
+
+        # replace logo
+        sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
+    fi
 
     # replace application and database name
     sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
-
-    # replace background picture
-    sed -i.bkp -e "/${templateBackgroundImageName}/r ./${tempFolder}/backgroundImage.txt" -e "/${templateBackgroundImageName}/d" "${tempFolder}/${fileName}"
-
-    # replace logo
-    sed -i.bkp -e "/${templatLogoImageName}/r ./${tempFolder}/logoImage.txt" -e "/${templatLogoImageName}/d" "${tempFolder}/${fileName}"
 
     # return full file path
     echo "${tempFolder}/${fileName}"
@@ -291,6 +314,33 @@ function func_copy_file_and_replace_values() {
 function func_cleanup() {
     # remove all from temp folder
     rm -rf $tempFolder
+}
+
+function func_import_health_rules(){
+    local appId=$1
+    local folderPath=$2
+
+     # get all current health rules for application
+    allHealthRules=$(curl -s --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules ${proxy_details})
+
+    for f in $folderPath; do 
+
+        # get health rule name from json file
+        healthRuleName=$(jq -r  '.name' <$f)
+        # use it to get health rule id (if exists)
+        healthRuleId=$(jq --arg hrName "$healthRuleName" '.[] | select(.name == $hrName) | .id' <<<$allHealthRules)
+
+        # create new if health rule id does not exist
+        if [ "${healthRuleId}" == "" ]; then
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+            func_check_http_status $httpCode "Error occured while importing server health rules."
+        # overwrite existing health rule only if flag is true
+        elif [ "$overwrite_health_rules" = "true" ]; then
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+            func_check_http_status $httpCode "Error occured while importing server health rules."
+        fi
+
+    done
 }
 
 #Process proxy details
@@ -318,13 +368,16 @@ echo ""
 echo ""
 sleep 1
 
-allApplications=$(curl --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
+
+allApplications=$(curl -s --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
 
 applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<<$allApplications)
 
 if [ "$applicationObject" = "" ]; then
     func_check_http_status 404 "Application '"$appName"' not found. Aborting..."
 fi
+
+appId=$(jq '.id' <<<$applicationObject)
 
 echo "Found ${appName} business application"
 echo ""
@@ -343,55 +396,21 @@ if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt"
 else
     #proceed as normal
 
-    #ServerViz health rules
+    #Server Visibility health rules
     if [ "$includeSIM" = "true" ]; then
-
-        # check if server visibility application id exists
-        httpCode=$(curl -I -s -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/rest/applications/${serverVizAppID} ${proxy_details})
-
-        func_check_http_status $httpCode "Server visibility application id '"$serverVizAppID"' not found. Aborting..."
-
-        echo "Creating Server Viz Health Rules...Please wait"
+        echo "Creating Server Visibility Health Rules...Please wait"
         echo ""
 
-        pathToHealthRulesFile=$(func_copy_file_and_replace_values ${serverVizHealthRuleFile})
-
-        viz_res=$(curl -s -X POST --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-
-        if [[ "$viz_res" == *"successfully"* ]]; then
-            echo "*********************************************************************"
-            echo "$viz_res"
-            echo "*********************************************************************"
-        else
-            msg="An Error occured whilst importing Server Viz Health rules. Please refer to the error.log file for further details"
-            echo " ${dt} ERROR  An Error occured whilst importing Server Viz Health rules" >>error.log
-            echo " ${dt} ERROR  $viz_res" >>error.log
-            echo "$msg"
-            echo "$viz_res"
-            echo ""
-            sleep 1
-            echo "The script execution will continue"
-            echo ""
-
-        fi
-        #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/${serverVizAppID}?overwrite=${overwrite_health_rules} -F file=@${pathToHealthRulesFile} ${proxy_details})
-        #func_check_http_status $httpCode "Saving server visibility health rules for application id '"$serverVizAppID"' failed."
-
+        func_import_health_rules $appId "${serverVizHealthRuleFile}"
     fi
 
     #Application health rules
     echo ""
     echo "Creating ${appName} Health Rules..."
-    sleep 4
-    #URL Encode AppDName
-    echo "URL ecoding App Name"
     sleep 1
-    encodeAppName=$(IOURLEncoder $appName)
-    echo "Encoded AppName is: $encodeAppName"
-    echo ""
-    httpCode=$(curl -X POST -o /dev/null -w "%{http_code}" --user ${username}:${password} ${hostname}/controller/healthrules/$encodeAppName?overwrite=${overwrite_health_rules} -F file=@${applicationHealthRule} ${proxy_details})
 
-    func_check_http_status $httpCode "Saving application health rules for application id '"$serverVizAppID"' failed."
+    func_import_health_rules $appId "${applicationHealthRule}"
+
     echo ""
     sleep 1
     echo "done"
@@ -422,41 +441,44 @@ else
     echo "done"
     echo ""
 
+    # check if images are configured, and add default if not
+    if [ "$enable_branding" = "true" ]; then
+        if [ -z "${image_background_path}" ]; then
+            image_background_path=$(func_find_file_by_name "background")
+        fi
+
+        if [ -z "${image_logo_path}" ]; then
+            image_logo_path=$(func_find_file_by_name "logo")
+        fi
+    fi
+
     pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
+    
     echo "Creating dashboard in the controller"
     sleep 3
 
-    response=$(curl -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
+    response=$(curl -s -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
 
     # commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created
     #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
     #func_check_http_status $httpCode "Error occured while creating dashboard."
 
+    #echo "RESPONSE $response"
+
     expected_response='"success":true'
 
-    if [[ "$response" == *"$expected_response"* ]]; then
-        echo "*********************************************************************"
-        echo "The dashboard was created successfully. "
-        echo "Please check the $hostname controller "
-        echo "The Dashboard name is '$appName:App Visibility Pane' "
-        echo "*********************************************************************"
-    else
-        msg="An Error occured whilst creating the dashboard. Please refer to the error.log file for further details"
-        echo " ${dt} ERROR  An Error occured whilst creating the dashboard" >> error.log
-        echo " ${dt} ERROR $response" >>error.log
-        echo "$msg"
-        echo "$response"
-        echo ""
-        sleep 1
-    fi
+    func_check_http_response "\{$response}" $expected_response
 
-    echo ""
+    echo "*********************************************************************"
+    echo "The dashboard was created successfully. "
+    echo "Please check the $hostname controller "
+    echo "The Dashboard name is '$appName:App Visibility Pane' "
+    echo "*********************************************************************"
+
     echo ""
     sleep 3
-    echo "Restoring vanilla template files... please wait.."
-    #sleep 5
 
-    #restore original template files for next use
+    # save used uploaded files
     mkdir -p ./dashboards/uploaded
 
     cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"

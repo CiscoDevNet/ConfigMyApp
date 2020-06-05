@@ -1,0 +1,63 @@
+{
+  "name": "Server Health: CPU Utilisation is too high",
+  "enabled": true,
+  "useDataFromLastNMinutes": 30,
+  "waitTimeAfterViolation": 30,
+  "scheduleName": "Always",
+  "affects": {
+    "affectedEntityType": "SERVERS_IN_APPLICATION",
+    "affectedServers": {
+      "serversScope": "ALL_SERVERS_IN_APPLICATION"
+    }
+  },
+  "evalCriterias": {
+    "criticalCriteria": {
+      "conditionAggregationType": "ALL",
+      "conditionExpression": null,
+      "conditions": [
+        {
+          "name": "CPU Utilisation is too high",
+          "shortName": "A",
+          "evaluateToTrueOnNoData": false,
+          "evalDetail": {
+            "evalDetailType": "SINGLE_METRIC",
+            "metricAggregateFunction": "VALUE",
+            "metricPath": "Hardware Resources|CPU|%Busy",
+            "metricEvalDetail": {
+              "metricEvalDetailType": "SPECIFIC_TYPE",
+              "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+              "compareValue": 90
+            }
+          },
+          "triggerEnabled": false,
+          "minimumTriggers": 5
+        }
+      ],
+      "evalMatchingCriteria": null
+    },
+    "warningCriteria": {
+      "conditionAggregationType": "ALL",
+      "conditionExpression": null,
+      "conditions": [
+        {
+          "name": "CPU Utilisation is too high",
+          "shortName": "A",
+          "evaluateToTrueOnNoData": false,
+          "evalDetail": {
+            "evalDetailType": "SINGLE_METRIC",
+            "metricAggregateFunction": "VALUE",
+            "metricPath": "Hardware Resources|CPU|%Busy",
+            "metricEvalDetail": {
+              "metricEvalDetailType": "SPECIFIC_TYPE",
+              "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+              "compareValue": 80
+            }
+          },
+          "triggerEnabled": false,
+          "minimumTriggers": 5
+        }
+      ],
+      "evalMatchingCriteria": null
+    }
+  }
+}
