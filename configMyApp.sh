@@ -9,7 +9,7 @@
 #./configMyApp.sh fusion-equities-prod no prod
 #./configMyApp.sh fusion-pot-prod no prod
 
-#./configMyApp.sh IoTHub ConfigMyApp yes prod
+#./configMyApp.sh IoTHub ConfigMyApp yes dev
 
 #./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
 
@@ -33,14 +33,14 @@
     exit 1
 }
 
-conf_file="config.json"
+conf_file="testconfig.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
 are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
 
 enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
-image_logo_path="./branding/$(jq -r ' .branding[].logo_path' <${conf_file})"
-image_background_path="./branding/$(jq -r ' .branding[].image_background_path' <${conf_file})"
+image_logo_path="./branding/$(jq -r ' .branding[].logo_file_name' <${conf_file})"
+image_background_path="./branding/$(jq -r ' .branding[].background_file_name' <${conf_file})"
 
 prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
 prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
