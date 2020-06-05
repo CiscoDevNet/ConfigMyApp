@@ -303,7 +303,7 @@ if [ -f "$bt_file_path" ]; then
         echo ""
     else
         msg="An Error occured whilst creating business transaction detection rules. Please refer to the error.log file for further details"
-        echo "${dt} An Error occured whilst creating business transaction detection rules." >>error.log
+        echo "${dt} An Error occured whilst creating business transaction detection rules." >> error.log
         echo "${dt} ERROR $bt_response" >>error.log
         echo "$msg"
         echo "$bt_response"
