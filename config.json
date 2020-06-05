@@ -10,7 +10,7 @@
   ],
   "prod_controller_details": [
     {
-      "url": "http://controller204-2040noss-rmqbqgqi.appd-cx.com:8090",
+      "url": "http://customer.appd-cx.com:8090",
       "username": "username@customer1",
       "password": "password",
       "proxy_url": "",
@@ -19,9 +19,9 @@
   ],
   "non_prod_controller_details": [
     {
-      "url": "http://aleksandracustommetric-khgjgvot.appd-cx.com:8090",
+      "url": "https://dev-customer.appd-cx.com",
       "username": "appd@customer1",
-      "password": "appd",
+      "password": "password",
       "proxy_url": "",
       "proxy_port": ""
     }
