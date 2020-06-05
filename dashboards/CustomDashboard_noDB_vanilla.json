@@ -762,26 +762,26 @@
             "propertiesMap": null,
             "dataSeriesTemplates": null,
             "applicationReference": {
-                "applicationName": "Server & Infrastructure Monitoring",
+                "applicationName": "ChangeApplicationName",
                 "entityType": "APPLICATION",
-                "entityName": "Server & Infrastructure Monitoring",
+                "entityName": "ChangeApplicationName",
                 "scopingEntityType": null,
                 "scopingEntityName": null,
                 "subtype": null
             },
             "entityReferences": [
                 {
-                    "applicationName": "Server & Infrastructure Monitoring",
+                    "applicationName": "ChangeApplicationName",
                     "entityType": "POLICY",
-                    "entityName": "ChangeApplicationName: Memory Usage is too high",
+                    "entityName": "Server Health: CPU Utilisation is too high",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
                 },
                 {
-                    "applicationName": "Server & Infrastructure Monitoring",
+                    "applicationName": "ChangeApplicationName",
                     "entityType": "POLICY",
-                    "entityName": "ChangeApplicationName: CPU Usage is too high",
+                    "entityName": "Server Health: Memory Utilisation is too high",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null

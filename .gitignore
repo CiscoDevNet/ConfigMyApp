@@ -3,6 +3,7 @@ dashboards/uploaded/*
 .DS_Store
 notes.txt
 error.log
-res.out
-resp.txt
-resp2.txt
+local*/*
+local.*
+temp*
+jenkins_*
