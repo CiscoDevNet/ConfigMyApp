@@ -19,7 +19,7 @@ phases:
     name: Collect Artifact
     steps:
     - type: SHELL_SCRIPT
-      name: My Shell Script
+      name: Pull from git
       properties:
         commandPath: null
         connectionAttributes: null
@@ -42,7 +42,7 @@ phases:
         templateUuid: null
         templateVariables: null
         templateVersion: null
-        timeoutMillis: 180000
+        timeoutMillis: 60000
     - type: SHELL_SCRIPT
       name: Shell Script_2
       properties:
