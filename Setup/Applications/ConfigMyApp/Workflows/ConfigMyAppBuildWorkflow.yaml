@@ -19,11 +19,10 @@ phases:
     name: Collect Artifact
     steps:
     - type: SHELL_SCRIPT
-      name: Shell Script
+      name: My Shell Script
       properties:
         commandPath: null
         connectionAttributes: null
-        connectionType: SSH
         executeOnDelegate: true
         host: null
         outputVars: ''
@@ -33,11 +32,9 @@ phases:
           echo \"remote\"\ngit config remote.origin.url https://github.com/Appdynamics/ConfigMyApp.git\n\
           echo \"Cloning repo...\" \ngit config --global credential.helper cache\n\
           git clone https://AlexJov:fa64a47df9c0fc8ae6bbff0c77d7ffea14737e24@github.com/Appdynamics/ConfigMyApp.git\
-          \ -b features/jenkins_pipeline --single-branch ConfigMyApp12\necho \"Cloned\"\
-          \nls\nwhoami\nls ./ConfigMyApp12\necho \"Execute script...\"\nchmod 775\
-          \ ./ConfigMyApp12/configMyApp.sh\nchmod 775 ./ConfigMyApp12/config.json\n\
-          chmod +x ./ConfigMyApp12/config.json\ncat ./ConfigMyApp12/config.json\n\
-          ./ConfigMyApp12/configMyApp.sh TPV no no dev\necho \"Done.\""
+          \ -b features/jenkins_pipeline --single-branch ConfigMyApp\necho \"Cloned\"\
+          \nls\nwhoami\nls ./ConfigMyApp\necho \"Execute script...\"\ncat ./ConfigMyApp/config.json\n\
+          ./ConfigMyApp/configMyApp.sh TPV no no dev\necho \"Done.\""
         scriptType: BASH
         sshKeyRef: null
         sweepingOutputName: null
