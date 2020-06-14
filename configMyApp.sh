@@ -33,7 +33,7 @@
     exit 1
 }
 
-conf_file="config.json"
+conf_file="./config.json"
 
 overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
 are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
