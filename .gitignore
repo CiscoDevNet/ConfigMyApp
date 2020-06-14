@@ -11,3 +11,5 @@ local*/*
 local.*
 temp*
 jenkins_*
+integrations/Harnessio/*
+Setup/Applications/*
