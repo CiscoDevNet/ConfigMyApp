@@ -43,6 +43,32 @@ phases:
         templateVariables: null
         templateVersion: null
         timeoutMillis: 180000
+    - type: SHELL_SCRIPT
+      name: Shell Script_2
+      properties:
+        commandPath: null
+        connectionAttributes: null
+        executeOnDelegate: true
+        host: null
+        outputVars: ''
+        publishAsVar: false
+        scriptString: |-
+          echo "Execute script"
+          ls
+          whoami
+          ls ./ConfigMyApp
+          echo "Execute script..."
+          cat ./ConfigMyApp/config.json
+          ./ConfigMyApp/configMyApp.sh TPV no no dev
+          echo "Done."
+        scriptType: BASH
+        sshKeyRef: null
+        sweepingOutputName: null
+        sweepingOutputScope: null
+        tags: null
+        templateExpressions: null
+        templateVariables: ''
+        timeoutMillis: 60000
     stepsInParallel: false
   - type: WRAP_UP
     name: Wrap Up
