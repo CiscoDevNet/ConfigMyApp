@@ -1,0 +1,13 @@
+harnessApiVersion: '1.0'
+type: PIPELINE
+pipelineStages:
+- type: ENV_STATE
+  name: ConfigMyAppBuildWorkflow
+  parallel: false
+  skipCondition:
+    type: DO_NOT_SKIP
+  stageName: STAGE 1
+  workflowName: ConfigMyAppBuildWorkflow
+  workflowVariables:
+  - name: APP_ENVIRONMENT
+    value: dev
