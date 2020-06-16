@@ -230,38 +230,31 @@ handle_passed_args_dependency()
 
 handle_mandatory_args()
 {
-	test -z "${_arg_controller_host// }" && _PRINT_HELP=no die "FATAL ERROR: Controller host value must be set" 1
-	test -z "${_arg_controller_port// }" && _PRINT_HELP=no die "FATAL ERROR: Controller port value must be set" 1
-	test -z "${_arg_username// }" && _PRINT_HELP=no die "FATAL ERROR: Username value must be set" 1
-	test -z "${_arg_password// }" && _PRINT_HELP=no die "FATAL ERROR: Password value must be set" 1
-	test -z "${_arg_application_name// }" && _PRINT_HELP=no die "FATAL ERROR: Application name value must be set" 1
+	test -z "${_arg_controller_host// }" && _PRINT_HELP=no die "FATAL ERROR: Controller host must be set" 1
+	test -z "${_arg_controller_port// }" && _PRINT_HELP=no die "FATAL ERROR: Controller port must be set" 1
+	test -z "${_arg_username// }" && _PRINT_HELP=no die "FATAL ERROR: Username must be set" 1
+	test -z "${_arg_password// }" && _PRINT_HELP=no die "FATAL ERROR: Password must be set" 1
+	test -z "${_arg_application_name// }" && _PRINT_HELP=no die "FATAL ERROR: Application name must be set" 1
 }
 
 parse_commandline "$@"
 
 # 2. If value not set with arguments replace with Environment Variable (if exists)
-if [[ -z "${_arg_controller_host// }" ]]; then
-	if [[ ! -z "${CMA_CONTROLLER_HOST// }" ]]; then
-		_arg_controller_host=${CMA_CONTROLLER_HOST}
-	fi
+# env | grep CMA_
+if ([ -z "${_arg_controller_host// }" ] && [ ! -z "${CMA_CONTROLLER_HOST// }" ]); then
+	_arg_controller_host=${CMA_CONTROLLER_HOST}
 fi
 
-if [[ -z "${_arg_controller_port// }" ]]; then
-	if [[ ! -z "${CMA_CONTROLLER_PORT// }" ]]; then
-		_arg_controller_port=${CMA_CONTROLLER_PORT}
-	fi
+if ([ -z "${_arg_controller_port// }" ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
+	_arg_controller_port=${CMA_CONTROLLER_PORT}
 fi
 
-if [[ -z "${_arg_username// }" ]]; then
-	if [[ ! -z "${CMA_USERNAME// }" ]]; then
-		_arg_username=${CMA_USERNAME}
-	fi
+if ([ -z "${_arg_username// }" ] && [ ! -z "${CMA_USERNAME// }" ]); then
+	_arg_username=${CMA_USERNAME}
 fi
 
-if [[ -z "${_arg_password// }" ]]; then
-	if [[ ! -z "${CMA_PASSWORD// }" ]]; then
-		_arg_password=${CMA_PASSWORD}
-	fi
+if ([ -z "${_arg_password// }" ] && [ ! -z "${CMA_PASSWORD// }" ]); then
+	_arg_password=${CMA_PASSWORD}
 fi
 
 # 3. If value not set replace with configuration file values
@@ -283,6 +276,7 @@ if [[ -z "${_arg_password// }" ]]; then
 	_arg_password=$(jq -r ' .controller_details[].password' <${conf_file})
 fi
 
+
 if [[ -z "${_arg_proxy_url// }" ]]; then
 	_arg_proxy_url=$(jq -r ' .controller_details[].proxy_url' <${conf_file})
 fi
@@ -290,6 +284,7 @@ fi
 if [[ -z "${_arg_proxy_port// }" ]]; then
 	_arg_proxy_port=$(jq -r ' .controller_details[].proxy_port' <${conf_file})
 fi
+
 
 # Hande dependency between arguments and mandatory values
 handle_passed_args_dependency
