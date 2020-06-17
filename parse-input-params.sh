@@ -60,6 +60,10 @@ _arg_database_name=
 _arg_include_sim="off"
 _arg_configure_bt="off"
 
+_arg_use_proxy_explicitly_set=false
+_arg_include_database_explicitly_set=false
+_arg_include_sim_explicitly_set=false
+_arg_configure_bt_explicitly_set=false
 
 print_help()
 {
@@ -133,6 +137,7 @@ parse_commandline()
 				;;
 			--no-use-proxy|--use-proxy)
 				_arg_use_proxy="on"
+				_arg_use_proxy_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_use_proxy="off"
 				;;
 			--proxy-url)
@@ -164,6 +169,7 @@ parse_commandline()
 				;;
 			--no-include-database|--include-database)
 				_arg_include_database="on"
+				_arg_include_database_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_include_database="off"
 				;;
 			-d|--database-name)
@@ -179,6 +185,7 @@ parse_commandline()
 				;;
 			-s|--no-include-sim|--include-sim)
 				_arg_include_sim="on"
+				_arg_include_sim_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_include_sim="off"
 				;;
 			-s*)
@@ -191,6 +198,7 @@ parse_commandline()
 				;;
 			-b|--no-configure-bt|--configure-bt)
 				_arg_configure_bt="on"
+				_arg_configure_bt_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_configure_bt="off"
 				;;
 			-b*)
@@ -240,7 +248,19 @@ handle_mandatory_args()
 handle_expected_values_for_args()
 {
 	if ([ ! $_arg_include_database = "off" ] && [ ! $_arg_include_database = "on" ] ); then 
-		_PRINT_HELP=no die "FATAL ERROR: --include-database value "${_arg_controller_host}" not recognized" 1
+		_PRINT_HELP=no die "FATAL ERROR: --include-database value \"${_arg_include_database}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_use_proxy = "off" ] && [ ! $_arg_use_proxy = "on" ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --useproxy value \"${_arg_use_proxy}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_include_sim = "off" ] && [ ! $_arg_include_sim = "on" ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --include-sim value \"${_arg_include_sim}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_configure_bt = "off" ] && [ ! $_arg_configure_bt = "on" ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --configure-ts value \"${_arg_configure_bt}\" not recognized" 1
 	fi
 }
 
@@ -268,19 +288,19 @@ if ([ -z "${_arg_application_name// }" ] && [ ! -z "${CMA_APPLICATION_NAME// }" 
 	_arg_application_name=${CMA_APPLICATION_NAME}
 fi
 
-# TODO - Q: args with default values are necer going to be empty - how to override with env var?
-if ([ -z "${_arg_include_database// }" ] && [ ! -z "${CMA_INCLUDE_DATABASE// }" ]); then
+# TODO - Q: args with default values are necer going to be empty - how to override with env var? -> adding explicitly_set
+if ([ $_arg_include_database_explicitly_set = false ] && [ ! -z "${CMA_INCLUDE_DATABASE// }" ]); then
 	_arg_include_database=${CMA_INCLUDE_DATABASE}
 fi
 if ([ -z "${_arg_database_name// }" ] && [ ! -z "${CMA_DATABASE_NAME// }" ]); then
 	_arg_database_name=${CMA_DATABASE_NAME}
 fi
 
-if ([ -z "${_arg_include_sim// }" ] && [ ! -z "${CMA_INCLUDE_SIM// }" ]); then
+if ([ $_arg_include_sim_explicitly_set = false ] && [ ! -z "${CMA_INCLUDE_SIM// }" ]); then
 	_arg_include_sim=${CMA_INCLUDE_SIM}
 fi
 
-if ([ -z "${_arg_configure_bt// }" ] && [ ! -z "${CMA_CONFIGURE_BT// }" ]); then
+if ([ $_arg_configure_bt_explicitly_set = false ] && [ ! -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=${CMA_CONFIGURE_BT}
 fi
 
