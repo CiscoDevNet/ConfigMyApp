@@ -92,17 +92,11 @@ _include_sim=$7 # includeSIM
 _configure_bt=$8 # 
 _overwrite_health_rules=$9 # overwrite_health_rules
 
-echo "URL $_controller_url"
-echo "CREDS $_user_credentials"
-echo "BT $_configure_bt"
-echo "proxy $_proxy_details"
-echo "APP $_application_name"
-
-if [ "${_configure_bt}" = true ]; then
-    echo "OK"
-else 
-    echo "NOT OK"
-fi
+# echo "URL $_controller_url"
+# echo "CREDS $_user_credentials"
+# echo "BT $_configure_bt"
+# echo "Proxy $_proxy_details"
+# echo "APP $_application_name"
 
 ### END GETTING INPUT ARGUMENTS ###
 
