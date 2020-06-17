@@ -8,22 +8,26 @@
       "background_file_name": "background.jpg"
     }
   ],
-  "prod_controller_details": [
+  "controller_details": [
     {
-      "url": "http://customer.appd-cx.com:8090",
-      "username": "username@customer1",
-      "password": "password",
-      "proxy_url": "",
+      "host": "https://dev-customer.appd-cx.com:443/controller",
+      "port": 8090,
+      "use_https": false,
+      "account": "customer1",
+      "username": "appd",
+      "password": "appd",
+      "use_proxy": false,
+      "proxy_url": "my-proxy-from-config",
       "proxy_port": ""
     }
   ],
-  "non_prod_controller_details": [
+  "configuration": [
     {
-      "url": "https://dev-customer.appd-cx.com",
-      "username": "appd@customer1",
-      "password": "password",
-      "proxy_url": "",
-      "proxy_port": ""
+      "application_name": "",
+      "include_database": false,
+      "database_name": "",
+      "include_sim": false,
+      "configure_bt": false
     }
   ]
 }

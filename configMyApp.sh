@@ -33,25 +33,25 @@
     exit 1
 }
 
-conf_file="testconfig.json"
+conf_file="./config.json"
 
-overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
-are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
+# overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
+# are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
 
 enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
 image_logo_path="./branding/$(jq -r ' .branding[].logo_file_name' <${conf_file})"
 image_background_path="./branding/$(jq -r ' .branding[].background_file_name' <${conf_file})"
 
-prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
-prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
-prod_password=$(jq -r ' .prod_controller_details[].password' <${conf_file})
+# prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
+# prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
+# prod_password=$(jq -r ' .prod_controller_details[].password' <${conf_file})
 
-dev_controller=$(jq -r ' .non_prod_controller_details[].url' <${conf_file})
-dev_username=$(jq -r ' .non_prod_controller_details[].username' <${conf_file})
-dev_password=$(jq -r ' .non_prod_controller_details[].password' <${conf_file})
+# dev_controller=$(jq -r ' .non_prod_controller_details[].url' <${conf_file})
+# dev_username=$(jq -r ' .non_prod_controller_details[].username' <${conf_file})
+# dev_password=$(jq -r ' .non_prod_controller_details[].password' <${conf_file})
 
-dev_proxy_url=$(jq -r ' .non_prod_controller_details[].proxy_ur'l <${conf_file})
-dev_proxy_port=$(jq -r ' .non_prod_controller_details[].proxy_port' <${conf_file})
+# dev_proxy_url=$(jq -r ' .non_prod_controller_details[].proxy_ur'l <${conf_file})
+# dev_proxy_port=$(jq -r ' .non_prod_controller_details[].proxy_port' <${conf_file})
 
 # Do not change anything else beyond this point except you know what you're doing :)
 
@@ -76,6 +76,37 @@ tempFolder="temp"
 bt_folder="./business_transactions"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
+
+
+### START GETTING INPUT ARGUMENTS ###
+_controller_url=$1 # hostname + /controller
+
+_user_credentials=$2 # ${username}:${password}
+
+_proxy_details=$3 # proxy_details
+
+_application_name=$4 # appName
+_include_database=$5 # 
+_database_name=$6 # DBName
+_include_sim=$7 # includeSIM
+_configure_bt=$8 # 
+_overwrite_health_rules=$9 # overwrite_health_rules
+
+echo "URL $_controller_url"
+echo "CREDS $_user_credentials"
+echo "BT $_configure_bt"
+echo "proxy $_proxy_details"
+echo "APP $_application_name"
+
+if [ "${_configure_bt}" = true ]; then
+    echo "OK"
+else 
+    echo "NOT OK"
+fi
+
+### END GETTING INPUT ARGUMENTS ###
+
+### START FUNCTIONS ###
 IOURLEncoder() {
     local string="${1}"
     local strlen=${#string}
@@ -129,124 +160,125 @@ function is_image_valid() {
     if [[ ${image_extension_collection[$image_extension]} ]]; then echo "True"; else "False"; fi
 }
 
-if [ "$1" != "" ]; then
-    appName=$1
-else
-    read -p "Enter your business application name [ENTER]:  " appName
-fi
+# if [ "$1" != "" ]; then
+#     appName=$1
+# else
+#     read -p "Enter your business application name [ENTER]:  " appName
+# fi
 
-if [ "$appName" = "--help" ]; then
-    echo ""
-    echo "************************HELP*********************************************************************************************************************"
-    echo "This Self Service Config tool configures application, server and business transaction health rules."
-    echo "It also automatically creates an application visiblity dashboard."
-    echo "You may run this script in a silent mode, or in an interactive mode: "
-    echo ""
-    echo ""
-    echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name> <server_viz> <environment>"
-    echo "* application_name : This represents the business application name in the AppDynamics controlleer. It should be an exact match"
-    echo ""
-    echo "* database_name : Get the name of the database collector for this application from Databases menu. If this application is not associated to any database, enter no, or none"
-    echo ""
-    echo "* server_viz : Enter yes to configure server viz health rules"
-    echo ""
-    echo "* environment : Enter one of prod, uat, test, dev, etc. This represents the environment of your application and will determine the Controller to use"
-    echo "For example: ./configMyApp.sh AD-DevOps 'Ecomm Oracle DB' yes dev or ./configMyApp.sh AD-DevOps no no prod "
-    echo "         "
-    echo ""
-    echo "2)  Interactive Mode: Simply execute configMyApp.sh and follow the onscreen instructions "
-    echo "*********************************************************************************************************************************************"
-    exit 1
-fi
+# if [ "$appName" = "--help" ]; then
+#     echo ""
+#     echo "************************HELP*********************************************************************************************************************"
+#     echo "This Self Service Config tool configures application, server and business transaction health rules."
+#     echo "It also automatically creates an application visiblity dashboard."
+#     echo "You may run this script in a silent mode, or in an interactive mode: "
+#     echo ""
+#     echo ""
+#     echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name> <server_viz> <environment>"
+#     echo "* application_name : This represents the business application name in the AppDynamics controlleer. It should be an exact match"
+#     echo ""
+#     echo "* database_name : Get the name of the database collector for this application from Databases menu. If this application is not associated to any database, enter no, or none"
+#     echo ""
+#     echo "* server_viz : Enter yes to configure server viz health rules"
+#     echo ""
+#     echo "* environment : Enter one of prod, uat, test, dev, etc. This represents the environment of your application and will determine the Controller to use"
+#     echo "For example: ./configMyApp.sh AD-DevOps 'Ecomm Oracle DB' yes dev or ./configMyApp.sh AD-DevOps no no prod "
+#     echo "         "
+#     echo ""
+#     echo "2)  Interactive Mode: Simply execute configMyApp.sh and follow the onscreen instructions "
+#     echo "*********************************************************************************************************************************************"
+#     exit 1
+# fi
 
-echo "You entered '$appName' for application name"
-echo ""
-if [ "$2" != "" ]; then
-    DBName=$2
-else
-    echo ""
-    echo "Enter a name of a related Database Collector."
-    read -p "Enter 'no' if the target app is not associated with a database [ENTER]:  " DBName
-fi
+# echo "You entered '$appName' for application name"
+# echo ""
+# if [ "$2" != "" ]; then
+#     DBName=$2
+# else
+#     echo ""
+#     echo "Enter a name of a related Database Collector."
+#     read -p "Enter 'no' if the target app is not associated with a database [ENTER]:  " DBName
+# fi
 
-echo "You entered '$DBName' for Database collector name"
-echo ""
+# echo "You entered '$DBName' for Database collector name"
+# echo ""
 
-if [ "$3" != "" ]; then
-    includeSIM=$3
-else
-    echo ""
-    echo "Include Server Visibility?"
-    read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
-fi
+# if [ "$3" != "" ]; then
+#     includeSIM=$3
+# else
+#     echo ""
+#     echo "Include Server Visibility?"
+#     read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
+# fi
 
-if [ "$4" != "" ]; then
-    controller=$4
-else
-    echo ""
-    echo "What's your application environment?"
-    read -p "Please enter one of prod,dev,uat,qa etc [ENTER]:  " controller
-fi
+# if [ "$4" != "" ]; then
+#     controller=$4
+# else
+#     echo ""
+#     echo "What's your application environment?"
+#     read -p "Please enter one of prod,dev,uat,qa etc [ENTER]:  " controller
+# fi
 
-echo "You entered '$controller' for application evironment"
-echo ""
+# echo "You entered '$controller' for application evironment"
+# echo ""
 
-if [ "$5" != "" ]; then
-    configbt=$5
-else
-    configbt="no"
-fi
+# if [ "$5" != "" ]; then
+#     configbt=$5
+# else
+#     configbt="no"
+# fi
 
-echo "You entered '$configbt' for transaction configuration"
-echo ""
+# echo "You entered '$configbt' for transaction configuration"
+# echo ""
+
 # end input params
 
 # validate input params
-if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
-    inludeDB="false"
-else
-    inludeDB="true"
-fi
+# if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
+#     inludeDB="false"
+# else
+#     inludeDB="true"
+# fi
 
-if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
-    includeSIM="true"
-elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
-    includeSIM="false"
-else
-    echo "You must enter valid yes/no value, set includeSIM to no if you're not interested in Server Visibility"
-    exit 1
-fi
+# if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
+#     includeSIM="true"
+# elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
+#     includeSIM="false"
+# else
+#     echo "You must enter valid yes/no value, set includeSIM to no if you're not interested in Server Visibility"
+#     exit 1
+# fi
 
-echo "Server Visibility is set to '$includeSIM'"
-echo ""
+# echo "Server Visibility is set to '$includeSIM'"
+# echo ""
 
-if [ "$appName" = "" ] || [ "$DBName" = "" ]; then
-    echo "You must define Application Name and Database Name, set DBName to no if you're not interested in DB monitoring"
-    exit 1
-fi
+# if [ "$appName" = "" ] || [ "$DBName" = "" ]; then
+#     echo "You must define Application Name and Database Name, set DBName to no if you're not interested in DB monitoring"
+#     exit 1
+# fi
 
-if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$controller" = "PROD" ] || [ "$controller" = "PRODUCTION" ]; then
-    hostname=${prod_controller}
-    password=${prod_password}
-    username=${prod_username}
-    proxy_url="${prod_proxy_url}"
-    proxy_port="${prod_proxy_port}"
-else
-    hostname=${dev_controller}
-    password=${dev_password}
-    username=${dev_username}
-    proxy_url="${dev_proxy_url}"
-    proxy_port="${dev_proxy_port}"
-fi
+# if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$controller" = "PROD" ] || [ "$controller" = "PRODUCTION" ]; then
+#     hostname=${prod_controller}
+#     password=${prod_password}
+#     username=${prod_username}
+#     proxy_url="${prod_proxy_url}"
+#     proxy_port="${prod_proxy_port}"
+# else
+#     hostname=${dev_controller}
+#     password=${dev_password}
+#     username=${dev_username}
+#     proxy_url="${dev_proxy_url}"
+#     proxy_port="${dev_proxy_port}"
+# fi
 
-# decode passwords if encoded
-if [ "$are_passwords_encoded" = "true" ]; then
-    password=$(eval echo ${password} | base64 --decode)
-fi
+# # decode passwords if encoded
+# if [ "$are_passwords_encoded" = "true" ]; then
+#     password=$(eval echo ${password} | base64 --decode)
+# fi
 
-echo "Using $hostname controller"
-echo ""
-echo ""
+# echo "Using $hostname controller"
+# echo ""
+# echo ""
 
 function func_check_http_status() {
     local http_code=$1
@@ -305,7 +337,7 @@ function func_copy_file_and_replace_values() {
     fi
 
     # replace application and database name
-    sed -i.original -e "s/${templateAppName}/${appName}/g; s/${templateDBName}/${DBName}/g" "${tempFolder}/${fileName}"
+    sed -i.original -e "s/${templateAppName}/${_application_name}/g; s/${templateDBName}/${_database_name}/g" "${tempFolder}/${fileName}"
 
     # return full file path
     echo "${tempFolder}/${fileName}"
@@ -321,7 +353,7 @@ function func_import_health_rules(){
     local folderPath=$2
 
      # get all current health rules for application
-    allHealthRules=$(curl -s --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules ${proxy_details})
+    allHealthRules=$(curl -s --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules ${_proxy_details})
 
     for f in $folderPath; do 
 
@@ -332,72 +364,75 @@ function func_import_health_rules(){
 
         # create new if health rule id does not exist
         if [ "${healthRuleId}" == "" ]; then
-            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
             func_check_http_status $httpCode "Error occured while importing server health rules."
         # overwrite existing health rule only if flag is true
-        elif [ "$overwrite_health_rules" = "true" ]; then
-            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${username}:${password} ${hostname}/controller/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${proxy_details})
+        elif [ "${_overwrite_health_rules}" = true ]; then
+            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
             func_check_http_status $httpCode "Error occured while importing server health rules."
         fi
 
     done
 }
 
-#Process proxy details
-#jq sets empty strings to null istead of NULL
-echo "Please wait while we check if you've configured any proxies with ConfigMyApp"
-sleep 1
-if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ] || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then
-    echo "No HTTP Proxy is configured. Skipping proxy configuration..."
-    proxy_details=""
-else
-    echo "Found HTTP Proxy configuration, using... "
-    echo "Proxy URL = $proxy_url , Proxy Port = $proxy_port"
-    proxy_details="-x $proxy_url:$proxy_port"
-fi
+### END FUNCTIONS ###
 
-endpoint="/controller/CustomDashboardImportExportServlet"
-url=${hostname}${endpoint}
+# Process proxy details
+#j q sets empty strings to null istead of NULL
+# echo "Please wait while we check if you've configured any proxies with ConfigMyApp"
+# sleep 1
+# if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ] || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then
+#     echo "No HTTP Proxy is configured. Skipping proxy configuration..."
+#     proxy_details=""
+# else
+#     echo "Found HTTP Proxy configuration, using... "
+#     echo "Proxy URL = $proxy_url , Proxy Port = $proxy_port"
+#     proxy_details="-x $proxy_url:$proxy_port"
+# fi
+
+endpoint="/CustomDashboardImportExportServlet"
+url=${_controller_url}${endpoint}
 
 echo ""
 echo ""
 
 # check if app exists
-echo "Checking if ${appName} business application exist in ${hostname}..."
+echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
 echo ""
 echo ""
 sleep 1
 
 
-allApplications=$(curl -s --user ${username}:${password} ${hostname}/controller/rest/applications?output=JSON ${proxy_details})
+allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON ${_proxy_details})
 
-applicationObject=$(jq --arg appName "$appName" '.[] | select(.name == $appName)' <<<$allApplications)
+applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
 
 if [ "$applicationObject" = "" ]; then
-    func_check_http_status 404 "Application '"$appName"' not found. Aborting..."
+    func_check_http_status 404 "Application '"$_application_name"' not found. Aborting..."
 fi
 
 appId=$(jq '.id' <<<$applicationObject)
 
-echo "Found ${appName} business application"
+echo "Found ${_application_name} business application"
 echo ""
 echo ""
 
-if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt" = "btonly" ] || [ "$configbt" = "onlybt" ]; then
+#if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt" = "btonly" ] || [ "$configbt" = "onlybt" ]; then
 
+if [ "${_configure_bt}" = true ]; then
     echo ""
-    echo "You entered $configbt. This instruction will ONLY configure business transaction in $appName"
+    echo "You entered $_configure_bt. This instruction will ONLY configure business transaction in $_application_name"
     echo "Application health rules, SIM health rules, dashboard, etc will not be created..."
     echo ""
     echo "Please wait while we process your Business transaction configuration settings from the JSON file"
     echo ""
     sleep 2
-    source ./configBT.sh "$appName"
+    source ./configBT.sh "$_application_name"
 else
     #proceed as normal
 
     #Server Visibility health rules
-    if [ "$includeSIM" = "true" ]; then
+    if [ "${_include_sim}" = true ]; then
         echo "Creating Server Visibility Health Rules...Please wait"
         echo ""
 
@@ -406,7 +441,7 @@ else
 
     #Application health rules
     echo ""
-    echo "Creating ${appName} Health Rules..."
+    echo "Creating ${_application_name} Health Rules..."
     sleep 1
 
     func_import_health_rules $appId "${applicationHealthRule}"
@@ -423,15 +458,15 @@ else
     #Dashboard
     echo "Applying Database and SIM settings to the dashboard template..."
     sleep 1
-    if [ "$inludeDB" = "false" ]; then
+    if [ "${_include_database}" = false ]; then
 
-        if [ "$includeSIM" = "true" ]; then
+        if [ "${_include_database}" = true ]; then
             templateFile="$vanilla_noDB"
         else
             templateFile="$vanilla_noDB_noSIM"
         fi
     else
-        if [ "$includeSIM" = "true" ]; then
+        if [ "${_include_sim}" = true ]; then
             templateFile="$vanilla"
         else
             templateFile="$vanilla_noSIM"
@@ -457,13 +492,7 @@ else
     echo "Creating dashboard in the controller"
     sleep 3
 
-    response=$(curl -s -X POST --user ${username}:${password} ${url} -F file=@${pathToDashboardFile})
-
-    # commenting these out as a response code of 2xx doesn't  mean that the dashboard was sucessfully created
-    #httpCode=$(curl -X POST -o /dev/null -w "%{http_code}\n" --user ${username}:${password} "${url}" -F file=@${pathToDashboardFile} ${proxy_details})
-    #func_check_http_status $httpCode "Error occured while creating dashboard."
-
-    #echo "RESPONSE $response"
+    response=$(curl -s -X POST --user ${_user_credentials} ${url} -F file=@${pathToDashboardFile})
 
     expected_response='"success":true'
 
@@ -471,8 +500,8 @@ else
 
     echo "*********************************************************************"
     echo "The dashboard was created successfully. "
-    echo "Please check the $hostname controller "
-    echo "The Dashboard name is '$appName:App Visibility Pane' "
+    echo "Please check the $_controller_url controller "
+    echo "The Dashboard name is '$_application_name:App Visibility Pane' "
     echo "*********************************************************************"
 
     echo ""
@@ -481,7 +510,7 @@ else
     # save used uploaded files
     mkdir -p ./dashboards/uploaded
 
-    cp -rf "./${tempFolder}" "./dashboards/uploaded/${appName}"."${dt}"
+    cp -rf "./${tempFolder}" "./dashboards/uploaded/${_application_name}"."${dt}"
 
     func_cleanup
 
@@ -490,8 +519,9 @@ else
     echo "Checking Transaction configurantion instruction..."
     sleep 2
 
-    if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ] || [ "$configbt" = "BT" ] || [ "$configbt" = "yes" ]; then
-        source ./configBT.sh "$appName"
+    #if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ] || [ "$configbt" = "BT" ] || [ "$configbt" = "yes" ]; then
+    if [ "${_configure_bt}" = true ]; then
+        source ./configBT.sh "$_application_name"
     else
         echo ""
         echo ""
