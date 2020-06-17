@@ -38,6 +38,13 @@ die()
 	exit ${_ret}
 }
 
+warn()
+{
+	test -n "$_ret" || _ret=1
+	test "$_PRINT_HELP" = yes && print_help >&2
+	echo "$1" >&2
+}
+
 
 begins_with_short_option()
 {
@@ -49,17 +56,24 @@ begins_with_short_option()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_controller_host=
 _arg_controller_port=8090
+_arg_use_https="off"
+
+_arg_account="customer1"
 _arg_username=
 _arg_password=
+
 _arg_use_proxy="off"
 _arg_proxy_url=
 _arg_proxy_port=
+
 _arg_application_name=
 _arg_include_database="off"
 _arg_database_name=
 _arg_include_sim="off"
 _arg_configure_bt="off"
 
+_arg_use_https_explicitly_set=false
+_arg_account_explicitly_set=true
 _arg_use_proxy_explicitly_set=false
 _arg_include_database_explicitly_set=false
 _arg_include_sim_explicitly_set=false
@@ -71,11 +85,16 @@ print_help()
 	printf 'Usage: %s [-c|--controller-host <arg>] [-P|--controller-port <arg>] [-u|--username <arg>] [-p|--password <arg>] [--(no-)use-proxy] [--proxy-url <arg>] [--proxy-port <arg>] [-a|--application-name <arg>] [--(no-)include-database] [-d|--database-name <arg>] [-s|--(no-)include-sim] [-b|--(no-)configure-bt] [-h|--help]\n' "$0"
 	printf '\t%s\n' "-c, --controller-host: controller host (without trailing bakslash) (no default)"
 	printf '\t%s\n' "-P, --controller-port: controller port (${_arg_controller_port} by default)"
-	printf '\t%s\n' "-u, --username: AppDynamics user username (no default)"
-	printf '\t%s\n' "-p, --password: AppDynamics user password (no default)"
+	printf '\t%s\n' "--use-https, --no-use-https: if on, specifies that the agent should use SSL (off by default)"
+
+	printf '\t%s\n' "--account: account help msg (${_arg_account} by default)"
+	printf '\t%s\n' "-u, --username: AppDynamics' user username (no default)"
+	printf '\t%s\n' "-p, --password: AppDynamics' user password (no default)"
+
 	printf '\t%s\n' "--use-proxy, --no-use-proxy: use proxy optional argument (off by default)"
 	printf '\t%s\n' "--proxy-url: proxy url (no default)"
-	printf '\t%s\n' "--proxy-port: proxy port, mandatory if use-proxy set to true (no default)"
+	printf '\t%s\n' "--proxy-port: proxy port (no default)"
+
 	printf '\t%s\n' "-a, --application-name: application name (no default)"
 	printf '\t%s\n' "--include-database, --no-include-database: database name (off by default)"
 	printf '\t%s\n' "-d, --database-name: mandatory if include-database set to true (no default)"
@@ -112,6 +131,20 @@ parse_commandline()
 				;;
 			-P*)
 				_arg_controller_port="${_key##-P}"
+				;;
+			--account)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_account="$2"
+				shift
+				;;
+			--account=*)
+			    _arg_account_explicitly_set=true
+				_arg_account="${_key##--account=}"
+				;;
+			--no-use-https|--use-https)
+				_arg_use_https_explicitly_set=true
+				_arg_use_https="on"
+				test "${1:0:5}" = "--no-" && _arg_use_https="off"
 				;;
 			-u|--username)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
@@ -227,6 +260,16 @@ parse_commandline()
 
 handle_passed_args_dependency()
 {
+	# warning
+	if ([ $_arg_use_https = "off" ] &&  [ ! $_arg_controller_port = "8090" ]); then
+		_PRINT_HELP=no warn "WARNING: Value of --controller-port is "${_arg_controller_port}" - note that for on-premises controllers, port 8090 is the default for HTTP"
+	fi
+
+	if ([ $_arg_use_https = "on" ] && ([ ! $_arg_controller_port = "8181" ] && [ ! $_arg_controller_port = "443" ] )); then
+		_PRINT_HELP=no warn "WARNING: Value of --controller-port is "${_arg_controller_port}" - note that for on-premises and SaaS controllers, ports 8181 and 443, respectively, are defaults for HTTPS"
+	fi
+
+	# error
 	if [ $_arg_include_database = "on" ]; then
 		test -z "${_arg_database_name// }" && _PRINT_HELP=yes die "FATAL ERROR: When value of --inlude-database is "${_arg_include_database}" - we require database name to be set (namely: --database-name)" 1
 	fi
@@ -240,13 +283,19 @@ handle_mandatory_args()
 {
 	test -z "${_arg_controller_host// }" && _PRINT_HELP=no die "FATAL ERROR: Controller host must be set" 1
 	test -z "${_arg_controller_port// }" && _PRINT_HELP=no die "FATAL ERROR: Controller port must be set" 1
+	test -z "${_arg_account// }" && _PRINT_HELP=no die "FATAL ERROR: Account must be set" 1
 	test -z "${_arg_username// }" && _PRINT_HELP=no die "FATAL ERROR: Username must be set" 1
 	test -z "${_arg_password// }" && _PRINT_HELP=no die "FATAL ERROR: Password must be set" 1
 	test -z "${_arg_application_name// }" && _PRINT_HELP=no die "FATAL ERROR: Application name must be set" 1
 }
 
+# Additional layer of control when value is set through environment variable or configuration
 handle_expected_values_for_args()
 {
+	if ([ ! $_arg_use_https = "off" ] && [ ! $_arg_use_https = "on" ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --use-https value \"${_arg_use_https}\" not recognized" 1
+	fi
+
 	if ([ ! $_arg_include_database = "off" ] && [ ! $_arg_include_database = "on" ] ); then 
 		_PRINT_HELP=no die "FATAL ERROR: --include-database value \"${_arg_include_database}\" not recognized" 1
 	fi
@@ -275,7 +324,13 @@ fi
 if ([ -z "${_arg_controller_port// }" ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
 	_arg_controller_port=${CMA_CONTROLLER_PORT}
 fi
+if ([ $_arg_use_https_explicitly_set = false ] && [ ! -z "${CMA_USE_HTTPS// }" ]); then
+	_arg_use_https=${CMA_USE_HTTPS}
+fi
 
+if ([ $_arg_account_explicitly_set = false ] && [ ! -z "${CMA_ACCOUNT// }" ]); then
+	_arg_account=${CMA_ACCOUNT}
+fi
 if ([ -z "${_arg_username// }" ] && [ ! -z "${CMA_USERNAME// }" ]); then
 	_arg_username=${CMA_USERNAME}
 fi
@@ -288,7 +343,7 @@ if ([ -z "${_arg_application_name// }" ] && [ ! -z "${CMA_APPLICATION_NAME// }" 
 	_arg_application_name=${CMA_APPLICATION_NAME}
 fi
 
-# TODO - Q: args with default values are necer going to be empty - how to override with env var? -> adding explicitly_set
+
 if ([ $_arg_include_database_explicitly_set = false ] && [ ! -z "${CMA_INCLUDE_DATABASE// }" ]); then
 	_arg_include_database=${CMA_INCLUDE_DATABASE}
 fi
@@ -356,6 +411,10 @@ echo "Value of --proxy-port: $_arg_proxy_port"
 
 echo "Value of --include-database: $_arg_include_database" 
 echo "Value of --database-name: $_arg_database_name" 
+
+# prepare params to send to a script
+user-credentials=$_arg_username@$account:$_arg_password
+url=$protocol://$_arg_controller_host:$_arg_controller_port/controller
 
 # call config my app and pass arguments
 # ./configMyApp.sh $_arg_controller_host $_arg_controller_port $_arg_username $_arg_password $_arg_proxy_url $_arg_proxy_port
