@@ -421,7 +421,7 @@ if [ "${_configure_bt}" = true ]; then
     echo "Please wait while we process your Business transaction configuration settings from the JSON file"
     echo ""
     sleep 2
-    source ./configBT.sh "$_application_name"
+    source ./configBT.sh "$_application_name" "$_user_credentials" "$_controller_url"
 else
     #proceed as normal
 
@@ -515,7 +515,7 @@ else
 
     #if [ "$configbt" = "configbt" ] || [ "$configbt" = "yes" ] || [ "$configbt" = "bt" ] || [ "$configbt" = "BT" ] || [ "$configbt" = "yes" ]; then
     if [ "${_configure_bt}" = true ]; then
-        source ./configBT.sh "$_application_name"
+        source ./configBT.sh "$_application_name" "$_user_credentials" "$_controller_url"
     else
         echo ""
         echo ""

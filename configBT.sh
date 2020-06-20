@@ -6,6 +6,8 @@ bt_folder="./business_transactions"
 bt_conf="configBT.json"
 bt_config_template="bt_config_template.xml"
 app_name="$1"
+user_credentials="$2"
+controller_url="$3"
 
 poco_temp_file="poco_temp_file.xml"
 poco_scope_temp_file="poco_scope_temp_file.xml"
@@ -119,8 +121,8 @@ java_servlet_func() {
 
     echo "$servlet_custom_rules" >"$bt_folder/$servlet_temp_file"
     echo "$servlet_scopes" >"$bt_folder/$servlet_scope_temp_file"
-    sed -i -e "/<!--SERVLET-PLACEHOLDER-->/r $bt_folder/$servlet_temp_file" -e "//d" "$bt_file_path"
-    sed -i -e "/<!--SERVLET-SCOPE-PLACEHOLDER-->/r $bt_folder/$servlet_scope_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--SERVLET-PLACEHOLDER-->/r $bt_folder/$servlet_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--SERVLET-SCOPE-PLACEHOLDER-->/r $bt_folder/$servlet_scope_temp_file" -e "//d" "$bt_file_path"
 }
 
 asp_func() {
@@ -162,8 +164,8 @@ asp_func() {
     echo "$asp_custom_rules" >"$bt_folder/$asp_temp_file"
     echo "$asp_scopes" >"$bt_folder/$asp_scope_temp_file"
 
-    sed -i -e "/<!--ASP-PLACEHOLDER-->/r $bt_folder/$asp_temp_file" -e "//d" "$bt_file_path"
-    sed -i -e "/<!--ASP-SCOPE-PLACEHOLDER-->/r $bt_folder/$asp_scope_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--ASP-PLACEHOLDER-->/r $bt_folder/$asp_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--ASP-SCOPE-PLACEHOLDER-->/r $bt_folder/$asp_scope_temp_file" -e "//d" "$bt_file_path"
 
 }
 
@@ -210,8 +212,8 @@ dotnet_poco_func() {
     echo "$dotnet_poco_custom_rules" >"$bt_folder/$poco_temp_file"
     echo "$dotnet_poco_scopes" >"$bt_folder/$poco_scope_temp_file"
 
-    sed -i -e "/<!--POCO-PLACEHOLDER-->/r $bt_folder/$poco_temp_file" -e "//d" "$bt_file_path"
-    sed -i -e "/<!--POOCO-SCOPE-PLACEHOLDER-->/r $bt_folder/$poco_scope_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--POCO-PLACEHOLDER-->/r $bt_folder/$poco_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--POOCO-SCOPE-PLACEHOLDER-->/r $bt_folder/$poco_scope_temp_file" -e "//d" "$bt_file_path"
 }
 
 java_pojo_func() {
@@ -255,9 +257,9 @@ java_pojo_func() {
     echo "$java_pojo_custom_rules" >"$bt_folder/$pojo_temp_file"
     echo "$java_pojo_scopes" >"$bt_folder/$pojo_scope_temp_file"
 
-    sed -i -e "/<!--POJO-PLACEHOLDER-->/r $bt_folder/$pojo_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--POJO-PLACEHOLDER-->/r $bt_folder/$pojo_temp_file" -e "//d" "$bt_file_path"
 
-    sed -i -e "/<!--POJO-SCOPE-PLACEHOLDER-->/r $bt_folder/$pojo_scope_temp_file" -e "//d" "$bt_file_path"
+    sed -i.bak -e "/<!--POJO-SCOPE-PLACEHOLDER-->/r $bt_folder/$pojo_scope_temp_file" -e "//d" "$bt_file_path"
 }
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
@@ -282,6 +284,7 @@ java_pojo_func
 sleep 1
 
 rm $bt_folder/*temp_file.xml
+rm $bt_folder/*.bak
 
 if [ -f "$bt_file_path" ]; then
     echo "The business transaction detection rule file has been generated"
@@ -291,8 +294,9 @@ if [ -f "$bt_file_path" ]; then
     echo ""
     echo "Please wait while we configure BT detection rules in $appName"
 
-    btendpoint="/controller/transactiondetection/${appName}/custom"
-    bt_response=$(curl -s -X POST -w "%{http_code}" --user ${username}:${password} ${hostname}${btendpoint} -F file=@${bt_file_path} ${proxy_details})
+    btendpoint="/transactiondetection/${app_name}/custom"
+    echo "curl -s -X POST -w "%{http_code}" --user ${user_credentials} ${controller_url}${btendpoint} -F file=@${bt_file_path} ${proxy_details}"
+    bt_response=$(curl -s -X POST -w "%{http_code}" --user ${user_credentials} ${controller_url}${btendpoint} -F file=@${bt_file_path} ${proxy_details})
 
     if [[ "$bt_response" == *"200"* ]]; then
         echo ""
