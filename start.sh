@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # ARG_OPTIONAL_SINGLE([controller-host],[c],[controller host (without trailing bakslash)])
 # ARG_OPTIONAL_SINGLE([controller-port],[P],[controller port])
