@@ -73,6 +73,8 @@ _arg_database_name=
 _arg_include_sim=false
 _arg_configure_bt=false
 
+_arg_debug=false
+
 _arg_use_encoded_credentials_explicitly_set=false
 _arg_overwrite_health_rules_explicitly_set=false
 _arg_use_https_explicitly_set=false
@@ -115,6 +117,7 @@ print_help()
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
+	printf '\t%s\n' "--debug, --no-debug: Run in debug mode (${_arg_debug} by default)"
 	printf '%s\n' ""
 }
 
@@ -273,6 +276,10 @@ parse_commandline()
 			-h*)
 				print_help
 				exit 0
+				;;
+			--no-debug|--debug)
+				_arg_debug=true
+				test "${1:0:5}" = "--no-" && _arg_debug=false
 				;;
 			*)
 				_PRINT_HELP=yes die "FATAL ERROR: Got an unexpected argument '$1'" 1
@@ -489,26 +496,30 @@ handle_mandatory_args
 
  #  <-- needed because of Argbash
 
-echo "Value of --use-encoded-credentials: $_arg_use_encoded_credentials"
-echo "Value of --overwrite-health-rules: $_arg_overwrite_health_rules"
+if [ $_arg_debug = true ]; then
 
-echo "Value of --controller-host: $_arg_controller_host"
-echo "Value of --controller-port: $_arg_controller_port"
-echo "Value of --use-https: $_arg_use_https"
+	echo "Value of --use-encoded-credentials: $_arg_use_encoded_credentials"
+	echo "Value of --overwrite-health-rules: $_arg_overwrite_health_rules"
 
-echo "Value of --account: $_arg_account"
-echo "Value of --username: $_arg_username" 
-#echo "Value of --password: $_arg_password" 
+	echo "Value of --controller-host: $_arg_controller_host"
+	echo "Value of --controller-port: $_arg_controller_port"
+	echo "Value of --use-https: $_arg_use_https"
 
-echo "Value of --use-proxy: $_arg_use_proxy"
-echo "Value of --proxy-url: $_arg_proxy_url"
-echo "Value of --proxy-port: $_arg_proxy_port" 
+	echo "Value of --account: $_arg_account"
+	echo "Value of --username: $_arg_username" 
+	#echo "Value of --password: $_arg_password" 
 
-echo "Value of --application-name: $_arg_application_name" 
-echo "Value of --include-database: $_arg_include_database" 
-echo "Value of --database-name: $_arg_database_name" 
-echo "Value of --include-sim: $_arg_include_sim" 
-echo "Value of --configure-bt: $_arg_configure_bt" 
+	echo "Value of --use-proxy: $_arg_use_proxy"
+	echo "Value of --proxy-url: $_arg_proxy_url"
+	echo "Value of --proxy-port: $_arg_proxy_port" 
+
+	echo "Value of --application-name: $_arg_application_name" 
+	echo "Value of --include-database: $_arg_include_database" 
+	echo "Value of --database-name: $_arg_database_name" 
+	echo "Value of --include-sim: $_arg_include_sim" 
+	echo "Value of --configure-bt: $_arg_configure_bt" 
+
+fi
 
 ### 3 PREPARE PARAMETERS AND EXECUTE SCRIPT ###
 
@@ -542,10 +553,14 @@ else
 	__argproxy_details=""
 fi
 
-echo "User credentials: $_arg_user_credentials"
-echo "Controller URL: $_arg_controller_url"
-echo "Proxy details: $_arg_proxy_details"
-echo "Configure BTs: $_arg_configure_bt"
+if [ $_arg_debug = true ]; then
+	echo ''
+	echo "Config details:"
+	echo "User credentials: $_arg_user_credentials"
+	echo "Controller URL: $_arg_controller_url"
+	echo "Proxy details: $_arg_proxy_details"
+	echo "Configure BTs: $_arg_configure_bt"
+fi
 
 # 3.4 Execute ConfigMyApp script
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules"
