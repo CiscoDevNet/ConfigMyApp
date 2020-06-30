@@ -35,23 +35,9 @@
 
 conf_file="./config.json"
 
-# overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
-# are_passwords_encoded=$(jq -r '.are_passwords_encoded' <${conf_file})
-
 enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
 image_logo_path="./branding/$(jq -r ' .branding[].logo_file_name' <${conf_file})"
 image_background_path="./branding/$(jq -r ' .branding[].background_file_name' <${conf_file})"
-
-# prod_controller=$(jq -r ' .prod_controller_details[].url' <${conf_file})
-# prod_username=$(jq -r ' .prod_controller_details[].username' <${conf_file})
-# prod_password=$(jq -r ' .prod_controller_details[].password' <${conf_file})
-
-# dev_controller=$(jq -r ' .non_prod_controller_details[].url' <${conf_file})
-# dev_username=$(jq -r ' .non_prod_controller_details[].username' <${conf_file})
-# dev_password=$(jq -r ' .non_prod_controller_details[].password' <${conf_file})
-
-# dev_proxy_url=$(jq -r ' .non_prod_controller_details[].proxy_ur'l <${conf_file})
-# dev_proxy_port=$(jq -r ' .non_prod_controller_details[].proxy_port' <${conf_file})
 
 # Do not change anything else beyond this point except you know what you're doing :)
 
@@ -79,18 +65,20 @@ dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
 
 ### START GETTING INPUT ARGUMENTS ###
-_controller_url=$1 # hostname + /controller
+_controller_url=${1} # hostname + /controller
 
-_user_credentials=$2 # ${username}:${password}
+_user_credentials=${2} # ${username}:${password}
 
-_proxy_details=$3 # proxy_details
+_proxy_details=${3} # proxy_details
 
-_application_name=$4 # appName
-_include_database=$5 # 
-_database_name=$6 # DBName
-_include_sim=$7 # includeSIM
-_configure_bt=$8 # 
-_overwrite_health_rules=$9 # overwrite_health_rules
+_application_name=${4} # appName
+_include_database=${5} # 
+_database_name=${6} # DBName
+_include_sim=${7} # includeSIM
+_configure_bt=${8} # 
+_overwrite_health_rules=${9} # overwrite_health_rules
+
+_bt_only=${10}
 
 # echo "URL $_controller_url"
 # echo "CREDS $_user_credentials"
@@ -390,11 +378,9 @@ endpoint="/CustomDashboardImportExportServlet"
 url=${_controller_url}${endpoint}
 
 echo ""
-echo ""
 
 # check if app exists
 echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
-echo ""
 echo ""
 sleep 1
 
@@ -411,13 +397,10 @@ appId=$(jq '.id' <<<$applicationObject)
 
 echo "Found ${_application_name} business application"
 echo ""
-echo ""
 
-#if [ "$configbt" = "configbtonly" ] || [ "$configbt" = "only" ] || [ "$configbt" = "btonly" ] || [ "$configbt" = "onlybt" ]; then
-
-if [ "${_configure_bt}" = true ]; then
+if [ "${_bt_only}" = true ]; then
     echo ""
-    echo "You entered $_configure_bt. This instruction will ONLY configure business transaction in $_application_name"
+    echo "You entered $_bt_only. This instruction will ONLY configure business transaction in $_application_name"
     echo "Application health rules, SIM health rules, dashboard, etc will not be created..."
     echo ""
     echo "Please wait while we process your Business transaction configuration settings from the JSON file"

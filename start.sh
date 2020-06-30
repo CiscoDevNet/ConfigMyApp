@@ -73,6 +73,8 @@ _arg_database_name=
 _arg_include_sim=false
 _arg_configure_bt=false
 
+_arg_bt_only=false
+
 _arg_debug=false
 
 _arg_use_encoded_credentials_explicitly_set=false
@@ -114,6 +116,7 @@ print_help()
 	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
 	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
+	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -136,6 +139,10 @@ parse_commandline()
 				_arg_overwrite_health_rules_explicitly_set=true
 				_arg_overwrite_health_rules=true
 				test "${1:0:5}" = "--no-" && _arg_overwrite_health_rules=false
+				;;
+			--no-bt-only|--bt-only)
+				_arg_bt_only=true
+				test "${1:0:5}" = "--no-" && _arg_bt_only=false
 				;;
 			-c|--controller-host)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
@@ -518,7 +525,8 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --database-name: $_arg_database_name" 
 	echo "Value of --include-sim: $_arg_include_sim" 
 	echo "Value of --configure-bt: $_arg_configure_bt" 
-
+	echo "Value of --bt-only: $_arg_bt_only" 
+	
 fi
 
 ### 3 PREPARE PARAMETERS AND EXECUTE SCRIPT ###
@@ -563,7 +571,7 @@ if [ $_arg_debug = true ]; then
 fi
 
 # 3.4 Execute ConfigMyApp script
-./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules"
+./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only"
 
  #  <-- needed because of Argbash
 # ] <-- needed because of Argbash
