@@ -84,29 +84,36 @@ _arg_configure_bt_explicitly_set=false
 
 print_help()
 {
+	printf '%s\n' "Config My App interactive terminal."
+	#printf 'Usage: %s [-c|--controller-host <arg>] [-P|--controller-port <arg>] [-u|--username <arg>] [-p|--password <arg>] [--(no-)use-proxy] [--proxy-url <arg>] [--proxy-port <arg>] [-a|--application-name <arg>] [--(no-)include-database] [-d|--database-name <arg>] [-s|--(no-)include-sim] [-b|--(no-)configure-bt] [-h|--help]\n' "$0"
 	printf '%s\n' ""
-	printf 'Usage: %s [-c|--controller-host <arg>] [-P|--controller-port <arg>] [-u|--username <arg>] [-p|--password <arg>] [--(no-)use-proxy] [--proxy-url <arg>] [--proxy-port <arg>] [-a|--application-name <arg>] [--(no-)include-database] [-d|--database-name <arg>] [-s|--(no-)include-sim] [-b|--(no-)configure-bt] [-h|--help]\n' "$0"
 	
-	printf '\t%s\n' "--use-encoded-credentials, --no-use-encoded-credentials: use encoded credentials (${_arg_use_encoded_credentials} by default)"
-	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
-	
+	printf '%s\n' "Connection options:"
 	printf '\t%s\n' "-c, --controller-host: controller host (no default)"
 	printf '\t%s\n' "-P, --controller-port: controller port (${_arg_controller_port} by default)"
 	printf '\t%s\n' "--use-https, --no-use-https: if on, specifies that the agent should use SSL (${_arg_use_https} by default)"
 
-	printf '\t%s\n' "--account: account help msg (${_arg_account} by default)"
+	printf '%s\n' "Account options:"
+	printf '\t%s\n' "--account: account help (${_arg_account} by default)"
 	printf '\t%s\n' "-u, --username: AppDynamics' user username (no default)"
 	printf '\t%s\n' "-p, --password: AppDynamics' user password (no default)"
+	printf '\t%s\n' "--use-encoded-credentials, --no-use-encoded-credentials: use encoded credentials (${_arg_use_encoded_credentials} by default)"
+	
 
+	printf '%s\n' "Proxy options:"
 	printf '\t%s\n' "--use-proxy, --no-use-proxy: use proxy optional argument (${_arg_use_proxy} by default)"
 	printf '\t%s\n' "--proxy-url: proxy url (no default)"
 	printf '\t%s\n' "--proxy-port: proxy port (no default)"
 
+	printf '%s\n' "Application options:"
 	printf '\t%s\n' "-a, --application-name: application name (no default)"
 	printf '\t%s\n' "--include-database, --no-include-database: include database (${_arg_include_database} by default)"
 	printf '\t%s\n' "-d, --database-name: mandatory if include-database set to true (no default)"
 	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
+	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
+
+	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '%s\n' ""
 }
@@ -491,7 +498,7 @@ echo "Value of --use-https: $_arg_use_https"
 
 echo "Value of --account: $_arg_account"
 echo "Value of --username: $_arg_username" 
-echo "Value of --password: $_arg_password" 
+#echo "Value of --password: $_arg_password" 
 
 echo "Value of --use-proxy: $_arg_use_proxy"
 echo "Value of --proxy-url: $_arg_proxy_url"
