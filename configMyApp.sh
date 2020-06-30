@@ -124,7 +124,9 @@ function encode_image() {
 
     $(chmod 775 $image_path)
 
-    image_extension="$(file -b $image_path | awk '{print $1}')"
+    #image_extension="$(file -b $image_path | awk '{print $1}')"
+
+    image_extension=$(echo "branding/logo.png" | awk -F . '{print $NF}' | awk '{print toupper($0)}')
 
     if [ $(is_image_valid $image_extension) = "False" ]; then
         echo "Image extension '$image_extension' of an '$image_path' not supported."
