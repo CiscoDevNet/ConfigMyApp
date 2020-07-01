@@ -1,20 +1,5 @@
 #!/bin/bash
 
-# ./configMyApp.sh inflation-qa 'CORP – SQL Server' qa
-
-#./configMyApp.sh fusion-crosstrade-uat crosstrade-qa-cluster-db dev
-#./configMyApp.sh fusion-crosstrade-uat no dev
-
-#./configMyApp.sh fusion-crosstrade-prod none prod
-#./configMyApp.sh fusion-equities-prod no prod
-#./configMyApp.sh fusion-pot-prod no prod
-
-#./configMyApp.sh IoTHub ConfigMyApp yes dev
-
-#./configMyApp.sh fusion-platform-dev crosstrade-qa-cluster-db dev
-
-#./configMyApp.sh IoTHub no no dev configbtonly
-
 [[ "$(command -v jq)" ]] || {
     echo "jq is not installed, download it from - https://stedolan.github.io/jq/download/ and try again after installing it. Aborting..." 1>&2
     sleep 5
@@ -53,36 +38,32 @@ templateDBName="ChangeDBName"
 templateBackgroundImageName="ChangeImageUrlBackground"
 templatLogoImageName="ChangeImageUrlLogo"
 
+endpoint="/CustomDashboardImportExportServlet"
+
 tempFolder="temp"
 bt_folder="./business_transactions"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
+# echo "This Self Service Config tool configures application, server and business transaction health rules."
 
 ### START GETTING INPUT ARGUMENTS ###
 _controller_url=${1} # hostname + /controller
-
 _user_credentials=${2} # ${username}:${password}
 
-_proxy_details=${3} # proxy_details
+_proxy_details=${3} 
 
-_application_name=${4} # appName
-_include_database=${5} # 
-_database_name=${6} # DBName
-_include_sim=${7} # includeSIM
-_configure_bt=${8} # 
-_overwrite_health_rules=${9} # overwrite_health_rules
+_application_name=${4}
+_include_database=${5} 
+_database_name=${6}
+_include_sim=${7}
+_configure_bt=${8} 
+_overwrite_health_rules=${9} 
 _bt_only=${10}
 
-enable_branding=${11}
-image_logo_path=${12}
-image_background_path=${13}
-
-# echo "URL $_controller_url"
-# echo "CREDS $_user_credentials"
-# echo "BT $_configure_bt"
-# echo "Proxy $_proxy_details"
-# echo "APP $_application_name"
+_enable_branding=${11}
+_image_logo_path=${12}
+_image_background_path=${13}
 
 ### END GETTING INPUT ARGUMENTS ###
 
@@ -142,126 +123,6 @@ function is_image_valid() {
     if [[ ${image_extension_collection[$image_extension]} ]]; then echo "True"; else "False"; fi
 }
 
-# if [ "$1" != "" ]; then
-#     appName=$1
-# else
-#     read -p "Enter your business application name [ENTER]:  " appName
-# fi
-
-# if [ "$appName" = "--help" ]; then
-#     echo ""
-#     echo "************************HELP*********************************************************************************************************************"
-#     echo "This Self Service Config tool configures application, server and business transaction health rules."
-#     echo "It also automatically creates an application visiblity dashboard."
-#     echo "You may run this script in a silent mode, or in an interactive mode: "
-#     echo ""
-#     echo ""
-#     echo " 1) Silent Mode example:  ./configMyApp.sh <application_name> <database_name> <server_viz> <environment>"
-#     echo "* application_name : This represents the business application name in the AppDynamics controlleer. It should be an exact match"
-#     echo ""
-#     echo "* database_name : Get the name of the database collector for this application from Databases menu. If this application is not associated to any database, enter no, or none"
-#     echo ""
-#     echo "* server_viz : Enter yes to configure server viz health rules"
-#     echo ""
-#     echo "* environment : Enter one of prod, uat, test, dev, etc. This represents the environment of your application and will determine the Controller to use"
-#     echo "For example: ./configMyApp.sh AD-DevOps 'Ecomm Oracle DB' yes dev or ./configMyApp.sh AD-DevOps no no prod "
-#     echo "         "
-#     echo ""
-#     echo "2)  Interactive Mode: Simply execute configMyApp.sh and follow the onscreen instructions "
-#     echo "*********************************************************************************************************************************************"
-#     exit 1
-# fi
-
-# echo "You entered '$appName' for application name"
-# echo ""
-# if [ "$2" != "" ]; then
-#     DBName=$2
-# else
-#     echo ""
-#     echo "Enter a name of a related Database Collector."
-#     read -p "Enter 'no' if the target app is not associated with a database [ENTER]:  " DBName
-# fi
-
-# echo "You entered '$DBName' for Database collector name"
-# echo ""
-
-# if [ "$3" != "" ]; then
-#     includeSIM=$3
-# else
-#     echo ""
-#     echo "Include Server Visibility?"
-#     read -p "Enter 'no' if you do not want to include SIM [ENTER]:  " includeSIM
-# fi
-
-# if [ "$4" != "" ]; then
-#     controller=$4
-# else
-#     echo ""
-#     echo "What's your application environment?"
-#     read -p "Please enter one of prod,dev,uat,qa etc [ENTER]:  " controller
-# fi
-
-# echo "You entered '$controller' for application evironment"
-# echo ""
-
-# if [ "$5" != "" ]; then
-#     configbt=$5
-# else
-#     configbt="no"
-# fi
-
-# echo "You entered '$configbt' for transaction configuration"
-# echo ""
-
-# end input params
-
-# validate input params
-# if [ "$DBName" = "NO" ] || [ "$DBName" = "no" ] || [ "$DBName" = "No" ] || [ "$DBName" = "n" ] || [ "$DBName" = "N" ] || [ "$DBName" = "" ] || [ "$DBName" = "none" ] || [ "$DBName" = "nodb" ] || [ "$DBName" = "NODB" ]; then
-#     inludeDB="false"
-# else
-#     inludeDB="true"
-# fi
-
-# if [ "$includeSIM" = "YES" ] || [ "$includeSIM" = "yes" ] || [ "$includeSIM" = "Yes" ] || [ "$includeSIM" = "y" ] || [ "$includeSIM" = "Y" ] || [ "$includeSIM" = "sim" ] || [ "$includeSIM" = "SIM" ] || [ "$includeSIM" = "Sim" ]; then
-#     includeSIM="true"
-# elif [ "$includeSIM" = "NO" ] || [ "$includeSIM" = "no" ] || [ "$includeSIM" = "No" ] || [ "$includeSIM" = "n" ] || [ "$includeSIM" = "N" ] || [ "$includeSIM" = "nosim" ] || [ "$includeSIM" = "NOSIM" ] || [ "$includeSIM" = "Nosim" ]; then
-#     includeSIM="false"
-# else
-#     echo "You must enter valid yes/no value, set includeSIM to no if you're not interested in Server Visibility"
-#     exit 1
-# fi
-
-# echo "Server Visibility is set to '$includeSIM'"
-# echo ""
-
-# if [ "$appName" = "" ] || [ "$DBName" = "" ]; then
-#     echo "You must define Application Name and Database Name, set DBName to no if you're not interested in DB monitoring"
-#     exit 1
-# fi
-
-# if [ "$controller" = "prod" ] || [ "$controller" = "production" ] || [ "$controller" = "PROD" ] || [ "$controller" = "PRODUCTION" ]; then
-#     hostname=${prod_controller}
-#     password=${prod_password}
-#     username=${prod_username}
-#     proxy_url="${prod_proxy_url}"
-#     proxy_port="${prod_proxy_port}"
-# else
-#     hostname=${dev_controller}
-#     password=${dev_password}
-#     username=${dev_username}
-#     proxy_url="${dev_proxy_url}"
-#     proxy_port="${dev_proxy_port}"
-# fi
-
-# # decode passwords if encoded
-# if [ "$are_passwords_encoded" = "true" ]; then
-#     password=$(eval echo ${password} | base64 --decode)
-# fi
-
-# echo "Using $hostname controller"
-# echo ""
-# echo ""
-
 function func_check_http_status() {
     local http_code=$1
     local message_on_failure=$2
@@ -303,10 +164,10 @@ function func_copy_file_and_replace_values() {
     fileName="$(basename -- $filePath)"
     mkdir -p "$tempFolder" && cp -r $filePath ./$tempFolder/$fileName
 
-    if [ "$enable_branding" = "true" ]; then
+    if [ "$_enable_branding" = "true" ]; then
 
-        encodedBackgroundImageUrl="$(encode_image $image_background_path)"
-        encodedLogoImageUrl="$(encode_image $image_logo_path)"
+        encodedBackgroundImageUrl="$(encode_image $_image_background_path)"
+        encodedLogoImageUrl="$(encode_image $_image_logo_path)"
 
         echo "\"$encodedBackgroundImageUrl\"" >"${tempFolder}/backgroundImage.txt"
         echo "\"$encodedLogoImageUrl\"" >"${tempFolder}/logoImage.txt"
@@ -359,29 +220,14 @@ function func_import_health_rules(){
 
 ### END FUNCTIONS ###
 
-# Process proxy details
-#j q sets empty strings to null istead of NULL
-# echo "Please wait while we check if you've configured any proxies with ConfigMyApp"
-# sleep 1
-# if [ -z "$proxy_url" ] || [ "$proxy_url" = "null" ] || [ -z "$proxy_port" ] || [ "$proxy_port" = "null" ] || [ "$proxy_port" = "" ] || [ "$proxy_url" = "" ]; then
-#     echo "No HTTP Proxy is configured. Skipping proxy configuration..."
-#     proxy_details=""
-# else
-#     echo "Found HTTP Proxy configuration, using... "
-#     echo "Proxy URL = $proxy_url , Proxy Port = $proxy_port"
-#     proxy_details="-x $proxy_url:$proxy_port"
-# fi
-
-endpoint="/CustomDashboardImportExportServlet"
 url=${_controller_url}${endpoint}
 
 echo ""
 
-# check if app exists
+# Check if application exists
 echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
 echo ""
 sleep 1
-
 
 allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON ${_proxy_details})
 
@@ -403,12 +249,12 @@ if [ "${_bt_only}" = true ]; then
     echo ""
     echo "Please wait while we process your Business transaction configuration settings from the JSON file"
     echo ""
-    sleep 2
+    sleep 1
     source ./configBT.sh "$_application_name" "$_user_credentials" "$_controller_url"
 else
-    #proceed as normal
+    # proceed as normal
 
-    #Server Visibility health rules
+    # Server Visibility health rules
     if [ "${_include_sim}" = true ]; then
         echo "Creating Server Visibility Health Rules...Please wait"
         echo ""
@@ -416,7 +262,7 @@ else
         func_import_health_rules $appId "${serverVizHealthRuleFile}"
     fi
 
-    #Application health rules
+    # Application health rules
     echo ""
     echo "Creating ${_application_name} Health Rules..."
     sleep 1
@@ -429,10 +275,10 @@ else
 
     echo ""
     echo "Processing Dashboard Template."
-    sleep 3
+    sleep 1
     echo ""
 
-    #Dashboard
+    # Dashboard
     echo "Applying Database and SIM settings to the dashboard template..."
     sleep 1
     if [ "${_include_database}" = false ]; then
@@ -454,20 +300,20 @@ else
     echo ""
 
     # check if images are configured, and add default if not
-    if [ "$enable_branding" = "true" ]; then
-        if [ -z "${image_background_path}" ]; then
-            image_background_path=$(func_find_file_by_name "background")
+    if [ "$_enable_branding" = "true" ]; then
+        if [ -z "${_image_background_path}" ]; then
+            _image_background_path=$(func_find_file_by_name "background")
         fi
 
-        if [ -z "${image_logo_path}" ]; then
-            image_logo_path=$(func_find_file_by_name "logo")
+        if [ -z "${_image_logo_path}" ]; then
+            _image_logo_path=$(func_find_file_by_name "logo")
         fi
     fi
 
     pathToDashboardFile=$(func_copy_file_and_replace_values ${templateFile})
     
     echo "Creating dashboard in the controller"
-    sleep 3
+    sleep 1
 
     response=$(curl -s -X POST --user ${_user_credentials} ${url} -F file=@${pathToDashboardFile})
 
@@ -482,7 +328,7 @@ else
     echo "*********************************************************************"
 
     echo ""
-    sleep 3
+    sleep 1
 
     # save used uploaded files
     mkdir -p ./dashboards/uploaded
@@ -492,7 +338,6 @@ else
     func_cleanup
 
     echo ""
-    echo ""
     echo "Checking Transaction configurantion instruction..."
     sleep 2
 
@@ -501,14 +346,12 @@ else
         source ./configBT.sh "$_application_name" "$_user_credentials" "$_controller_url"
     else
         echo ""
-        echo ""
         echo "BT Configuration is set to false, not configuring BT"
     fi
     sleep 5
 
     echo ""
-    echo ""
     echo "Done!"
 
-#end of btconfigonly
+# end of btconfigonly
 fi
