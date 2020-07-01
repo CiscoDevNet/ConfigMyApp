@@ -33,11 +33,6 @@
     exit 1
 }
 
-conf_file="./config.json"
-
-enable_branding=$(jq -r ' .branding[].enabled' <${conf_file})
-image_logo_path="./branding/$(jq -r ' .branding[].logo_file_name' <${conf_file})"
-image_background_path="./branding/$(jq -r ' .branding[].background_file_name' <${conf_file})"
 
 # Do not change anything else beyond this point except you know what you're doing :)
 
@@ -77,8 +72,11 @@ _database_name=${6} # DBName
 _include_sim=${7} # includeSIM
 _configure_bt=${8} # 
 _overwrite_health_rules=${9} # overwrite_health_rules
-
 _bt_only=${10}
+
+enable_branding=${11}
+image_logo_path=${12}
+image_background_path=${13}
 
 # echo "URL $_controller_url"
 # echo "CREDS $_user_credentials"

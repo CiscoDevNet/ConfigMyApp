@@ -75,6 +75,10 @@ _arg_configure_bt=false
 
 _arg_bt_only=false
 
+_arg_use_branding=true
+_arg_logo_name=
+_arg_background_name=
+
 _arg_debug=false
 
 _arg_use_encoded_credentials_explicitly_set=false
@@ -85,6 +89,7 @@ _arg_use_proxy_explicitly_set=false
 _arg_include_database_explicitly_set=false
 _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
+_arg_use_branding_explicitly_set=false
 
 print_help()
 {
@@ -108,6 +113,11 @@ print_help()
 	printf '\t%s\n' "--use-proxy, --no-use-proxy: use proxy optional argument (${_arg_use_proxy} by default)"
 	printf '\t%s\n' "--proxy-url: proxy url (no default)"
 	printf '\t%s\n' "--proxy-port: proxy port (no default)"
+
+	printf '%s\n' "Branding options:"
+	printf '\t%s\n' "--use-branding, --no-use-branding: enable branding (${_arg_use_branding} by default)"
+	printf '\t%s\n' "--logo-name: logo image file name (no default)"
+	printf '\t%s\n' "--background-name: background image file name (no default)"
 
 	printf '%s\n' "Application options:"
 	printf '\t%s\n' "-a, --application-name: application name (no default)"
@@ -276,6 +286,27 @@ parse_commandline()
 					{ begins_with_short_option "$_next" && shift && set -- "-b" "-${_next}" "$@"; } || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
 				fi
 				;;
+			--no-use-branding|--use-branding)
+				_arg_use_branding=true
+				_arg_use_branding_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_use_branding=false
+				;;
+			--logo-name)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_logo_name="$2"
+				shift
+				;;
+			--logo-name=*)
+				_arg_logo_name="${_key##--logo-name=}"
+				;;
+			--background-name)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_background_name="$2"
+				shift
+				;;
+			--background-name=*)
+				_arg_background_name="${_key##--background-name=}"
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -357,6 +388,14 @@ handle_expected_values_for_args()
 	if ([ ! $_arg_configure_bt = false ] && [ ! $_arg_configure_bt = true ] ); then 
 		_PRINT_HELP=no die "FATAL ERROR: --configure-bt value \"${_arg_configure_bt}\" not recognized" 1
 	fi
+
+	if ([ ! $_arg_bt_only = false ] && [ ! $_arg_bt_only = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --bt-only value \"${_arg_bt_only}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_use_branding = false ] && [ ! $_arg_use_branding = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --use-branding value \"${_arg_use_branding}\" not recognized" 1
+	fi
 }
 
 ### 1 SET PARAMETER VALUES ###
@@ -406,6 +445,17 @@ if ([ -z "${_arg_proxy_url// }" ] && [ ! -z "${CMA_PROXY_URL// }" ]); then
 fi
 if ([ -z "${_arg_proxy_port// }" ] && [ ! -z "${CMA_PROXY_PORT// }" ]); then
 	_arg_proxy_port=${CMA_PROXY_PORT}
+fi
+
+# branding
+if ([ $_arg_use_branding_explicitly_set = false ] && [ ! -z "${CMA_USE_BRANDING// }" ]); then
+	_arg_use_branding=${CMA_USE_BRANDING}
+fi
+if ([ -z "${_arg_logo_name// }" ] && [ ! -z "${CMA_LOGO_NAME// }" ]); then
+	_arg_logo_name=${CMA_LOGO_NAME}
+fi
+if ([ -z "${_arg_background_name// }" ] && [ ! -z "${CMA_BACKGROUND_NAME// }" ]); then
+	_arg_background_name=${CMA_BACKGROUND_NAME}
 fi
 
 # configuration
@@ -472,6 +522,17 @@ if [[ -z "${_arg_proxy_port// }" ]]; then
 	_arg_proxy_port=$(jq -r '.controller_details[].proxy_port' <${conf_file})
 fi
 
+# branding
+if ([ $_arg_use_branding_explicitly_set = false ] && [ -z "${CMA_USE_BRANDING// }" ]); then
+	_arg_use_branding=$(jq -r '.branding[].enabled' <${conf_file})
+fi
+if [[ -z "${_arg_logo_name// }" ]]; then
+	_arg_logo_name=$(jq -r '.branding[].logo_file_name' <${conf_file})
+fi
+if [[ -z "${_arg_background_name// }" ]]; then
+	_arg_background_name=$(jq -r '.branding[].background_file_name' <${conf_file})
+fi
+
 # configuration
 if [[ -z "${_arg_application_name// }" ]]; then
 	_arg_application_name=$(jq -r '.configuration[].application_name' <${conf_file})
@@ -526,6 +587,10 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --include-sim: $_arg_include_sim" 
 	echo "Value of --configure-bt: $_arg_configure_bt" 
 	echo "Value of --bt-only: $_arg_bt_only" 
+
+	echo "Value of --use-branding: $_arg_use_branding" 
+	echo "Value of --logo-name: $_arg_logo_name" 
+	echo "Value of --background-name: $_arg_background_name" 
 	
 fi
 
@@ -558,8 +623,12 @@ _arg_controller_url="$protocol://$_arg_controller_host:$_arg_controller_port/con
 if [ $_arg_use_proxy = true ]; then
 	_arg_proxy_details="-x $proxy_url:$proxy_port"
 else 
-	__argproxy_details=""
+	_arg_proxy_details=""
 fi
+
+# 3.5 Branding
+_arg_logo_name="./branding/$_arg_logo_name"
+_arg_background_name="./branding/$_arg_background_name" 
 
 if [ $_arg_debug = true ]; then
 	echo ''
@@ -571,7 +640,7 @@ if [ $_arg_debug = true ]; then
 fi
 
 # 3.4 Execute ConfigMyApp script
-./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only"
+./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
 
  #  <-- needed because of Argbash
 # ] <-- needed because of Argbash
