@@ -39,7 +39,7 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <url>https://github.com/Appdynamics/ConfigMyApp.git</url>
-        <credentialsId>a8c8a242-894d-4674-8194-8d10c5f7a9c9</credentialsId>
+        <credentialsId>YOUR_CREDENTIALS_HERE</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>

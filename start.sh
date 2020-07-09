@@ -418,7 +418,7 @@ if ([ $_arg_use_proxy_explicitly_set = false ] && [ ! -z "${CMA_USE_PROXY// }" ]
 	_arg_use_proxy=${CMA_USE_PROXY}
 fi
 if ([ -z "${_arg_proxy_url// }" ] && [ ! -z "${CMA_PROXY_URL// }" ]); then
-	_arg_proxy_url=${CMA_USE_HTTPS}
+	_arg_proxy_url=${CMA_PROXY_URL}
 fi
 if ([ -z "${_arg_proxy_port// }" ] && [ ! -z "${CMA_PROXY_PORT// }" ]); then
 	_arg_proxy_port=${CMA_PROXY_PORT}

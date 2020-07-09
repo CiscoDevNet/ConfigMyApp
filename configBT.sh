@@ -295,7 +295,7 @@ if [ -f "$bt_file_path" ]; then
     echo "Please wait while we configure BT detection rules in $appName"
 
     btendpoint="/transactiondetection/${app_name}/custom"
-    echo "curl -s -X POST -w "%{http_code}" --user ${user_credentials} ${controller_url}${btendpoint} -F file=@${bt_file_path} ${proxy_details}"
+
     bt_response=$(curl -s -X POST -w "%{http_code}" --user ${user_credentials} ${controller_url}${btendpoint} -F file=@${bt_file_path} ${proxy_details})
 
     if [[ "$bt_response" == *"200"* ]]; then

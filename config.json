@@ -10,7 +10,7 @@
   ],
   "controller_details": [
     {
-      "host": "https://dev-customer.appd-cx.com:443/controller",
+      "host": "http://controller-2060nosshco-o3wdq4ip.appd-cx.com",
       "port": 8090,
       "use_https": false,
       "account": "customer1",
