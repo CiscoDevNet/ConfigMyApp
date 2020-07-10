@@ -1,9 +1,13 @@
 testconfig.json
 dashboards/uploaded/*
+business_transactions/uploaded/*
 .DS_Store
 notes.txt
 error.log
 local*/*
 local.*
 temp*
-jenkins_*
+jenkins_home*
+integrations/Harnessio/*
+Setup/Applications/*
+.vscode/*
