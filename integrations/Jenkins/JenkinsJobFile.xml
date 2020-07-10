@@ -8,27 +8,27 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>ENVIRONMENT_TYPE</name>
+          <name>CMA_CONTROLLER_HOST</name>
           <description></description>
-          <defaultValue>dev</defaultValue>
+          <defaultValue>http://aleksandracustommetric-ghfx7tia.appd-cx.com/</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>SERVER_VISIBILITY</name>
+          <name>CMA_USERNAME</name>
           <description></description>
-          <defaultValue>yes</defaultValue>
+          <defaultValue>appd</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>APPLICATION_NAME</name>
+          <name>CMA_PASSWORD</name>
+          <description></description>
+          <defaultValue>appd</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CMA_APPLICATION_NAME</name>
           <description></description>
           <defaultValue>TPV</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>DATABASE_VISIBILITY</name>
-          <description></description>
-          <defaultValue>no</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -39,12 +39,12 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <url>https://github.com/Appdynamics/ConfigMyApp.git</url>
-        <credentialsId>a8c8a242-894d-4674-8194-8d10c5f7a9c9</credentialsId>
+        <credentialsId>YOUR_CREDENTIALS_HERE</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>*/features/jenkins_pipeline</name>
+        <name>*/develop</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -59,14 +59,10 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo $BRANCH_NAME
-echo &quot;Hello World&quot;
-echo $GIT_URL</command>
+      <command>echo $BRANCH_NAME echo &quot;ConfigMyApp...start&quot; echo $GIT_URL</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
-      <command>echo &quot;Start script&quot;
-./configMyApp.sh $APPLICATION_NAME $DATABASE_VISIBILITY $SERVER_VISIBILITY $ENVIRONMENT_TYPE
-echo &quot;End script&quot;</command>
+      <command>echo &quot;Start script&quot; ./start.sh echo &quot;End script&quot;</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
