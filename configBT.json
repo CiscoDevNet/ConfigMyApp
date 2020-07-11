@@ -44,7 +44,6 @@
 
     "java_servlet_rules": [
       {
-      
        "rule_name": "LogonServlet_test",
        "matching_condition":"MATCHES_REGEX",
        "matching_strings": "^user.*(\/login)$",
