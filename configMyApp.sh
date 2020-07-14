@@ -41,7 +41,7 @@ templatLogoImageName="ChangeImageUrlLogo"
 endpoint="/CustomDashboardImportExportServlet"
 
 tempFolder="temp"
-bt_folder="./business_transactions"
+bt_folder="./bt_api_templates"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 

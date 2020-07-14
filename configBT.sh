@@ -2,8 +2,8 @@
 # Match types: MATCHES_REGEX, CONTAINS, EQUALS, STARTS_WITH, ENDS_WITH, IS_IN_LIST, IS_NOT_EMPTY
 # The format of the JSON must be maintained at all times.. all four sections must be available even if you're not using them, leave them blank.
 
-bt_folder="./business_transactions"
-bt_conf="configBT.json"
+bt_folder="./bt_api_templates"
+bt_conf="./bt_config/configBT.json"
 bt_config_template="bt_config_template.xml"
 app_name="$1"
 user_credentials="$2"
