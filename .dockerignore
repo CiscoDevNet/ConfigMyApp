@@ -1,0 +1,5 @@
+dashboards/uploaded/*
+bt_api_templates/uploaded/*
+docs
+integrations 
+docker
