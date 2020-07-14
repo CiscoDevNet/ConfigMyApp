@@ -8,5 +8,5 @@ local*/*
 local.*
 temp*
 jenkins_home*
-Setup/Applications/*
 .vscode/*
+integrations/Harnessio/harness-delegate-docker-compose/*.env
