@@ -17,7 +17,7 @@
       "username": "appd",
       "password": "appd",
       "use_proxy": false,
-      "proxy_url": "my-proxy-from-config",
+      "proxy_url": "",
       "proxy_port": ""
     }
   ],

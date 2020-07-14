@@ -1,6 +1,6 @@
 testconfig.json
 dashboards/uploaded/*
-business_transactions/uploaded/*
+bt_api_templates/uploaded/*
 .DS_Store
 notes.txt
 error.log
@@ -8,5 +8,6 @@ local*/*
 local.*
 temp*
 jenkins_home*
+integrations/Harnessio/*
+Setup/Applications/*
 .vscode/*
-integrations/Harnessio/harness-delegate-docker-compose/*.env
