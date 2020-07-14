@@ -8,6 +8,5 @@ local*/*
 local.*
 temp*
 jenkins_home*
-integrations/Harnessio/*
 Setup/Applications/*
 .vscode/*

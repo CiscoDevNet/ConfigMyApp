@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+    delegate:
+        container_name: delegate
+        hostname: harness-delegate
+        restart: unless-stopped
+        env_file:
+            - harness-variables.env
+        image: 'harness/delegate:latest'
