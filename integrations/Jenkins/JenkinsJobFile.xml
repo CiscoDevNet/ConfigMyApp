@@ -10,7 +10,7 @@
         <hudson.model.StringParameterDefinition>
           <name>CMA_CONTROLLER_HOST</name>
           <description></description>
-          <defaultValue>http://aleksandracustommetric-ghfx7tia.appd-cx.com/</defaultValue>
+          <defaultValue>YOUR_CONTROLLER_HOST_HERE</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
