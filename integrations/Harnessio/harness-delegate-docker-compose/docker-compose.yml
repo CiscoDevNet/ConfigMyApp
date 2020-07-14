@@ -1,8 +1,7 @@
 version: '3.3'
 services:
     delegate:
-        container_name: delegate
-        hostname: harness-delegate
+        hostname: harness-delegate # register under the same name in Harness.io UI
         restart: unless-stopped
         env_file:
             - harness-variables.env

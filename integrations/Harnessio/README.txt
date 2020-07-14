@@ -13,6 +13,8 @@ Install the Harness Delegate by executing launch-harness-delegate.sh.
 
 Option 2: Using Docker-compose
 
+Note: Every time container is restarted new delegate will register in the Harness.io UI, as the container gets new local IP address.
+
    cd harness-delegate-docker-compose
 
 Edit harness-variables.env to set your account and other details.
