@@ -11,3 +11,4 @@ jenkins_home*
 integrations/Harnessio/*
 Setup/Applications/*
 .vscode/*
+business_transactions/uploaded/*
