@@ -510,19 +510,19 @@ fi
 if [[ -z "${_arg_application_name// }" ]]; then
 	_arg_application_name=$(jq -r '.configuration[].application_name' <${conf_file})
 fi
-if ([ $_arg_include_database_explicitly_set = false ] && [ -z "${CMA_INCLUDE_DATABASE// }" ]); then
+if ([[ $_arg_include_database_explicitly_set = false ]] && [ -z "${CMA_INCLUDE_DATABASE// }" ]); then
 	_arg_include_database=$(jq -r '.configuration[].include_database' <${conf_file})
 fi
 if [[ -z "${_arg_database_name// }" ]]; then
 	_arg_database_name=$(jq -r '.configuration[].database_name' <${conf_file})
 fi
-if ([ $_arg_include_sim_explicitly_set = false ] && [ -z "${CMA_INCLUDE_SIM// }" ]); then
+if ([[ $_arg_include_sim_explicitly_set = false ]] && [ -z "${CMA_INCLUDE_SIM// }" ]); then
 	_arg_include_sim=$(jq -r '.configuration[].include_sim' <${conf_file})
 fi
-if ([ $_arg_configure_bt_explicitly_set = false ] && [ -z "${CMA_CONFIGURE_BT// }" ]); then
+if ([[ $_arg_configure_bt_explicitly_set = false ]] && [ -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=$(jq -r '.configuration[].configure_bt' <${conf_file})
 fi
-if ([ $_arg_bt_only_explicitly_set = false ] && [ -z "${CMA_BT_ONLY// }" ]); then
+if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); then
 	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
 fi
 
