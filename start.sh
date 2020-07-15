@@ -531,6 +531,9 @@ fi
 if ([ $_arg_configure_bt_explicitly_set = false ] && [ -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=$(jq -r '.configuration[].configure_bt' <${conf_file})
 fi
+if ([ $_arg_bt_only_explicitly_set = false ] && [ -z "${CMA_BT_ONLY// }" ]); then
+	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
+fi
 
 ### 2 VALIDATE ###
 
