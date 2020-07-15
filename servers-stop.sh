@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 
 # stop Jenkins server
-cd integrations/Jenkins
-
-docker-compose down
+docker container stop $(docker container ls -q --filter name=jenkins*)
 
 # stop Harness delegate
-
-cd ../Harnessio/harness-delegate-docker-compose
-
-docker-compose down
+docker container stop $(docker container ls -q --filter name=harness*)
 
 sleep 2
 
