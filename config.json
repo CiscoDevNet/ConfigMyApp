@@ -28,7 +28,7 @@
       "database_name": "",
       "include_sim": false,
       "configure_bt": false,
-      "bt_only": true
+      "bt_only": false
     }
   ]
 }
