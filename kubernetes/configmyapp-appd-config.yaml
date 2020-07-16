@@ -1,0 +1,19 @@
+apiVersion: v1
+data:
+  CMA_ACCOUNT: customer1
+  CMA_CONTROLLER_PORT: "8090"
+  CMA_INCLUDE_SIM: "true"
+  CMA_USE_HTTPS: "false"
+  # optional parameters
+  #CMA_CONFIGURE_BT: 'true'
+  #CMA_DATABASE_NAME: ConfigMyApp
+  #CMA_INCLUDE_DATABASE: "true"
+  #CMA_OVERWRITE_HEALTH_RULES: "true"
+  #CMA_PROXY_PORT: "8080"
+  #CMA_PROXY_URL: localhost
+  #CMA_USE_ENCODED_CREDENTIALS: "false"
+  #CMA_USE_PROXY: "false"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: configmyapp-config
