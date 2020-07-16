@@ -5,7 +5,9 @@ data:
   CMA_INCLUDE_SIM: "true"
   CMA_USE_HTTPS: "false"
   # optional parameters
-  CMA_CONFIGURE_BT: "true"
+  #CMA_CONFIGURE_BT: "true"
+  #CMA_USE_BRANDING: "true"
+  #CMA_LOGO_NAME: "logo-debug.jpeg"
   #CMA_DATABASE_NAME: ConfigMyApp
   #CMA_INCLUDE_DATABASE: "true"
   #CMA_OVERWRITE_HEALTH_RULES: "true"

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: configmyapp
+  name: configmyapp-br
+spec:
+  volumes:
+    - name: branding-volume
+      hostPath:
+        path: /home/docker/branding
+  containers:
+  - image: iogbole/configmyapp:latest
+    name: configmyapp
+    resources: {}
+    volumeMounts:
+      - mountPath: /opt/configmyapp/branding
+        name: branding-volume
+    env:
+    - name: CMA_APPLICATION_NAME
+      value: API_Gateway
+    - name: CMA_CONTROLLER_HOST
+      value: configmyappdemo-2044no-uzyczrm0.appd-cx.com
+    - name: CMA_USERNAME
+      value: appd
+    - name: CMA_PASSWORD
+      valueFrom: 
+        secretKeyRef:
+          name: appd-user-password
+          key: cma-password
+    envFrom:
+      - configMapRef: 
+          name: configmyapp-config
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
