@@ -6,10 +6,18 @@ metadata:
     run: configmyapp
   name: configmyapp
 spec:
+  volumes:
+    - hostPath:
+        path: /bt_config
+      name: bt-volume
   containers:
   - image: iogbole/configmyapp:latest
     name: configmyapp
     resources: {}
+    volumeMounts:
+      - mountPath: /opt/configmyapp/bt_config/configBT.json
+        name: bt-volume
+        subPath: configBT.json
     env:
     - name: CMA_APPLICATION_NAME
       value: API_Gateway
