@@ -64,6 +64,7 @@ _arg_include_database_explicitly_set=false
 _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
 _arg_use_branding_explicitly_set=false
+_arg_bt_only_explicitly_set=false
 
 print_help()
 {
@@ -124,6 +125,7 @@ parse_commandline()
 				test "${1:0:5}" = "--no-" && _arg_overwrite_health_rules=false
 				;;
 			--no-bt-only|--bt-only)
+				_arg_bt_only_explicitly_set=true
 				_arg_bt_only=true
 				test "${1:0:5}" = "--no-" && _arg_bt_only=false
 				;;
@@ -447,6 +449,9 @@ fi
 if ([ $_arg_configure_bt_explicitly_set = false ] && [ ! -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=${CMA_CONFIGURE_BT}
 fi
+if ([ $_arg_bt_only_explicitly_set = false ] && [ ! -z "${CMA_BT_ONLY// }" ]); then
+	_arg_bt_only=${CMA_BT_ONLY}
+fi
 
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
@@ -510,17 +515,20 @@ fi
 if [[ -z "${_arg_application_name// }" ]]; then
 	_arg_application_name=$(jq -r '.configuration[].application_name' <${conf_file})
 fi
-if ([ $_arg_include_database_explicitly_set = false ] && [ -z "${CMA_INCLUDE_DATABASE// }" ]); then
+if ([[ $_arg_include_database_explicitly_set = false ]] && [ -z "${CMA_INCLUDE_DATABASE// }" ]); then
 	_arg_include_database=$(jq -r '.configuration[].include_database' <${conf_file})
 fi
 if [[ -z "${_arg_database_name// }" ]]; then
 	_arg_database_name=$(jq -r '.configuration[].database_name' <${conf_file})
 fi
-if ([ $_arg_include_sim_explicitly_set = false ] && [ -z "${CMA_INCLUDE_SIM// }" ]); then
+if ([[ $_arg_include_sim_explicitly_set = false ]] && [ -z "${CMA_INCLUDE_SIM// }" ]); then
 	_arg_include_sim=$(jq -r '.configuration[].include_sim' <${conf_file})
 fi
-if ([ $_arg_configure_bt_explicitly_set = false ] && [ -z "${CMA_CONFIGURE_BT// }" ]); then
+if ([[ $_arg_configure_bt_explicitly_set = false ]] && [ -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=$(jq -r '.configuration[].configure_bt' <${conf_file})
+fi
+if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); then
+	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
 fi
 
 ### 2 VALIDATE ###

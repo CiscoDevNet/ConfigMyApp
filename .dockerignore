@@ -3,3 +3,6 @@ bt_api_templates/uploaded/*
 docs
 integrations 
 docker
+kubernetes
+zz_demoflow*
+testconfig.json
