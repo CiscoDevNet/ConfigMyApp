@@ -64,6 +64,7 @@ _arg_include_database_explicitly_set=false
 _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
 _arg_use_branding_explicitly_set=false
+_arg_bt_only_explicitly_set=false
 
 print_help()
 {
@@ -124,6 +125,7 @@ parse_commandline()
 				test "${1:0:5}" = "--no-" && _arg_overwrite_health_rules=false
 				;;
 			--no-bt-only|--bt-only)
+				_arg_bt_only_explicitly_set=true
 				_arg_bt_only=true
 				test "${1:0:5}" = "--no-" && _arg_bt_only=false
 				;;
@@ -446,6 +448,9 @@ if ([ $_arg_include_sim_explicitly_set = false ] && [ ! -z "${CMA_INCLUDE_SIM// 
 fi
 if ([ $_arg_configure_bt_explicitly_set = false ] && [ ! -z "${CMA_CONFIGURE_BT// }" ]); then
 	_arg_configure_bt=${CMA_CONFIGURE_BT}
+fi
+if ([ $_arg_bt_only_explicitly_set = false ] && [ ! -z "${CMA_BT_ONLY// }" ]); then
+	_arg_bt_only=${CMA_BT_ONLY}
 fi
 
 # 1.3 If value not set replace with configuration file values
