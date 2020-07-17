@@ -4,19 +4,30 @@ metadata:
   creationTimestamp: null
   labels:
     run: configmyapp
-  name: configmyapp-st
+  name: configmyapp-bt
 spec:
+  volumes:
+    - name: bt-volume
+      configMap:
+        name: bt-config
   containers:
-  - image: iogbole/configmyapp:latest
+  - image: appdynamicscx/configmyapp:latest
     name: configmyapp
-    resources: {}
+    imagePullPolicy: Always
+    resources: 
+      limits:
+        cpu: 200m
+        memory: 500M
+      requests:
+        cpu: 100m
+        memory: 300M
+    volumeMounts:
+      - mountPath: /opt/configmyapp/bt_config/configBT.json
+        name: bt-volume
+        subPath: configBT.json
     env:
     - name: CMA_APPLICATION_NAME
       value: API_Gateway
-    - name: CMA_CONTROLLER_HOST
-      value: configmyappdemo-2044no-uzyczrm0.appd-cx.com
-    - name: CMA_USERNAME
-      value: appd
     - name: CMA_PASSWORD
       valueFrom: 
         secretKeyRef:

@@ -1,15 +1,12 @@
 #!/bin/bash
 
-
-
-
 version="latest"
 
 if [ "x$1" != "x" ]; then
   version="${1}"
 fi
 
-image_name="iogbole/configmyapp"
+image_name="appdynamicscx/configmyapp"
 
 if [ "x$2" != "x" ]; then
   image_name="${2}"
