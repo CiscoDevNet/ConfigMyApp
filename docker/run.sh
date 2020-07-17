@@ -6,15 +6,16 @@ if [ "x$1" != "x" ]; then
   version="${1}"
 fi
 
-image_name="iogbole/configmyapp"
+image_name="appdynamicscx/configmyapp"
 
 if [ "x$2" != "x" ]; then
   image_name="${2}"
 fi
 
-
 #standard run
 docker run -d  --env-file env.list ${image_name}:${version}
+
+docker ps
 
 # change directory to the root folder where mounted volumes are located - if you're executing the ./run.sh script
 #cd ../ && pwd

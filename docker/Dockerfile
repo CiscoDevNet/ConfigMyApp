@@ -7,7 +7,7 @@ LABEL name="ConfigMyApp" \
       summary="AppDynamics monitoring-as-a-service configuration tool " \
       description="ConfigMyApp automatically configures your AppDynamics application"
 
-RUN apt-get -y -qq update && \
+RUN apt-get update && \
 	apt-get install -y -qq curl && \
     apt-get install -y -qq gawk && \
     apt-get install -y -qq sed && \
