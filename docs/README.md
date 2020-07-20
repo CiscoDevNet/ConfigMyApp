@@ -32,7 +32,9 @@ ConfigMyApp supports the configuration of the following AppDynamics components:
  2. `jq` must be installed on your machine 
  3. `awk` must be installed on the machine 
  4. `sed` must be installed on the machine 
- 
+
+If you are unable to install any of the above components on your machine, we recommend that you use the <a href="https://hub.docker.com/r/appdynamicscx/configmyapp"> `docker image` </a> instead. 
+
 Please do not proceed if any of the above aforementioned prerequisites are not met.
 
 ## Service account 
@@ -576,7 +578,7 @@ Creating dashboard in the controller
 
 All files relevant for Kubernetes deployment can be found in `/kubernetes` directory of a project.
 
-## Updating secrets and environment variables
+### Updating secrets and environment variables
 
 1. Update the password in the `cma-pass-secret.yml` with your controller's user password base64 encoded.
 
@@ -584,7 +586,7 @@ All files relevant for Kubernetes deployment can be found in `/kubernetes` direc
 
 3. In a pod definition that you pick, for example, `cma-pod-standard.yml`, set the `env:` section to reflect your application and/or controller settings. 
 
-## Create a Pod
+### Create a Pod
 
 Example command of how to create the Pod:
 ```
