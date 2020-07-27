@@ -1,9 +1,10 @@
 ---
 sort: 21
 ---
-<p><img align="right" width="200" height="60" src="https://user-images.githubusercontent.com/23483887/87051577-a9ea2a00-c1f7-11ea-9ab8-4781d043e9bc.png"></p>
 
 # Harness.io
+
+<p><img align="right" width="200" height="60" src="https://user-images.githubusercontent.com/23483887/87051577-a9ea2a00-c1f7-11ea-9ab8-4781d043e9bc.png"></p>
 
 Harness.io is a Continuous Delivery as a Service enterprise platform for automation of application and micro-service deployments.
 

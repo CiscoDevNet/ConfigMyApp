@@ -2,9 +2,10 @@
 sort: 19
 ---
 
+# Docker
+
 <p><img align="right" width="200" height="75" src="https://user-images.githubusercontent.com/2548160/87821525-e3f6a400-c867-11ea-8f27-edcfe83a6108.png"></p>
 
-# Docker
 
 You can run ConfigMyApp by using either the official docker image or you can build a custom docker image from the source code. 
 
