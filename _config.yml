@@ -6,7 +6,7 @@ remote_theme: rundocs/jekyll-rtd-theme
 baseurl: '/ConfigMyApp'
 url: ''
 fluid: true
-logo: "logo.png"
+#logo: "logo.png"
 
 readme_index:
   with_frontmatter: true
