@@ -1,6 +1,7 @@
 ---
 sort: 11
 toc: true
+{:toc}
 ---
 
 # Running ConfigMyApp
