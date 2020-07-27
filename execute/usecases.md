@@ -1,7 +1,6 @@
 ---
 sort: 11
-toc: true
-{:toc}
+
 ---
 
 # Running ConfigMyApp
@@ -40,7 +39,7 @@ This section contains examples of running an instance of ConfigMyApp, it should 
 
 > Full configuration parameters
 
-```yaml
+```bash
 ./start.sh --application-name <app-name>  \ 
            -c "http://customer1.saas.appdynamics.com" \ 
            -P “8090” \ 
