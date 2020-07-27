@@ -4,7 +4,9 @@ sort: 6
 
 # Configuration file
 
-ConfigMyApp uses a `config.json` configuration file which can be found in the root of the project. The values in the configuration file are only used when the runtime parameter is not defined and the environment for the same parameter does not exist. <br>
+ConfigMyApp uses a `config.json` configuration file which can be found in the root of the project.
+
+The values in the configuration file are only used when the runtime parameter is not defined and the environment for the same parameter does not exist.
 
 The table below describe the JSON configuration:
 
