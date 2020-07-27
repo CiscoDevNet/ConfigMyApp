@@ -2,7 +2,7 @@
 sort: 18
 ---
 
-# Integrations
+# CI/CD Integrations
 
 ConfigMyApp can integrate with most CI/CD pipelines and workflows. 
 
