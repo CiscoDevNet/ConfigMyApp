@@ -2,6 +2,6 @@
 sort: 2
 ---
 
-# Configuration
+# Getting started
 
 {% include list.liquid %}
