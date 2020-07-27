@@ -11,7 +11,7 @@ sort: 3
  3. `awk` must be installed on the machine
  4. `sed` must be installed on the machine
 
-If you are unable to install any of the above components on your machine, we recommend that you use the <a href="https://appdynamics.github.io/ConfigMyApp/#docker"> `docker image` </a> instead.
+If you are unable to install any of the above components on your machine, we recommend that you use the <a href="https://appdynamics.github.io/ConfigMyApp/integrations/2-docker.html"> `docker image` </a> instead.
 
 Please do not proceed if any of the above aforementioned prerequisites are not met.
 
