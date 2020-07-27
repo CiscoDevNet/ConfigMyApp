@@ -2,7 +2,7 @@
 sort: 2
 ---
 
-# Supported Components
+# Features
 
 ConfigMyApp supports the configuration of the following AppDynamics components:
 
