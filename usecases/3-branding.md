@@ -1,6 +1,5 @@
 ---
-sort: 13
-
+sort: 3
 ---
 
 # Branding

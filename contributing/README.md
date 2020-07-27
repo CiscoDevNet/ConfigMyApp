@@ -1,5 +1,5 @@
 ---
-sort: 22
+sort: 5
 ---
 
 # Contributing
