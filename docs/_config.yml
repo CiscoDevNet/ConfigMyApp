@@ -1,6 +1,26 @@
-title: ConfigMyApp
-datatable: true
-description: AppDynamics configuration-as-code tool
-show_downloads: true
-theme: jekyll-theme-cayman
-dockerhuburl: https://hub.docker.com/r/appdynamicscx/configmyapp
+title: "ConfigMyApp"
+description: "description"
+# remote_theme: pmarsceill/just-the-docs
+remote_theme: rundocs/jekyll-rtd-theme
+
+baseurl: '/ConfigMyApp-docs'
+url: ''
+fluid: true
+
+readme_index:
+  with_frontmatter: true
+
+author: AppDynamics
+
+copyright:
+  #since: 2020 # like: 2000
+  revision: false # is show the revision
+  
+docker_url: 'https://hub.docker.com/r/appdynamicscx/configmyapp'
+#addons: false 
+addons:
+  - github
+  - analytics
+  
+edit: true
+addons_commit: false # defualt
