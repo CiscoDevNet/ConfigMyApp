@@ -1,9 +1,11 @@
 ---
 sort: 20
 ---
-<p><img align="right" width="200" height="57" src="https://user-images.githubusercontent.com/23483887/87779752-39f62800-c825-11ea-9c8c-66be52d131c8.png"></p>
 
 # Kubernetes  
+
+<p><img align="right" width="200" height="57" src="https://user-images.githubusercontent.com/23483887/87779752-39f62800-c825-11ea-9c8c-66be52d131c8.png"></p>
+
 
 All files relevant for Kubernetes deployment can be found in `/kubernetes` directory of the project.
 
