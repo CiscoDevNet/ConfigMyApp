@@ -2,6 +2,6 @@
 sort: 11
 ---
 
-# ConfigMyApp Use Cases
+# Use Cases
 
 {% include list.liquid %}
