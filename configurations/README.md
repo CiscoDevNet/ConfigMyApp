@@ -1,7 +1,7 @@
 ---
-sort: 4
+sort: 2
 ---
 
-# Flow and parameters
+# Configurations
 
 {% include list.liquid %}

@@ -1,5 +1,5 @@
 ---
-sort: 5
+sort: 1
 ---
 
 # How it works

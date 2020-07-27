@@ -1,5 +1,5 @@
 ---
-sort: 10
+sort: 6
 ---
 
 # Configuration file

@@ -1,5 +1,5 @@
 ---
-sort: 7
+sort: 3
 ---
 
 # Configuring input parameters
