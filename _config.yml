@@ -3,7 +3,7 @@ description: "description"
 # remote_theme: pmarsceill/just-the-docs
 remote_theme: rundocs/jekyll-rtd-theme
 
-baseurl: '/ConfigMyApp-docs'
+baseurl: '/ConfigMyApp'
 url: ''
 fluid: true
 
