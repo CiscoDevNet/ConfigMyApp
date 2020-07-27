@@ -1,5 +1,6 @@
 ---
-sort: 12
+sort: 11
+toc: true
 ---
 
 # Running ConfigMyApp
@@ -22,22 +23,23 @@ This section contains examples of running an instance of ConfigMyApp, it should 
 
 > Health rules
 
-```
+```bash
 ./start.sh --application-name <app-name>  --no-overwrite-health-rules
 ```
 
 > Business transactions
 
-```
+```bash
 ./start.sh --application-name <app-name>  --configure-bt
 ```
-```
+
+```bash
 ./start.sh --application-name <app-name>  ---bt-only
 ```
 
 > Full configuration parameters
 
-```
+```yaml
 ./start.sh --application-name <app-name>  \ 
            -c "http://customer1.saas.appdynamics.com" \ 
            -P “8090” \ 
