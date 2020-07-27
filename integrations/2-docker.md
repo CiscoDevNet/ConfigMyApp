@@ -62,7 +62,7 @@ Use the following steps to automate business transaction configuration using the
 
 1. Create a folder called `bt_config` 
 2. Copy the `configBT.json` file from the project into the `bt_config` folder on your docker host 
-3. Make necessary adjustments to the folder depending on your need. Please refer to the <a href="https://appdynamics.github.io/ConfigMyApp/#business-transaction-configuration"> business transaction configuration</a> section for details
+3. Make necessary adjustments to the folder depending on your need. Please refer to the <a href="https://appdynamics.github.io/ConfigMyApp/usecases/2-btx.html"> business transaction configuration</a> section for details
 4. Mount the `bt_config` volume in docker run. The docker run command should be executed from the `bt_config` folder on your host. 
 
 ```yaml
