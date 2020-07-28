@@ -19,9 +19,9 @@ copyright:
   
 docker_url: 'https://hub.docker.com/r/appdynamicscx/configmyapp'
 addons: false 
-addons:
-  - github
-  - analytics
+#addons:
+#  - github
+#  - analytics
   
 edit: true
 addons_commit: false # defualt
