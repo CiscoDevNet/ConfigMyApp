@@ -3,11 +3,10 @@ sort: 1
 
 ---
 
-# Running ConfigMyApp
+# Common Scenerios 
 
-This section contains examples of running an instance of ConfigMyApp, it should be adjusted to fit your use-case and here are some of the common ones
+This section contains examples of running an instance of ConfigMyApp, it should be adjusted to fit your use-case and here are some of the common ones:
 
-## Common scenarios  
 
 > Server visibility
 
