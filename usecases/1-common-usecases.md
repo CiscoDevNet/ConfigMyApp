@@ -3,7 +3,7 @@ sort: 1
 
 ---
 
-# Common Scenerios 
+# Common Examples 
 
 This section contains examples of running an instance of ConfigMyApp, it should be adjusted to fit your use-case and here are some of the common ones:
 
