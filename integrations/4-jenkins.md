@@ -8,7 +8,7 @@ Jenkins is a free and open-source automation server. It helps automate the parts
 
 ## Running for the first time - setup
 
-If you are running Jenkins for the first time, you need to set up a job with the steps below. If you already specified the job, jump to the next chapter to <a href="https://appdynamics.github.io/ConfigMyApp/#run-jenkins-job">run the Jenkins job</a>, otherwise proceed to the next section.
+If you are running Jenkins for the first time, you need to set up a job with the steps below. If you already specified the job, jump to the next chapter to <a href="https://appdynamics.github.io/ConfigMyApp/integrations/4-jenkins.html#run-jenkins-job">run the Jenkins job</a>, otherwise proceed to the next section.
 
 ### Plugins
 
