@@ -1,0 +1,25 @@
+.wy-side-nav-search {
+	display: block;
+	width: 300px;
+	padding: .809em;
+	margin-bottom: .809em;
+	z-index: 200;
+	background-color: #271d6b;
+	text-align: center;
+	color: #fcfcfc
+}
+
+.wy-nav-side {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	padding-bottom: 2em;
+	width: 300px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	min-height: 100%;
+	color: #9b9b9b;
+	background: #271d6b;
+	z-index: 200
+}
