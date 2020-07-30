@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: configmyapp
+  name: configmyapp-bt
+spec:
+  volumes:
+    - name: bt-volume
+      configMap:
+        name: bt-config
+  containers:
+  - image: appdynamicscx/configmyapp:latest
+    name: configmyapp
+    imagePullPolicy: Always
+    resources: 
+      limits:
+        cpu: 200m
+        memory: 500M
+      requests:
+        cpu: 100m
+        memory: 300M
+    volumeMounts:
+      - mountPath: /opt/configmyapp/bt_config/configBT.json
+        name: bt-volume
+        subPath: configBT.json
+    env:
+    - name: CMA_APPLICATION_NAME
+      value: API_Gateway
+    - name: CMA_PASSWORD
+      valueFrom: 
+        secretKeyRef:
+          name: appd-user-password
+          key: cma-password
+    envFrom:
+      - configMapRef: 
+          name: configmyapp-config
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
