@@ -60,7 +60,7 @@ application_id=$(jq '.id' <<< $applicationObject)
 _resource_url="alerting/rest/v1/applications/${application_id}/action-suppressions"
 
 # 4. SEND A CREATE REQUEST
-response=$(curl -v -X POST --user $_user_credentials $_controller_url/$_resource_url -H "${_header}" --data "@${_payload_path}" )
+response=$(curl -s -X POST --user $_user_credentials $_controller_url/$_resource_url -H "${_header}" --data "@${_payload_path}" )
 
 # 5. CHECK RESULT
 expected_response='"id":' # returns id on success
