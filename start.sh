@@ -108,7 +108,7 @@ print_help()
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
 
 	printf '\t%s\n' "--use-action-supression, --no-use-action-supression: use action supression (${_arg_use_action_supression} by default)"
-	printf '\t%s\n' "--action-supression-start: supression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format, mandatory if use-action-supression set to true (current datetime by default)"
+	printf '\t%s\n' "--action-supression-start: supression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if use-action-supression set to true (current datetime by default)"
 	printf '\t%s\n' "--action-supression-duration: duration in minutes, mandatory if use-action-supression set to true (one hour by default)"
 
 	printf '%s\n' "Help options:"
@@ -659,6 +659,7 @@ fi
 if [ $_arg_use_action_supression = true ]; then
 	if [ -z "${_arg_action_supression_start// }" ]; then
 		# set to current datetime if empty
+		# UTC / GMT
 		_arg_action_supression_start=$(date -u +%FT%T+0000)
 	fi
 	if [ -z "${_arg_action_supression_duration// }" ]; then
