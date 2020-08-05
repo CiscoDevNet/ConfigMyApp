@@ -59,6 +59,7 @@ _arg_action_supression_duration=
 
 _arg_debug=false
 
+_arg_controller_port_explicitly_set=false
 _arg_use_encoded_credentials_explicitly_set=false
 _arg_overwrite_health_rules_explicitly_set=false
 _arg_use_https_explicitly_set=false
@@ -150,6 +151,7 @@ parse_commandline()
 				_arg_controller_host="${_key##-c}"
 				;;
 			-P|--controller-port)
+				_arg_controller_port_explicitly_set=true
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
 				_arg_controller_port="$2"
 				shift
@@ -423,7 +425,7 @@ fi
 if ([ -z "${_arg_controller_host// }" ] && [ ! -z "${CMA_CONTROLLER_HOST// }" ]); then
 	_arg_controller_host=${CMA_CONTROLLER_HOST}
 fi
-if ([ -z "${_arg_controller_port// }" ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
 	_arg_controller_port=${CMA_CONTROLLER_PORT}
 fi
 if ([ $_arg_use_https_explicitly_set = false ] && [ ! -z "${CMA_USE_HTTPS// }" ]); then
@@ -500,7 +502,7 @@ if [[ -z "${_arg_controller_host// }" ]]; then
 	_arg_controller_host=$(jq -r '.controller_details[].host' <${conf_file})
 fi
 
-if [[ -z "${_arg_controller_port// }" ]]; then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ -z "${CMA_CONTROLLER_PORT}" ]); then
 	_arg_controller_port=$(jq -r '.controller_details[].port' <${conf_file})
 fi
 
