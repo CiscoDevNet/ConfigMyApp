@@ -1,6 +1,0 @@
-title: ConfigMyApp
-datatable: true
-description: AppDynamics configuration-as-code tool
-show_downloads: true
-theme: jekyll-theme-cayman
-dockerhuburl: https://hub.docker.com/r/appdynamicscx/configmyapp
