@@ -1,0 +1,9 @@
+{
+    "name": "_action_supression_name",
+    "disableAgentReporting": true,
+    "startTime": "_action_supression_start",
+    "endTime": "_action_supression_end",
+    "affects": {
+        "affectedInfoType": "APPLICATION"
+    }
+}
