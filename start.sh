@@ -53,8 +53,13 @@ _arg_use_branding=true
 _arg_logo_name=
 _arg_background_name=
 
+_arg_use_action_supression=false
+_arg_action_supression_start=
+_arg_action_supression_duration=
+
 _arg_debug=false
 
+_arg_controller_port_explicitly_set=false
 _arg_use_encoded_credentials_explicitly_set=false
 _arg_overwrite_health_rules_explicitly_set=false
 _arg_use_https_explicitly_set=false
@@ -65,6 +70,7 @@ _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
 _arg_use_branding_explicitly_set=false
 _arg_bt_only_explicitly_set=false
+_arg_use_action_supression_explicitly_set=false
 
 print_help()
 {
@@ -101,6 +107,10 @@ print_help()
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
 	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
+
+	printf '\t%s\n' "--use-action-supression, --no-use-action-supression: use action supression (${_arg_use_action_supression} by default)"
+	printf '\t%s\n' "--action-supression-start: supression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if use-action-supression set to true (current datetime by default)"
+	printf '\t%s\n' "--action-supression-duration: duration in minutes, mandatory if use-action-supression set to true (one hour by default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -141,6 +151,7 @@ parse_commandline()
 				_arg_controller_host="${_key##-c}"
 				;;
 			-P|--controller-port)
+				_arg_controller_port_explicitly_set=true
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
 				_arg_controller_port="$2"
 				shift
@@ -282,6 +293,27 @@ parse_commandline()
 			--background-name=*)
 				_arg_background_name="${_key##--background-name=}"
 				;;
+			--no-use-action-supression|--use-action-supression)
+				_arg_use_action_supression=true
+				_arg_use_action_supression_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_use_action_supression=false
+				;;
+			--action-supression-start)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_action_supression_start="$2"
+				shift
+				;;
+			--action-supression-start=*)
+				_arg_action_supression_start="${_key##--action-supression-start=}"
+				;;
+			--action-supression-duration)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_action_supression_duration="$2"
+				shift
+				;;
+			--action-supression-duration=*)
+				_arg_action_supression_duration="${_key##--action-supression-duration=}"
+				;;	
 			-h|--help)
 				print_help
 				exit 0
@@ -393,7 +425,7 @@ fi
 if ([ -z "${_arg_controller_host// }" ] && [ ! -z "${CMA_CONTROLLER_HOST// }" ]); then
 	_arg_controller_host=${CMA_CONTROLLER_HOST}
 fi
-if ([ -z "${_arg_controller_port// }" ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
 	_arg_controller_port=${CMA_CONTROLLER_PORT}
 fi
 if ([ $_arg_use_https_explicitly_set = false ] && [ ! -z "${CMA_USE_HTTPS// }" ]); then
@@ -470,7 +502,7 @@ if [[ -z "${_arg_controller_host// }" ]]; then
 	_arg_controller_host=$(jq -r '.controller_details[].host' <${conf_file})
 fi
 
-if [[ -z "${_arg_controller_port// }" ]]; then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ -z "${CMA_CONTROLLER_PORT}" ]); then
 	_arg_controller_port=$(jq -r '.controller_details[].port' <${conf_file})
 fi
 
@@ -575,7 +607,7 @@ if [ $_arg_debug = true ]; then
 	
 fi
 
-### 3 PREPARE PARAMETERS AND EXECUTE SCRIPT ###
+### 3 PREPARE PARAMETERS ###
 
 # 3.1 Prepare user credentials
 
@@ -625,8 +657,28 @@ if [ $_arg_debug = true ]; then
 	echo "Configure BTs: $_arg_configure_bt"
 fi
 
-# 3.4 Execute ConfigMyApp script
+# 3.5 Prepare action supression
+if [ $_arg_use_action_supression = true ]; then
+	if [ -z "${_arg_action_supression_start// }" ]; then
+		# set to current datetime if empty
+		# UTC / GMT
+		_arg_action_supression_start=$(date -u +%FT%T+0000)
+	fi
+	if [ -z "${_arg_action_supression_duration// }" ]; then
+		# set to one hour if empty
+		_arg_action_supression_duration=60
+	fi
+fi
+
+### 4 ACTION SUPRESSION ###
+if [ $_arg_use_action_supression = true ]; then
+	./api_actions/action-supression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_action_supression_start" "$_arg_action_supression_duration" "$_arg_application_name"
+	exit 0 # only action supression
+fi
+
+### 5 EXECUTE CMA SCRIPT ###
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
+
 
  #  <-- needed, do not delete 
 # ] <-- needed, do not delete
