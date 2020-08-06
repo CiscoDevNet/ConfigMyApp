@@ -128,7 +128,8 @@ function func_check_http_status() {
     local message_on_failure=$2
     #echo "HTTP status code: $http_code"
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
-        echo $message_on_failure
+         
+        echo "$http_code : $message_on_failure"
         func_cleanup
         exit 1
     fi
@@ -199,7 +200,7 @@ function func_import_health_rules(){
     allHealthRules=$(curl -s --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules ${_proxy_details})
 
     for f in $folderPath; do 
-
+        echo "Processing $f health rule template"
         # get health rule name from json file
         healthRuleName=$(jq -r  '.name' <$f)
         # use it to get health rule id (if exists)
@@ -244,7 +245,7 @@ echo ""
 
 if [ "${_bt_only}" = true ]; then
     echo ""
-    echo "You entered $_bt_only. This instruction will ONLY configure business transaction in $_application_name"
+    echo "BT_ONLY=$_bt_only. This instruction will ONLY configure business transaction in $_application_name"
     echo "Application health rules, SIM health rules, dashboard, etc will not be created..."
     echo ""
     echo "Please wait while we process your Business transaction configuration settings from the JSON file"

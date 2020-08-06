@@ -1,13 +1,13 @@
 {
-    "name": "Standard Remote Service: Error Rate Health",
+    "name": "Standard Service Endpoint: Response Time Health",
     "enabled": true,
     "useDataFromLastNMinutes": 30,
     "waitTimeAfterViolation": 30,
     "scheduleName": "Always",
     "affects": {
-        "affectedEntityType": "BACKENDS",
-        "affectedBackends": {
-            "backendScope": "ALL_BACKENDS"
+        "affectedEntityType": "SERVICE_ENDPOINTS",
+        "affectedServiceEndpoints": {
+            "serviceEndpointScope": "ALL_SERVICE_ENDPOINTS"
         }
     },
     "evalCriterias": {
@@ -16,28 +16,19 @@
             "conditionExpression": null,
             "conditions": [
                 {
-                    "name": "Error Percentage",
+                    "name": "Average Response Time",
                     "shortName": "A",
                     "evaluateToTrueOnNoData": false,
                     "evalDetail": {
-                        "evalDetailType": "METRIC_EXPRESSION",
-                        "metricExpression": "{totalErrors}/{totalCalls}*100",
-                        "metricExpressionVariables": [
-                            {
-                                "variableName": "totalErrors",
-                                "metricAggregateFunction": "VALUE",
-                                "metricPath": "Errors per Minute"
-                            },
-                            {
-                                "variableName": "totalCalls",
-                                "metricAggregateFunction": "VALUE",
-                                "metricPath": "Calls per Minute"
-                            }
-                        ],
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
                         "metricEvalDetail": {
-                            "metricEvalDetailType": "SPECIFIC_TYPE",
-                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
-                            "compareValue": 5
+                            "metricEvalDetailType": "BASELINE_TYPE",
+                            "baselineCondition": "GREATER_THAN_BASELINE",
+                            "baselineName": "Default Baseline",
+                            "compareValue": 4,
+                            "baselineUnit": "STANDARD_DEVIATIONS"
                         }
                     },
                     "triggerEnabled": false,
@@ -61,52 +52,46 @@
                     "minimumTriggers": 15
                 },
                 {
-                    "name": "Minimum Errors",
+                    "name": "Minimum Average Response Time",
                     "shortName": "C",
                     "evaluateToTrueOnNoData": false,
                     "evalDetail": {
                         "evalDetailType": "SINGLE_METRIC",
                         "metricAggregateFunction": "VALUE",
-                        "metricPath": "Errors per Minute",
+                        "metricPath": "Average Response Time (ms)",
                         "metricEvalDetail": {
                             "metricEvalDetailType": "SPECIFIC_TYPE",
                             "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
-                            "compareValue": 10
+                            "compareValue": 100
                         }
                     },
                     "triggerEnabled": false,
                     "minimumTriggers": 15
                 }
             ],
-            "evalMatchingCriteria": null
+            "evalMatchingCriteria": {
+                "matchType": "ANY_NODE",
+                "value": null
+            }
         },
         "warningCriteria": {
             "conditionAggregationType": "ALL",
             "conditionExpression": null,
             "conditions": [
                 {
-                    "name": "Error Percentage",
+                    "name": "Average Response Time",
                     "shortName": "A",
                     "evaluateToTrueOnNoData": false,
                     "evalDetail": {
-                        "evalDetailType": "METRIC_EXPRESSION",
-                        "metricExpression": "{totalErrors}/{totalCalls}*100",
-                        "metricExpressionVariables": [
-                            {
-                                "variableName": "totalErrors",
-                                "metricAggregateFunction": "VALUE",
-                                "metricPath": "Errors per Minute"
-                            },
-                            {
-                                "variableName": "totalCalls",
-                                "metricAggregateFunction": "VALUE",
-                                "metricPath": "Calls per Minute"
-                            }
-                        ],
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
                         "metricEvalDetail": {
-                            "metricEvalDetailType": "SPECIFIC_TYPE",
-                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
-                            "compareValue": 1
+                            "metricEvalDetailType": "BASELINE_TYPE",
+                            "baselineCondition": "GREATER_THAN_BASELINE",
+                            "baselineName": "Default Baseline",
+                            "compareValue": 3,
+                            "baselineUnit": "STANDARD_DEVIATIONS"
                         }
                     },
                     "triggerEnabled": false,
@@ -130,24 +115,27 @@
                     "minimumTriggers": 15
                 },
                 {
-                    "name": "Minimum Errors",
+                    "name": "Minimum Average Response Time",
                     "shortName": "C",
                     "evaluateToTrueOnNoData": false,
                     "evalDetail": {
                         "evalDetailType": "SINGLE_METRIC",
                         "metricAggregateFunction": "VALUE",
-                        "metricPath": "Errors per Minute",
+                        "metricPath": "Average Response Time (ms)",
                         "metricEvalDetail": {
                             "metricEvalDetailType": "SPECIFIC_TYPE",
                             "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
-                            "compareValue": 10
+                            "compareValue": 100
                         }
                     },
                     "triggerEnabled": false,
                     "minimumTriggers": 15
                 }
             ],
-            "evalMatchingCriteria": null
+            "evalMatchingCriteria": {
+                "matchType": "ANY_NODE",
+                "value": null
+            }
         }
     }
 }
