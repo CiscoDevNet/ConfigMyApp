@@ -1,44 +1,49 @@
 {
-    "name": "Node Availability Health: Java Agents",
+    "name": "Agent Availability",
     "enabled": true,
-    "useDataFromLastNMinutes": 6,
-    "waitTimeAfterViolation": 6,
+    "useDataFromLastNMinutes": 60,
+    "waitTimeAfterViolation": 30,
     "scheduleName": "Always",
     "affects": {
         "affectedEntityType": "TIER_NODE_HARDWARE",
         "affectedEntities": {
             "tierOrNode": "NODE_AFFECTED_ENTITIES",
-            "typeofNode": "JAVA_NODES",
+            "typeofNode": "ALL_NODES",
             "affectedNodes": {
-                "affectedNodeScope": "ALL_NODES"
+                "affectedNodeScope": "NODES_MATCHING_PATTERN",
+                "patternMatcher": {
+                    "matchTo": "EQUALS",
+                    "matchValue": "Machine Agent",
+                    "shouldNot": true
+                }
             }
         }
     },
     "evalCriterias": {
-        "criticalCriteria": {
+        "criticalCriteria": null,
+        "warningCriteria": {
             "conditionAggregationType": "ALL",
             "conditionExpression": null,
             "conditions": [
                 {
-                    "name": "Java Node Availability Health",
+                    "name": "Agent Failure Warning",
                     "shortName": "A",
-                    "evaluateToTrueOnNoData": false,
+                    "evaluateToTrueOnNoData": true,
                     "evalDetail": {
                         "evalDetailType": "SINGLE_METRIC",
-                        "metricAggregateFunction": "SUM",
-                        "metricPath": "Agent|App|Availability",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Agent|Machine|Availability",
                         "metricEvalDetail": {
                             "metricEvalDetailType": "SPECIFIC_TYPE",
                             "compareCondition": "LESS_THAN_SPECIFIC_VALUE",
-                            "compareValue": 3
+                            "compareValue": 1
                         }
                     },
                     "triggerEnabled": false,
-                    "minimumTriggers": 2
+                    "minimumTriggers": 0
                 }
             ],
             "evalMatchingCriteria": null
-        },
-        "warningCriteria": null
+        }
     }
 }
