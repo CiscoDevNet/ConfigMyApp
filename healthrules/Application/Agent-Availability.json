@@ -1,6 +1,6 @@
 {
     "name": "Node Availability Health: Java Agents",
-    "enabled": true,
+    "enabled": false,
     "useDataFromLastNMinutes": 6,
     "waitTimeAfterViolation": 6,
     "scheduleName": "Always",
