@@ -1,0 +1,141 @@
+{
+    "name": "Standard Service Endpoint: Response Time Health",
+    "enabled": true,
+    "useDataFromLastNMinutes": 30,
+    "waitTimeAfterViolation": 30,
+    "scheduleName": "Always",
+    "affects": {
+        "affectedEntityType": "SERVICE_ENDPOINTS",
+        "affectedServiceEndpoints": {
+            "serviceEndpointScope": "ALL_SERVICE_ENDPOINTS"
+        }
+    },
+    "evalCriterias": {
+        "criticalCriteria": {
+            "conditionAggregationType": "ALL",
+            "conditionExpression": null,
+            "conditions": [
+                {
+                    "name": "Average Response Time",
+                    "shortName": "A",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "BASELINE_TYPE",
+                            "baselineCondition": "GREATER_THAN_BASELINE",
+                            "baselineName": "Default Baseline",
+                            "compareValue": 4,
+                            "baselineUnit": "STANDARD_DEVIATIONS"
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                },
+                {
+                    "name": "Minimum Calls per Minute",
+                    "shortName": "B",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Calls per Minute",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "SPECIFIC_TYPE",
+                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+                            "compareValue": 10
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                },
+                {
+                    "name": "Minimum Average Response Time",
+                    "shortName": "C",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "SPECIFIC_TYPE",
+                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+                            "compareValue": 100
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                }
+            ],
+            "evalMatchingCriteria": {
+                "matchType": "ANY_NODE",
+                "value": null
+            }
+        },
+        "warningCriteria": {
+            "conditionAggregationType": "ALL",
+            "conditionExpression": null,
+            "conditions": [
+                {
+                    "name": "Average Response Time",
+                    "shortName": "A",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "BASELINE_TYPE",
+                            "baselineCondition": "GREATER_THAN_BASELINE",
+                            "baselineName": "Default Baseline",
+                            "compareValue": 3,
+                            "baselineUnit": "STANDARD_DEVIATIONS"
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                },
+                {
+                    "name": "Minimum Calls per Minute",
+                    "shortName": "B",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Calls per Minute",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "SPECIFIC_TYPE",
+                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+                            "compareValue": 10
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                },
+                {
+                    "name": "Minimum Average Response Time",
+                    "shortName": "C",
+                    "evaluateToTrueOnNoData": false,
+                    "evalDetail": {
+                        "evalDetailType": "SINGLE_METRIC",
+                        "metricAggregateFunction": "VALUE",
+                        "metricPath": "Average Response Time (ms)",
+                        "metricEvalDetail": {
+                            "metricEvalDetailType": "SPECIFIC_TYPE",
+                            "compareCondition": "GREATER_THAN_SPECIFIC_VALUE",
+                            "compareValue": 100
+                        }
+                    },
+                    "triggerEnabled": false,
+                    "minimumTriggers": 15
+                }
+            ],
+            "evalMatchingCriteria": {
+                "matchType": "ANY_NODE",
+                "value": null
+            }
+        }
+    }
+}
