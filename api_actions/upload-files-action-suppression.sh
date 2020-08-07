@@ -37,7 +37,7 @@ fi
 _application_id=$(jq '.id' <<< $applicationObject)
 _resource_url="alerting/rest/v1/applications/${_application_id}/action-suppressions"
 
-_action_suppression_files="./api_actions/filesToUpload/*.json"
+_action_suppression_files="./api_actions/actions/*.json"
 
 
 for f in $_action_suppression_files; do

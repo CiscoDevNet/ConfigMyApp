@@ -113,7 +113,7 @@ print_help()
 	printf '%s\n' "Action suppression options:"
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
 	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
-	printf '\t%s\n' "--suppress-duration-minutes: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
+	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
 	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 
 	printf '%s\n' "Help options:"
@@ -310,13 +310,13 @@ parse_commandline()
 			--suppress-start=*)
 				_arg_suppress_start="${_key##--suppress-start=}"
 				;;
-			--suppress-duration-minutes)
+			--suppress-duration)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
 				_arg_suppress_duration="$2"
 				shift
 				;;
-			--suppress-duration-minutes=*)
-				_arg_suppress_duration="${_key##--suppress-duration-minutes=}"
+			--suppress-duration=*)
+				_arg_suppress_duration="${_key##--suppress-duration=}"
 				;;	
 			--no-suppress-upload-files|--suppress-upload-files)
 				_arg_suppress_upload_files=true
@@ -585,6 +585,19 @@ if ([[ $_arg_configure_bt_explicitly_set = false ]] && [ -z "${CMA_CONFIGURE_BT/
 fi
 if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); then
 	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
+fi
+
+if ([[ $_arg_suppress_action_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_ACTION// }" ]); then
+	_arg_suppress_action=$(jq -r '.action_suppression[].suppress_action' <${conf_file})
+fi
+if [[ -z "${_arg_suppress_start// }" ]]; then
+	_arg_suppress_start=$(jq -r '.action_suppression[].suppress_start' <${conf_file})
+fi
+if [[ -z "${_arg_suppress_duration// }" ]]; then
+	_arg_suppress_duration=$(jq -r '.action_suppression[].suppress_duration' <${conf_file})
+fi
+if ([[ $_arg_suppress_upload_files_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
+	_arg_suppress_upload_files=$(jq -r '.action_suppression[].suppress_upload_files' <${conf_file})
 fi
 
 ### 2 VALIDATE ###
