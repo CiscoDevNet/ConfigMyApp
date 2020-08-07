@@ -53,9 +53,10 @@ _arg_use_branding=true
 _arg_logo_name=
 _arg_background_name=
 
-_arg_use_action_supression=false
-_arg_action_supression_start=
-_arg_action_supression_duration=
+_arg_suppress_action=false
+_arg_suppress_start=
+_arg_suppress_duration=
+_arg_suppress_upload_files=false
 
 _arg_debug=false
 
@@ -70,7 +71,8 @@ _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
 _arg_use_branding_explicitly_set=false
 _arg_bt_only_explicitly_set=false
-_arg_use_action_supression_explicitly_set=false
+_arg_suppress_action_explicitly_set=false
+_arg_suppress_upload_files_explicitly_set=false
 
 print_help()
 {
@@ -108,9 +110,11 @@ print_help()
 	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
 
-	printf '\t%s\n' "--use-action-supression, --no-use-action-supression: use action supression (${_arg_use_action_supression} by default)"
-	printf '\t%s\n' "--action-supression-start: supression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if use-action-supression set to true (current datetime by default)"
-	printf '\t%s\n' "--action-supression-duration: duration in minutes, mandatory if use-action-supression set to true (one hour by default)"
+	printf '%s\n' "Action suppression options:"
+	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
+	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
+	printf '\t%s\n' "--suppress-duration-minutes: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
+	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -293,27 +297,32 @@ parse_commandline()
 			--background-name=*)
 				_arg_background_name="${_key##--background-name=}"
 				;;
-			--no-use-action-supression|--use-action-supression)
-				_arg_use_action_supression=true
-				_arg_use_action_supression_explicitly_set=true
-				test "${1:0:5}" = "--no-" && _arg_use_action_supression=false
+			--no-suppress-action|--suppress-action)
+				_arg_suppress_action=true
+				_arg_suppress_action_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_suppress_action=false
 				;;
-			--action-supression-start)
+			--suppress-start)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_action_supression_start="$2"
+				_arg_suppress_start="$2"
 				shift
 				;;
-			--action-supression-start=*)
-				_arg_action_supression_start="${_key##--action-supression-start=}"
+			--suppress-start=*)
+				_arg_suppress_start="${_key##--suppress-start=}"
 				;;
-			--action-supression-duration)
+			--suppress-duration-minutes)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_action_supression_duration="$2"
+				_arg_suppress_duration="$2"
 				shift
 				;;
-			--action-supression-duration=*)
-				_arg_action_supression_duration="${_key##--action-supression-duration=}"
+			--suppress-duration-minutes=*)
+				_arg_suppress_duration="${_key##--suppress-duration-minutes=}"
 				;;	
+			--no-suppress-upload-files|--suppress-upload-files)
+				_arg_suppress_upload_files=true
+				_arg_suppress_upload_files_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_suppress_upload_files=false
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -484,6 +493,21 @@ fi
 if ([ $_arg_bt_only_explicitly_set = false ] && [ ! -z "${CMA_BT_ONLY// }" ]); then
 	_arg_bt_only=${CMA_BT_ONLY}
 fi
+
+# action suppression
+if ([ $_arg_suppress_action_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_ACTION// }" ]); then
+	_arg_suppress_action=${CMA_SUPPRESS_ACTION}
+fi
+if ([ -z "${_arg_suppress_start// }" ] && [ ! -z "${CMA_SUPPRESS_START// }" ]); then
+	_arg_suppress_start=${CMA_SUPPRESS_START}
+fi
+if ([ -z "${_arg_suppress_duration// }" ] && [ ! -z "${CMA_SUPPRESS_DURATION// }" ]); then
+	_arg_suppress_duration=${CMA_SUPPRESS_DURATION}
+fi
+if ([ $_arg_suppress_upload_files_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
+	_arg_suppress_upload_files=${CMA_SUPPRESS_UPLOAD_FILES}
+fi
+
 
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
@@ -658,23 +682,29 @@ if [ $_arg_debug = true ]; then
 fi
 
 # 3.5 Prepare action supression
-if [ $_arg_use_action_supression = true ]; then
-	if [ -z "${_arg_action_supression_start// }" ]; then
+if [ $_arg_suppress_action = true ]; then
+	if [ -z "${_arg_suppress_start// }" ]; then
 		# set to current datetime if empty
 		# UTC / GMT
-		_arg_action_supression_start=$(date -u +%FT%T+0000)
+		_arg_suppress_start=$(date -u +%FT%T+0000)
 	fi
-	if [ -z "${_arg_action_supression_duration// }" ]; then
+	if [ -z "${_arg_suppress_duration// }" ]; then
 		# set to one hour if empty
-		_arg_action_supression_duration=60
+		_arg_suppress_duration=60
 	fi
 fi
 
 ### 4 ACTION SUPRESSION ###
-if [ $_arg_use_action_supression = true ]; then
-	./api_actions/action-supression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_action_supression_start" "$_arg_action_supression_duration" "$_arg_application_name"
-	exit 0 # only action supression
+if [ $_arg_suppress_action = true ]; then
+	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name"
+	
 fi
+
+if [ $_arg_suppress_upload_files = true ]; then
+	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name"
+	exit 0 # only upload files
+fi
+
 
 ### 5 EXECUTE CMA SCRIPT ###
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
