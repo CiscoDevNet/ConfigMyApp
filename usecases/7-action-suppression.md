@@ -1,9 +1,7 @@
-
 ---
 sort: 7
 
 ---
-
 # Action Suppression
 
 You configure action suppression for a specific time period to apply to a specific object or several objects. The following entities can be the objects of action suppression:
