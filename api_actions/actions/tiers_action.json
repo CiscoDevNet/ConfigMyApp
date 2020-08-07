@@ -1,0 +1,17 @@
+{
+    "name": "CMA-suppression-tiers-nodes-test",
+    "disableAgentReporting": true,
+    "startTime": "2020-09-06T18:33:14+0000",
+    "endTime": "2020-09-06T19:33:14+0000",
+    "affects": {
+        "affectedInfoType": "TIERS_NODES",
+        "affectedEntities": {
+            "tierNodeType": "NODE",
+            "nodeType": "ALL_NODES",
+            "affectedNodes": {
+                "affectedNodeScope": "NODES_OF_SPECIFIC_TIERS",
+                "specificTiers": ["Web"]
+            }
+        }
+    }
+}
