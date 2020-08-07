@@ -15,3 +15,4 @@ zz_demoflow*
 business_transactions/uploaded/*
 api_actions/uploaded/*.json
 api_actions/filesToUpload/*.json
+api_actions/actions/*.json
