@@ -16,3 +16,4 @@ ConfigMyApp supports the configuration of the following AppDynamics components:
  - Business Application
  - DB Monitoring
  - Custom dashboard with support for custom logo and background images.
+ - Action Suppression - useful for stopping alerts during a planned downtime 
