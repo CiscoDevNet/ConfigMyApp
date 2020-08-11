@@ -675,6 +675,8 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --suppress-action: $_arg_suppress_action" 
 	echo "Value of --suppress-start: $_arg_suppress_start" 
 	echo "Value of --suppress-duration: $_arg_suppress_duration" 
+	echo "Value of --suppress-name: $_arg_suppress_name" 
+	echo "Value of --suppress-delete: $_arg_suppress_delete" 
 
 	echo "Value of --use-branding: $_arg_use_branding" 
 	echo "Value of --logo-name: $_arg_logo_name" 
@@ -747,8 +749,7 @@ fi
 
 ### 4 ACTION SUPRESSION ###
 if [ $_arg_suppress_action = true ]; then
-	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_name" "$_arg_suppress_duration" "$_arg_application_name"
-	
+	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name" "$_arg_suppress_name"
 fi
 
 if [ $_arg_suppress_upload_files = true ]; then
@@ -760,7 +761,6 @@ if [[ ! -z "${_arg_suppress_delete// }" ]]; then
 	./api_actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_delete" "$_arg_application_name"
 	exit 0 # only delete action suppression
 fi
-
 
 ### 5 EXECUTE CMA SCRIPT ###
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
