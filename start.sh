@@ -167,9 +167,11 @@ parse_commandline()
 				shift
 				;;
 			--controller-port=*)
+				_arg_controller_port_explicitly_set=true
 				_arg_controller_port="${_key##--controller-port=}"
 				;;
 			-P*)
+				_arg_controller_port_explicitly_set=true
 				_arg_controller_port="${_key##-P}"
 				;;
 			--account)
