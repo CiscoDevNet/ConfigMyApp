@@ -57,6 +57,8 @@ _arg_suppress_action=false
 _arg_suppress_start=
 _arg_suppress_duration=
 _arg_suppress_upload_files=false
+_arg_suppress_name=
+_arg_suppress_delete=
 
 _arg_debug=false
 
@@ -114,7 +116,11 @@ print_help()
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
 	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
 	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
+	printf '\t%s\n' "--suppress-name: custom name of the supression action, if none specified name is auto-generated (no default)"
+	
 	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
+	
+	printf '\t%s\n' "--suppress-delete: delete action suppression by passing action name to this parameter (no default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -323,6 +329,22 @@ parse_commandline()
 				_arg_suppress_upload_files_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_suppress_upload_files=false
 				;;
+			--suppress-name)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_suppress_name="$2"
+				shift
+				;;
+			--suppress-name=*)
+				_arg_suppress_name="${_key##--suppress-name=}"
+				;;
+			--suppress-delete)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_suppress_delete="$2"
+				shift
+				;;
+			--suppress-delete=*)
+				_arg_suppress_delete="${_key##--suppress-delete=}"
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -504,10 +526,15 @@ fi
 if ([ -z "${_arg_suppress_duration// }" ] && [ ! -z "${CMA_SUPPRESS_DURATION// }" ]); then
 	_arg_suppress_duration=${CMA_SUPPRESS_DURATION}
 fi
+if ([ -z "${_arg_suppress_name// }" ] && [ ! -z "${CMA_SUPPRESS_NAME// }" ]); then
+	_arg_suppress_name=${CMA_SUPPRESS_NAME}
+fi
 if ([ $_arg_suppress_upload_files_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
 	_arg_suppress_upload_files=${CMA_SUPPRESS_UPLOAD_FILES}
 fi
-
+if ([ -z "${_arg_suppress_delete// }" ] && [ ! -z "${CMA_SUPPRESS_DELETE// }" ]); then
+	_arg_suppress_delete=${CMA_SUPPRESS_DELETE}
+fi
 
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
@@ -587,6 +614,7 @@ if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); t
 	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
 fi
 
+# action suppression
 if ([[ $_arg_suppress_action_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_ACTION// }" ]); then
 	_arg_suppress_action=$(jq -r '.action_suppression[].suppress_action' <${conf_file})
 fi
@@ -596,8 +624,14 @@ fi
 if [[ -z "${_arg_suppress_duration// }" ]]; then
 	_arg_suppress_duration=$(jq -r '.action_suppression[].suppress_duration' <${conf_file})
 fi
+if [[ -z "${_arg_suppress_name// }" ]]; then
+	_arg_suppress_name=$(jq -r '.action_suppression[].suppress_name' <${conf_file})
+fi
 if ([[ $_arg_suppress_upload_files_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
 	_arg_suppress_upload_files=$(jq -r '.action_suppression[].suppress_upload_files' <${conf_file})
+fi
+if [[ -z "${_arg_suppress_delete// }" ]]; then
+	_arg_suppress_delete=$(jq -r '.action_suppression[].suppress_delete' <${conf_file})
 fi
 
 ### 2 VALIDATE ###
@@ -637,6 +671,10 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --include-sim: $_arg_include_sim" 
 	echo "Value of --configure-bt: $_arg_configure_bt" 
 	echo "Value of --bt-only: $_arg_bt_only" 
+
+	echo "Value of --suppress-action: $_arg_suppress_action" 
+	echo "Value of --suppress-start: $_arg_suppress_start" 
+	echo "Value of --suppress-duration: $_arg_suppress_duration" 
 
 	echo "Value of --use-branding: $_arg_use_branding" 
 	echo "Value of --logo-name: $_arg_logo_name" 
@@ -709,13 +747,18 @@ fi
 
 ### 4 ACTION SUPRESSION ###
 if [ $_arg_suppress_action = true ]; then
-	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name"
+	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_name" "$_arg_suppress_duration" "$_arg_application_name"
 	
 fi
 
 if [ $_arg_suppress_upload_files = true ]; then
 	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name"
 	exit 0 # only upload files
+fi
+
+if [[ ! -z "${_arg_suppress_delete// }" ]]; then
+	./api_actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_delete" "$_arg_application_name"
+	exit 0 # only delete action suppression
 fi
 
 
