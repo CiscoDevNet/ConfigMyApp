@@ -9,17 +9,19 @@ _action_suppression_duration=${4}
 
 _application_name=${5}
 
+_action_suppression_name=${6}
+
 # 2. FUNCTIONS
 function func_check_http_response(){
     local http_message_body="$1"
     local string_success_response_contains="$2"
     if [[ "$http_message_body" =~ "$string_success_response_contains" ]]; then # contains
             echo "Success..."
-        else
-            echo "${dt} ERROR "{$http_message_body}"" >> error.log
-            echo "ERROR $http_message_body"
-            exit 1
-        fi
+    else
+        echo "${dt} ERROR "{$http_message_body}"" >> error.log
+        echo "ERROR $http_message_body"
+        exit 1
+    fi
 }
 
 # 3. PREPARE REQUEST
@@ -30,8 +32,9 @@ _template_path="./api_actions/action-suppression-payload-template.json"
 
 _header="Content-Type: application/json; charset=utf8"
 
-_action_suppression_name="CMA-suppression-${dt}"
-
+if [[ -z "${_action_suppression_name}" ]]; then
+    _action_suppression_name="CMA-suppression-${dt}"
+fi
 
 echo | date -d "today" >/dev/null 2>&1
 if [ $? -eq 0 ]; then
@@ -56,6 +59,7 @@ fi
 
 application_id=$(jq '.id' <<< $applicationObject)
 _resource_url="alerting/rest/v1/applications/${application_id}/action-suppressions"
+
 
 # 4. SEND A CREATE REQUEST
 echo "Uploading application supression action"
