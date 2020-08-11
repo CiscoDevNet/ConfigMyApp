@@ -30,5 +30,13 @@
       "configure_bt": false,
       "bt_only": false
     }
+  ],
+  "action_suppression": [
+    {
+      "suppress_action": false,
+      "suppress_start": "",
+      "suppress_duration": "",
+      "suppress_upload_files": false
+    }
   ]
 }
