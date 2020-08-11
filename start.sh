@@ -53,8 +53,14 @@ _arg_use_branding=true
 _arg_logo_name=
 _arg_background_name=
 
+_arg_suppress_action=false
+_arg_suppress_start=
+_arg_suppress_duration=
+_arg_suppress_upload_files=false
+
 _arg_debug=false
 
+_arg_controller_port_explicitly_set=false
 _arg_use_encoded_credentials_explicitly_set=false
 _arg_overwrite_health_rules_explicitly_set=false
 _arg_use_https_explicitly_set=false
@@ -65,6 +71,8 @@ _arg_include_sim_explicitly_set=false
 _arg_configure_bt_explicitly_set=false
 _arg_use_branding_explicitly_set=false
 _arg_bt_only_explicitly_set=false
+_arg_suppress_action_explicitly_set=false
+_arg_suppress_upload_files_explicitly_set=false
 
 print_help()
 {
@@ -101,6 +109,12 @@ print_help()
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
 	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
+
+	printf '%s\n' "Action suppression options:"
+	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
+	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
+	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
+	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -141,6 +155,7 @@ parse_commandline()
 				_arg_controller_host="${_key##-c}"
 				;;
 			-P|--controller-port)
+				_arg_controller_port_explicitly_set=true
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
 				_arg_controller_port="$2"
 				shift
@@ -282,6 +297,32 @@ parse_commandline()
 			--background-name=*)
 				_arg_background_name="${_key##--background-name=}"
 				;;
+			--no-suppress-action|--suppress-action)
+				_arg_suppress_action=true
+				_arg_suppress_action_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_suppress_action=false
+				;;
+			--suppress-start)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_suppress_start="$2"
+				shift
+				;;
+			--suppress-start=*)
+				_arg_suppress_start="${_key##--suppress-start=}"
+				;;
+			--suppress-duration)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_suppress_duration="$2"
+				shift
+				;;
+			--suppress-duration=*)
+				_arg_suppress_duration="${_key##--suppress-duration=}"
+				;;	
+			--no-suppress-upload-files|--suppress-upload-files)
+				_arg_suppress_upload_files=true
+				_arg_suppress_upload_files_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_suppress_upload_files=false
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -393,7 +434,7 @@ fi
 if ([ -z "${_arg_controller_host// }" ] && [ ! -z "${CMA_CONTROLLER_HOST// }" ]); then
 	_arg_controller_host=${CMA_CONTROLLER_HOST}
 fi
-if ([ -z "${_arg_controller_port// }" ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ ! -z "${CMA_CONTROLLER_PORT// }" ]); then
 	_arg_controller_port=${CMA_CONTROLLER_PORT}
 fi
 if ([ $_arg_use_https_explicitly_set = false ] && [ ! -z "${CMA_USE_HTTPS// }" ]); then
@@ -453,6 +494,21 @@ if ([ $_arg_bt_only_explicitly_set = false ] && [ ! -z "${CMA_BT_ONLY// }" ]); t
 	_arg_bt_only=${CMA_BT_ONLY}
 fi
 
+# action suppression
+if ([ $_arg_suppress_action_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_ACTION// }" ]); then
+	_arg_suppress_action=${CMA_SUPPRESS_ACTION}
+fi
+if ([ -z "${_arg_suppress_start// }" ] && [ ! -z "${CMA_SUPPRESS_START// }" ]); then
+	_arg_suppress_start=${CMA_SUPPRESS_START}
+fi
+if ([ -z "${_arg_suppress_duration// }" ] && [ ! -z "${CMA_SUPPRESS_DURATION// }" ]); then
+	_arg_suppress_duration=${CMA_SUPPRESS_DURATION}
+fi
+if ([ $_arg_suppress_upload_files_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
+	_arg_suppress_upload_files=${CMA_SUPPRESS_UPLOAD_FILES}
+fi
+
+
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
 
@@ -470,7 +526,7 @@ if [[ -z "${_arg_controller_host// }" ]]; then
 	_arg_controller_host=$(jq -r '.controller_details[].host' <${conf_file})
 fi
 
-if [[ -z "${_arg_controller_port// }" ]]; then
+if ([ $_arg_controller_port_explicitly_set = false ] && [ -z "${CMA_CONTROLLER_PORT}" ]); then
 	_arg_controller_port=$(jq -r '.controller_details[].port' <${conf_file})
 fi
 
@@ -531,6 +587,19 @@ if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); t
 	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
 fi
 
+if ([[ $_arg_suppress_action_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_ACTION// }" ]); then
+	_arg_suppress_action=$(jq -r '.action_suppression[].suppress_action' <${conf_file})
+fi
+if [[ -z "${_arg_suppress_start// }" ]]; then
+	_arg_suppress_start=$(jq -r '.action_suppression[].suppress_start' <${conf_file})
+fi
+if [[ -z "${_arg_suppress_duration// }" ]]; then
+	_arg_suppress_duration=$(jq -r '.action_suppression[].suppress_duration' <${conf_file})
+fi
+if ([[ $_arg_suppress_upload_files_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_UPLOAD_FILES// }" ]); then
+	_arg_suppress_upload_files=$(jq -r '.action_suppression[].suppress_upload_files' <${conf_file})
+fi
+
 ### 2 VALIDATE ###
 
 # 2.1 Check if values are in expected ranges
@@ -575,7 +644,7 @@ if [ $_arg_debug = true ]; then
 	
 fi
 
-### 3 PREPARE PARAMETERS AND EXECUTE SCRIPT ###
+### 3 PREPARE PARAMETERS ###
 
 # 3.1 Prepare user credentials
 
@@ -625,8 +694,34 @@ if [ $_arg_debug = true ]; then
 	echo "Configure BTs: $_arg_configure_bt"
 fi
 
-# 3.4 Execute ConfigMyApp script
+# 3.5 Prepare action supression
+if [ $_arg_suppress_action = true ]; then
+	if [ -z "${_arg_suppress_start// }" ]; then
+		# set to current datetime if empty
+		# UTC / GMT
+		_arg_suppress_start=$(date -u +%FT%T+0000)
+	fi
+	if [ -z "${_arg_suppress_duration// }" ]; then
+		# set to one hour if empty
+		_arg_suppress_duration=60
+	fi
+fi
+
+### 4 ACTION SUPRESSION ###
+if [ $_arg_suppress_action = true ]; then
+	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name"
+	
+fi
+
+if [ $_arg_suppress_upload_files = true ]; then
+	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name"
+	exit 0 # only upload files
+fi
+
+
+### 5 EXECUTE CMA SCRIPT ###
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
+
 
  #  <-- needed, do not delete 
 # ] <-- needed, do not delete
