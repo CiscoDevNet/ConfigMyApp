@@ -161,7 +161,7 @@ parse_commandline()
 				shift
 				;;
 			--controller-port=*)
-should take				_arg_controller_port_explicitly_set=true
+				_arg_controller_port_explicitly_set=true
 				_arg_controller_port="${_key##--controller-port=}"
 				;;
 			-P*)
