@@ -31,6 +31,10 @@ These values can be explicitly set as well:
 
 For `--suppress-start` use GMT timezone.
 
+To specify the name of the action, use `--suppress-name` parameter and provide action name as a value. In case when it is not specified, name is going to be auto-generated.
+
+`./start.sh -c http://appd.saas.com -a MyApp --username=appd --password=appd --suppress-action --suppress-start=2020-01-31T12:00:00+0000 --suppress-name=<action_name>`
+
 Use `--help` option for more details on format, timezone and default values.
 
 <b>Environment variables</b>
@@ -41,6 +45,8 @@ Use `--help` option for more details on format, timezone and default values.
 
 `CMA_SUPPRESS_DURATION=120`
 
+`CMA_SUPPRESS_NAME=MyAction`
+
 <b>Configuration file (`config.json`)</b>
 
 `"suppress_action": false`
@@ -49,7 +55,27 @@ Use `--help` option for more details on format, timezone and default values.
 
 `"suppress_duration": "120"`
 
-## 2. Action suppression files upload
+`"suppress_name": "MyAction"`
+
+## 2. Delete action suppression
+
+<b> Runtime parameters</b>
+
+In order to delete action suppression from controller, use the `--suppress-delete` parameter and provide the action name to be deleted:
+
+`./start.sh -c http://appd.saas.com -a MyApp --username=appd --password=appd --suppress-delete=<action_name>`
+
+By setting this flag the only action that is going to be performed is deleting specified suppression action, no other configuration is going to be sent to controller.
+
+<b>Environment variables</b>
+
+`CMA_SUPPRESS_DELETE=MyAction`
+
+<b>Configuration file (`config.json`)</b>
+
+`"suppress_delete": "MyAction"`
+
+## 3. Action suppression files upload
 
 <b> Runtime parameters</b>
 
