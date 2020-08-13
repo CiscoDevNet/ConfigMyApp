@@ -32,7 +32,7 @@
                     "evalDetail": {
                         "evalDetailType": "SINGLE_METRIC",
                         "metricAggregateFunction": "VALUE",
-                        "metricPath": "Agent|Machine|Availability",
+                        "metricPath": "Agent|App|Availability",
                         "metricEvalDetail": {
                             "metricEvalDetailType": "SPECIFIC_TYPE",
                             "compareCondition": "LESS_THAN_SPECIFIC_VALUE",
