@@ -34,9 +34,11 @@
   "action_suppression": [
     {
       "suppress_action": false,
+      "suppress_name": "",
       "suppress_start": "",
       "suppress_duration": "",
-      "suppress_upload_files": false
+      "suppress_upload_files": false,
+      "suppress_delete": ""
     }
   ]
 }

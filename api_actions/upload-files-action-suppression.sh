@@ -12,18 +12,17 @@ function func_check_http_response(){
     local string_success_response_contains="$2"
     if [[ "$http_message_body" =~ "$string_success_response_contains" ]]; then # contains
             echo "Success..."
-        else
-            echo "${dt} ERROR "{$http_message_body}"" >> error.log
-            echo "ERROR $http_message_body"
-            #exit 1
-        fi
+    else
+        echo "${dt} ERROR "{$http_message_body}"" >> error.log
+        echo "ERROR $http_message_body"
+        #exit 1
+    fi
 }
 
 # 3. PREPARE REQUEST
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
 _header="Content-Type: application/json; charset=utf8"
-
 
 # application id
 allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON)
@@ -56,4 +55,3 @@ for f in $_action_suppression_files; do
 
 done
  
-
