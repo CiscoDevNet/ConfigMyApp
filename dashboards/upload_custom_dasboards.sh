@@ -5,12 +5,13 @@ _controller_url=${1}   # hostname + /controller
 _user_credentials=${2} # ${username}:${password}
 
 _application_name=${3}
+_proxy_details=${4}
 
 _custom_dash_dir="./custom_dashboards" #I might move this into dashboard folder.. let see..
 _temp_dash_dir="$_custom_dash_dir/temp"
 templateAppName="ChangeApplicationName"
 
-# 2. FUNCTIONS
+
 function func_check_http_response() {
     local http_message_body="$1"
     local string_success_response_contains="$2"
@@ -45,7 +46,7 @@ sed -i -e "s/${templateAppName}/${_application_name}/g" "$_temp_dash_dir/*.json"
 for dashFile in $_temp_dash_dir; do
     echo "Processing $dashFile dashboard template"
 
-    response=$(curl -s -X POST --user ${_user_credentials} ${_controller_url}/${_dasboard_API_endpoint} -F file=@${dashFile})
+    response=$(curl -s -X POST --user ${_user_credentials} ${_controller_url}/${_dasboard_API_endpoint} -F file=@${dashFile} ${_proxy_details})
 
     expected_response='"success":true'
 
