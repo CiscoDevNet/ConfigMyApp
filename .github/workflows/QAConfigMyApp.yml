@@ -16,8 +16,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: QA Docker Image
       run: |
-          echo Running docker image,
-          ./docker/run.sh
+          echo Running docker image
+          cd docker
+          ls -ltr
+          ./run.sh
   CLI-QA:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
