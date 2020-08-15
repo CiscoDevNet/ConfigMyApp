@@ -18,16 +18,14 @@ jobs:
           tags: "latest"
           dockerfile: docker/Dockerfile
       
-  test_docker_image:
-    name: Docker image QA
+  DcokerImage-QA:
     runs-on: ubuntu-latest
-    container:
-      image: appdynamicscx/configmyapp:latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: TestCase1- Basic and BT configuration
-        run: |
-          echo Running docker image,
-          ./docker/run.sh
+    - uses: actions/checkout@v2
+    - name: QA Docker Image
+      run: |
+          echo Testing the docker image
+          cd docker
+          ls -ltr
+          ./run.sh
        
