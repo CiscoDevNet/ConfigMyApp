@@ -20,12 +20,25 @@ function func_check_http_response() {
     else
         echo "${dt} ERROR "{$http_message_body}"" >>error.log
         echo "ERROR $http_message_body"
-        #exit 1
+        exit 1
     fi
 }
 
-# application id
-allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON)
+#check if custom dashboards exist 
+
+if [ "$(ls -A $_custom_dash_dir/*.json)" ]; then
+     echo "Found custom JSON file(s) in $_custom_dash_dir"
+     echo "ls -l $_custom_dash_dir/*.json" 
+else
+    echo "$_custom_dash_dir directory is empty. "
+    echo "Please add custom dashboard JSON files to the $_custom_dash_dir directory "
+    echo "Aborting.."
+    exit 1
+fi
+
+#check if App exist 
+
+allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON $_proxy_details)
 
 applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
 
@@ -33,11 +46,9 @@ if [ "$applicationObject" = "" ]; then
     func_check_http_response 404 "Application '"$_application_name"' not found. Aborting..."
 fi
 
-_application_id=$(jq '.id' <<<$applicationObject)
+#All conditions met.. processing dashboards. 
 
-_dasboard_API_endpoint="/CustomDashboardImportExportServlet"
-
-_vanilla_files="./custom_dashboards/*.json"
+_dasboard_API_endpoint="CustomDashboardImportExportServlet"
 
 mkdir -p "$_temp_dash_dir" && cp -r "$_custom_dash_dir/*.json" "$_temp_dash_dir"
 
