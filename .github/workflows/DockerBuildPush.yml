@@ -3,7 +3,7 @@ on:
   release:
     types: [published]
 jobs:
-  push_to_registry:
+  build_and_push_to_registry:
     name: Push ConfigMyApp Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
@@ -17,25 +17,17 @@ jobs:
           repository: appdynamicscx/configmyapp
           tags: "latest"
           dockerfile: docker/Dockerfile
-        
-      - name: TestCase1- Basic ConfigMyApp
+      
+  test_docker_image:
+    name: Docker image QA
+    runs-on: ubuntu-latest
+    container:
+      image: appdynamicscx/configmyapp:latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: TestCase1- Basic and BT configuration
         run: |
-          echo Running basic CMA,
-          pwd,
-          ls -ltr,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd 
-          
-      - name: TestCase2- BT_ONLY
-        run: |
-          echo Running BT_ONLY,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --bt-only
-          
-      - name: TestCase3- Action suppression
-        run: |
-          echo Running Action Suppression,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action
-          
-      - name: TestCase4-SIM and DB
-        run: |
-          echo Running SIM and DB,
-          ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd  --include-database  --database-name 'ConfigMyApp'  --include-sim
+          echo Running docker image,
+          ./docker/run.sh
+       
