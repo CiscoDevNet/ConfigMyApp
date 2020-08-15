@@ -23,9 +23,9 @@ jobs:
       
     - name: TestCase1- Basic ConfigMyApp
       run: |
-          echo Running basic CMA,
-          pwd,
-          ls -ltr,
+          echo Running basic CMA
+          pwd
+          ls -ltr
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd 
           
     - name: TestCase2- BT_ONLY
