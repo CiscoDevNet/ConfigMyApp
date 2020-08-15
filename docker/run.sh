@@ -13,7 +13,7 @@ if [ "x$2" != "x" ]; then
 fi
 
 #standard run
-docker run -d  --env-file env.list ${image_name}:${version}
+docker run --rm --env-file env.list ${image_name}:${version} --name configmyapp
 
 docker ps
 
