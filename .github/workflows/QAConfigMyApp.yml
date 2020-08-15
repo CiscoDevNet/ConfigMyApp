@@ -10,7 +10,15 @@ on:
     branches: [ master, develop ]
 
 jobs:
-  QA:
+  DcokerImage-QA:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: QA Docker Image
+      run: |
+          echo Running docker image,
+          ./docker/run.sh
+  CLI-QA:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
