@@ -6,6 +6,7 @@ _user_credentials=${2} # ${username}:${password}
 
 _application_name=${3}
 _proxy_details=${4}
+_debug=${5}
 
 _custom_dash_dir="./custom_dashboards" #I might move this into dashboard folder.. let see..
 _temp_dash_dir="$_custom_dash_dir/temp"
@@ -52,19 +53,24 @@ _dasboard_API_endpoint="CustomDashboardImportExportServlet"
 
 mkdir -p "$_temp_dash_dir" && cp -r "$_custom_dash_dir/*.json" "$_temp_dash_dir"
 
-sed -i -e "s/${templateAppName}/${_application_name}/g" "$_temp_dash_dir/*.json"
+for _dash_file in $_temp_dash_dir; do
+    echo "Processing ${_dash_file} dashboard template. Using  ${_application_name}"
+    sed -i -e "s/${templateAppName}/${_application_name}/g" "${_temp_dash_dir}/${_dash_file}"
+    
+    echo "Uploading $_dash_file to ${_controller_url}... "
 
-for dashFile in $_temp_dash_dir; do
-    echo "Processing $dashFile dashboard template"
-
-    response=$(curl -s -X POST --user ${_user_credentials} ${_controller_url}/${_dasboard_API_endpoint} -F file=@${dashFile} ${_proxy_details})
+    if [ $_debug = true ]; then 
+       response=$(curl -v -X POST --user ${_user_credentials} ${_controller_url}/${_dasboard_API_endpoint} -F file=@${_dash_file} ${_proxy_details})
+    else
+       response=$(curl -s -X POST --user ${_user_credentials} ${_controller_url}/${_dasboard_API_endpoint} -F file=@${_dash_file} ${_proxy_details})
+    fi
 
     expected_response='"success":true'
 
     func_check_http_response "\{$response}" $expected_response
 
     echo "*********************************************************************"
-    echo "The $dashFile dashboard was created successfully. "
+    echo "The $_dash_file dashboard was create successfully. "
     echo "Please check the $_controller_url controller "
     echo "*********************************************************************"
 
@@ -74,9 +80,9 @@ for dashFile in $_temp_dash_dir; do
     # save used uploaded files
     mkdir -p "${_custom_dash_dir}/uploaded"
 
-    cp -rf "./${_temp_dash_dir}/${dashFile}" "${_custom_dash_dir}/uploaded/${_application_name}"-"${dashFile}"
+    cp -rf "./${_temp_dash_dir}/${_dash_file}" "${_custom_dash_dir}/uploaded/${_application_name}"-"${_dash_file}"
 
     #clean up - one at a time
-    rm -rf "./${_temp_dash_dir}/${dashFile}"
+    rm -rf "./${_temp_dash_dir}/${_dash_file}"
 
 done

@@ -705,6 +705,8 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --use-branding: $_arg_use_branding" 
 	echo "Value of --logo-name: $_arg_logo_name" 
 	echo "Value of --background-name: $_arg_background_name" 
+
+	echo "Value of --upload-custom-dashboard: $_arg_upload_custom_dashboard" 
 	
 fi
 
@@ -788,7 +790,7 @@ fi
 
 ### 5 ACTION SUPRESSION ###
 if [ $_arg_upload_custom_dashboard = true ]; then
-	./dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details"
+	./dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug"
 	exit 0 # only upload files
 fi
 
