@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# 1. INPUT PARAMETERS
 _controller_url=${1}   # hostname + /controller
 _user_credentials=${2} # ${username}:${password}
 
@@ -11,7 +10,6 @@ _debug=${5}
 _custom_dash_dir="./custom_dashboards" #I might move this into dashboard folder.. let see..
 _temp_dash_dir="$_custom_dash_dir/temp"
 templateAppName="ChangeApplicationName"
-
 
 function func_check_http_response() {
     local http_message_body="$1"
