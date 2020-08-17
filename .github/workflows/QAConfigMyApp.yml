@@ -35,6 +35,8 @@ jobs:
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd 
           
     - name: TestCase2- BT_ONLY
+      env:
+        CMA_USE_HTTPS: false
       run: |
           echo Running BT_ONLY,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --bt-only
