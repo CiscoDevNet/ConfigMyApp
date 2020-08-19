@@ -1,0 +1,31 @@
+name: Publish Docker image
+on:
+  release:
+    types: [published]
+jobs:
+  build_and_push_to_registry:
+    name: Push ConfigMyApp Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME_CX }}
+          password: ${{ secrets.DOCKER_PASSWORD_CX }}
+          repository: appdynamicscx/configmyapp
+          tags: "latest"
+          dockerfile: docker/Dockerfile
+      
+  DcokerImage-QA:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: QA Docker Image
+      run: |
+          echo Testing the docker image
+          cd docker
+          ls -ltr
+          ./run.sh
+       
