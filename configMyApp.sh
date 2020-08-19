@@ -316,7 +316,7 @@ else
     echo "Creating dashboard in the controller"
     sleep 1
 
-    response=$(curl -s -X POST --user ${_user_credentials} ${url} -F file=@${pathToDashboardFile})
+    response=$(curl -s -X POST --user ${_user_credentials} ${url} -F file=@${pathToDashboardFile} ${_proxy_details})
 
     expected_response='"success":true'
 
