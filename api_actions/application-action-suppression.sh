@@ -24,8 +24,21 @@ function func_check_http_response(){
     fi
 }
 
+function func_check_http_status() {
+    local http_code=$1
+    local message_on_failure=$2
+    #echo "HTTP status code: $http_code"
+    if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
+        echo "${dt} ERROR "{$http_code: $message_on_failure}"" >> error.log
+        echo "ERROR $http_code: $message_on_failure"
+        exit 1
+    fi
+}
+
 # 3. PREPARE REQUEST
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
+
+mkdir -p ./api_actions/uploaded
 
 _payload_path="./api_actions/uploaded/action-suppression-payload-${dt}.json"
 _template_path="./api_actions/action-suppression-payload-template.json"
@@ -60,13 +73,15 @@ fi
 application_id=$(jq '.id' <<< $applicationObject)
 _resource_url="alerting/rest/v1/applications/${application_id}/action-suppressions"
 
-
 # 4. SEND A CREATE REQUEST
-echo "Uploading application supression action"
+echo "Uploading '"${_action_suppression_name}"' application supression action..."
 response=$(curl -s -X POST --user $_user_credentials $_controller_url/$_resource_url -H "${_header}" --data "@${_payload_path}" )
 
 # 5. CHECK RESULT
 expected_response='"id":' # returns id on success
 func_check_http_response "\{$response}" $expected_response
+
+#fileName="$(basename -- $_payload_path)"
+#cp -rf "$_payload_path" "./api_actions/uploaded/${fileName}.${dt}"
  
 #echo "response is: $response"
