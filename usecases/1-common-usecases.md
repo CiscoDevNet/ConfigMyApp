@@ -56,3 +56,12 @@ This section contains examples of running an instance of ConfigMyApp, it should 
            --overwrite-health-rules 
                   
 ```
+
+> Action suppression
+
+```bash
+./start.sh --suppress-action \ 
+           --suppress-name=MaintainanceWindowThisWeekend \ 
+           --suppress-start=2020-08-31T12:00:00+0000 \ 
+           --suppress-duration=360
+```
