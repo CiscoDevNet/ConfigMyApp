@@ -171,7 +171,7 @@ The table below describes the supported environment variables:
         <tr>
         <td>Application</td>
         <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_DELETE</code></td>
-        <td style="text-align: left">delete action suppression by passing action name to this value</td>
+        <td style="text-align: left">delete action suppression by setting action name to this variable</td>
         <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
       </tr>
     </tbody>
