@@ -114,9 +114,9 @@ print_help()
 
 	printf '%s\n' "Action suppression options:"
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
-	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
-	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
-	printf '\t%s\n' "--suppress-name: custom name of the supression action, if none specified name is auto-generated (no default)"
+	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT) (current datetime by default)"
+	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes (one hour by default)"
+	printf '\t%s\n' "--suppress-name: custom name of the supression action, if none specified name is auto-generated"
 	
 	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 	
