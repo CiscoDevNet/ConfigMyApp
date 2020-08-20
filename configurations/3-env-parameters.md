@@ -138,5 +138,41 @@ The table below describes the supported environment variables:
         <td style="text-align: left">configure business transactions only</td>
         <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
       </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_ACTION</code></td>
+        <td style="text-align: left">use application action suppression</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_START</code></td>
+        <td style="text-align: left">application suppression start date in "yyyy-MM-ddThh:mm:ss+0000" format (GMT)</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_DURATION</code></td>
+        <td style="text-align: left">application suppression duration in minutes</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_NAME</code></td>
+        <td style="text-align: left">custom name of the supression action, if none specified name is auto-generated </td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_UPLOAD_FILES</code></td>
+        <td style="text-align: left">upload action suppression files from a folder</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_DELETE</code></td>
+        <td style="text-align: left">delete action suppression by passing action name to this value</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
     </tbody>
   </table>
