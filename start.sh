@@ -114,9 +114,9 @@ print_help()
 
 	printf '%s\n' "Action suppression options:"
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
-	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT), mandatory if suppress-action set to true (current datetime by default)"
-	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes, mandatory if suppress-action is set to true (one hour by default)"
-	printf '\t%s\n' "--suppress-name: custom name of the supression action, if none specified name is auto-generated (no default)"
+	printf '\t%s\n' "--suppress-start: application suppression start date in \"yyyy-MM-ddThh:mm:ss+0000\" format (GMT) (current datetime by default)"
+	printf '\t%s\n' "--suppress-duration: application suppression duration in minutes (one hour by default)"
+	printf '\t%s\n' "--suppress-name: custom name of the supression action, if none specified name is auto-generated"
 	
 	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 	
@@ -717,7 +717,7 @@ _arg_controller_url="$protocol://$_arg_controller_host:$_arg_controller_port/con
 # 3.4 Prepare proxy details
 
 if [ $_arg_use_proxy = true ]; then
-	_arg_proxy_details="-x $proxy_url:$proxy_port"
+	_arg_proxy_details="-x $_arg_proxy_url:$_arg_proxy_port"
 else 
 	_arg_proxy_details=""
 fi
@@ -751,16 +751,17 @@ fi
 
 ### 4 ACTION SUPRESSION ###
 if [ $_arg_suppress_action = true ]; then
-	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name" "$_arg_suppress_name"
+	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name" "$_arg_suppress_name"
+	exit 0 # only do action suppression
 fi
 
 if [ $_arg_suppress_upload_files = true ]; then
-	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name"
+	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name"
 	exit 0 # only upload files
 fi
 
 if [[ ! -z "${_arg_suppress_delete// }" ]]; then
-	./api_actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_suppress_delete" "$_arg_application_name"
+	./api_actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_suppress_delete" "$_arg_application_name"
 	exit 0 # only delete action suppression
 fi
 
