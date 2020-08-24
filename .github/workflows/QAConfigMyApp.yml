@@ -41,10 +41,15 @@ jobs:
           echo Running BT_ONLY,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --bt-only
           
-    - name: TestCase3- Action suppression
+    - name: TestCase3- Action suppression.Default
       run: |
           echo Running Action Suppression,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action
+          
+    - name: TestCase4- Action suppression. Date and duration 
+      run: |
+          echo Running Action Suppression,
+          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action --suppress-start=$(date -u +%FT%T) --suppress-duration=120
           
     - name: TestCase4- SIM and DB
       run: |
