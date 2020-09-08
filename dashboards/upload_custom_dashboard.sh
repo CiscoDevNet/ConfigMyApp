@@ -62,7 +62,7 @@ mkdir -p "$_temp_dash_dir" && cp -r "$_custom_dash_dir"/*.json "$_temp_dash_dir"
 
 for _dash_file in $_temp_dash_dir/*.json; do
     echo ""
-    echo "Processing ${_dash_file} dashboard template. Using  ${_application_name} application name"
+    echo "Processing ${_dash_file} dashboard template. Using the '${_application_name}'  application"
 
     if grep -q $templateAppName ${_dash_file}; then
         sed -i -e "s/${templateAppName}/${_application_name}/g" "${_dash_file}"
@@ -71,7 +71,7 @@ for _dash_file in $_temp_dash_dir/*.json; do
         echo "Refer to the documentation for details. TODO [add link]"
         exit 1
     fi
-    
+
     sleep 2 # let it cool off
     echo ""
     echo "Uploading $_dash_file to ${_controller_url}... "
