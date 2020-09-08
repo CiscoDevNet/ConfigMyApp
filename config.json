@@ -1,5 +1,5 @@
 {
-  "overwrite_health_rules": true,
+  "overwrite_health_rules": false,
   "are_passwords_encoded": false,
   "upload_custom_dashboard": false,
 
