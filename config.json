@@ -1,7 +1,7 @@
 {
   "overwrite_health_rules": true,
   "are_passwords_encoded": false,
-  "upload_custom_dashboards": false,
+  "upload_custom_dashboard": false,
 
   "branding": [
     {

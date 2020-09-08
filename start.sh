@@ -655,7 +655,7 @@ fi
 # upload custom dashboards
 
 if ([[ $_arg_upload_custom_dashboard_explicitly_set = false ]] && [ -z "${CMA_UPLOAD_CUSTOM_DASHBOARD// }" ]); then
-	_arg_upload_custom_dashboard=$(jq -r '.upload_custom_dashboards' <${conf_file})
+	_arg_upload_custom_dashboard=$(jq -r '.upload_custom_dashboard' <${conf_file})
 fi
 
 ### 2 VALIDATE ###
