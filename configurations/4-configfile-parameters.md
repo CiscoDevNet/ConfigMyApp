@@ -38,5 +38,5 @@ The table below describe the JSON configuration:
 | Action Suppression | `.action_suppression[].suppress_name` |custom name of the supression action, if none specified name is auto-generated |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `.action_suppression[].suppress_upload_files` |upload action suppression files from a folder (false by default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `.action_suppression[].suppress_delete` |delete action suppression by passing action name to this parameter (no default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
-| Upload Custom Dashboard | `upload_custom_dashboard` | Upload existing custom dashboard (false by default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
+| Upload Custom Dashboard | `.upload_custom_dashboard` | Upload existing custom dashboard (false by default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 
