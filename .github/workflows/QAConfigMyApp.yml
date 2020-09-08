@@ -55,3 +55,14 @@ jobs:
       run: |
           echo Running SIM and DB,
           ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd  --include-database  --database-name 'ConfigMyApp'  --include-sim
+          
+    - name: TestCase6- Upload dashboard
+      run: |
+          echo Running Dash upload
+          curl https://github.com/Appdynamics/ConfigMyApp/files/5189034/CustomDashboard_vanilla.txt ./custom_dashboards/CustomDashboard_vanilla.json
+          export CMA_UPLOAD_CUSTOM_DASHBOARD=true
+          ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
+          
+          
+          
+          
