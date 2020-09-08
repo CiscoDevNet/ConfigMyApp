@@ -174,5 +174,11 @@ The table below describes the supported environment variables:
         <td style="text-align: left">delete action suppression by setting action name to this variable</td>
         <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
       </tr>
+         <tr>
+        <td>Upload Custom Dashboard</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_UPLOAD_CUSTOM_DASHBOARD</code></td>
+        <td style="text-align: left">Upload existing custom dashboard</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
     </tbody>
   </table>
