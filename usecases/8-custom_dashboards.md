@@ -16,7 +16,7 @@ e. Repeat the steps above for all the custom dashboards you will like to create 
 
 ```tip
 ConfigMyApp can process multiple custom dashboards from the `custom_dashboards` folder. 
-
+```
 
 <b> Runtime parameters</b>
 
@@ -29,8 +29,8 @@ The run time parameter is `--upload-custom-dashboard` and it defaults to false. 
 
 `CMA_UPLOAD_CUSTOM_DASHBOARD=true`
 
-
 <b>Configuration file (`config.json`)</b>
+
 `
 "configuration": [
     {
