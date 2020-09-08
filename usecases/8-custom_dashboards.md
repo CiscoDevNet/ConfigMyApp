@@ -10,7 +10,7 @@ If the out of the box dashboard does not meet your requirements, you may use Con
 
 1. Create the custom dashboard in the controller.
 2. Export the file to your local machine.
-3. Using your favourite text editor, find and replace the business application name with 'ChangeApplicationName'. Please note that it is case sensitive.
+3. Using your favorite text editor, find and replace the business application name with 'ChangeApplicationName'. Please note that it is case sensitive.
 4. Copy the modified json file into the `custom_dashboard` folder  
 5. Repeat the steps above for all the custom dashboards you will like to create per application. 
 
