@@ -1,8 +1,7 @@
 {
-  "overwrite_health_rules": true,
+  "overwrite_health_rules": false,
   "are_passwords_encoded": false,
   
-
   "branding": [
     {
       "enabled": true,
