@@ -1,7 +1,7 @@
 {
   "overwrite_health_rules": true,
   "are_passwords_encoded": false,
-  "upload_custom_dashboard": false,
+  
 
   "branding": [
     {
@@ -30,7 +30,8 @@
       "database_name": "",
       "include_sim": false,
       "configure_bt": false,
-      "bt_only": false
+      "bt_only": false,
+      "upload_custom_dashboard": false
     }
   ],
   "action_suppression": [
