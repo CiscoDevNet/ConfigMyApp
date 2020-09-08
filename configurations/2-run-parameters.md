@@ -40,5 +40,6 @@ The table below describes the supported runtime arguments:
 | Action Suppression | `--suppress-name` | custom name of the supression action, if none specified name is auto-generated  |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `--suppress-upload-files, --no-suppress-upload-files` | upload action suppression files from a folder (false by default)  |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `--suppress-delete` | delete action suppression by passing action name to this parameter (no default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
+| Upload Custom Dashboard | `--upload-custom-dashboard` | upload custom dashboard from existing JSON file (false by default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 
 You can run the script in debug mode by using `--debug` flag, in which case the connection and other parameters used will be printed out in the console. We do not recommend using this flag in production, and it is set to `false` by default.
