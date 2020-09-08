@@ -48,8 +48,9 @@ jobs:
           
     - name: TestCase4- Action suppression. Date and duration 
       run: |
-          echo Running Action Suppression,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action --suppress-start=$(date -d " + 5 minutes" -u  +%FT%T) --suppress-duration=120
+          echo Running Action Suppression 
+          #--suppress-start=$(date -d " + 20 minutes" -u  +%FT%T)
+          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action  --suppress-duration=120
           
     - name: TestCase5- SIM and DB
       run: |
