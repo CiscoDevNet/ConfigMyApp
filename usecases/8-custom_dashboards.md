@@ -31,11 +31,12 @@ The run time parameter is `--upload-custom-dashboard` and it defaults to false. 
 
 <b>Configuration file (`config.json`)</b>
 
-`
-"configuration": [
+```
+"configuration": [ 
     {
       [truncated]
       "upload_custom_dashboard": false
     }
   ],
-`
+
+```
