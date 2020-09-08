@@ -33,7 +33,6 @@ The table below describe the JSON configuration:
 | Application | `.overwrite_health_rules` | overwrite health rules |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20">|
 | Application | `.configuration[].bt_only` | configure business transactions only  |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Application | `.configuration[].upload_custom_dashboard` | Upload existing custom dashboard (false by default) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
-
 | Action Suppression | `.action_suppression[].suppress_action` |use application action suppression (false by default)  |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `.action_suppression[].suppress_start` |application suppression start date in "yyyy-MM-ddThh:mm:ss+0000" format (GMT) |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
 | Action Suppression | `.action_suppression[].suppress_duration` |application suppression duration in minutes |  <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"> |
