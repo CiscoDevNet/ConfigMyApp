@@ -59,7 +59,7 @@ jobs:
     - name: TestCase6- Upload dashboard
       run: |
           echo Running Dash upload
-          curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt ./custom_dashboards/CustomDashboard_vanilla.json
+          curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
           export CMA_UPLOAD_CUSTOM_DASHBOARD=true
           ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
           
