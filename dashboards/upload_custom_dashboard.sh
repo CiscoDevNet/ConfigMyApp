@@ -64,9 +64,15 @@ for _dash_file in $_temp_dash_dir/*.json; do
     echo ""
     echo "Processing ${_dash_file} dashboard template. Using  ${_application_name} application name"
 
-    sed -i -e "s/${templateAppName}/${_application_name}/g" "${_dash_file}"
+    if grep -q $templateAppName ${_dash_file}; then
+        sed -i -e "s/${templateAppName}/${_application_name}/g" "${_dash_file}"
+    else
+        echo "Error occured. Please ensure you replace the applicationName object in the json file with '$templateAppName' "
+        echo "Refer to the documentation for details. TODO [add link]"
+        exit 1
+    fi
+
     sleep 2 # let it cool off
-    
     echo ""
     echo "Uploading $_dash_file to ${_controller_url}... "
 
@@ -79,15 +85,13 @@ for _dash_file in $_temp_dash_dir/*.json; do
     expected_response='"success":true'
 
     func_check_http_response "\{$response}" $expected_response
-
     sleep 1
-
     # save used uploaded files
     mkdir -p "${_custom_dash_dir}/uploaded"
 
     cp -rf "${_dash_file}" "${_custom_dash_dir}/uploaded/${_application_name}"-"${dt}.json"
 
     #clean up - one at a time - to avoid re-processing
-    rm -rf "${_dash_file}" 
+    rm -rf "${_dash_file}"
 
 done
