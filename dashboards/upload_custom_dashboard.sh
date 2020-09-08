@@ -71,7 +71,7 @@ for _dash_file in $_temp_dash_dir/*.json; do
         echo "Refer to the documentation for details. TODO [add link]"
         exit 1
     fi
-
+    
     sleep 2 # let it cool off
     echo ""
     echo "Uploading $_dash_file to ${_controller_url}... "
