@@ -49,7 +49,7 @@ In the "Build" tab, as a build step add "Execute shell" and execute the `start.s
 
 <img width="937" alt="Jenkins_build_steps" src="https://user-images.githubusercontent.com/23483887/87811561-c40ab480-c856-11ea-990a-afa36645b15f.png">
 
-## Run Jenkins Job
+### Run Freestyle Job
 
 In order to change any of the configurations, from the left-side menu inside of a project click "Configure". To run a Jenkins job, pick "Build with Parameters". 
 
