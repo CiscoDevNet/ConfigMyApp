@@ -18,11 +18,11 @@ If you installed recommended packages you may already have GitHub plugin, if you
 
 You may also use the <a href="https://www.jenkins.io/doc/pipeline/steps/workflow-multibranch" target="_blank"> mulitbranch pipeline plugin </a>. 
 
-### Create Jenkins Job
+## Create Jenkins Job
 
-## Multibranch pipleline Job 
+### Multibranch pipleline Job 
 
-We recommend that you include ConfigMyApp into your existing Jenkis pipeline by adding a new stage. 
+We recommend that you include ConfigMyApp into your existing Jenkis pipeline by adding a new stage, usually the last stage before the cleanup task.  
 
 We have created a <a href="https://github.com/Appdynamics/ConfigMyApp/blob/master/integrations/Jenkins/Jenkinsfile" target="_blank"> `Jenkinsfile` </a> that can you easily adapt to suit your multi-stage CI/CD pipelines. The commands in the `Jenkinsfile` will automatically download the latest copy of ConfigMyApp from GitHub.  
 
@@ -30,7 +30,7 @@ Besides running the Jenkis job from your pipeline, various teams can also manage
 
 ![Jenkins_UI](https://raw.githubusercontent.com/Appdynamics/ConfigMyApp/master/integrations/Jenkins/jenkins-ui.png)
 
-## Freestyle Job
+### Freestyle Job
 
 Click "New Item" to create a new Jenkins job, and pick a "Freestyle" project from the list, and pick an appropriate name and add a description:
 
