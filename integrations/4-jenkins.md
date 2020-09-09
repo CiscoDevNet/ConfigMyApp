@@ -22,13 +22,14 @@ You may also use the <a href="https://www.jenkins.io/doc/pipeline/steps/workflow
 
 ### Multibranch pipleline Job 
 
-We recommend that you include ConfigMyApp into your existing Jenkis pipeline by adding a new stage, usually the last stage before the cleanup task.  
+We recommend that you include ConfigMyApp into your existing Jenkins pipeline by adding a new stage, usually the last stage before the cleanup task.  
 
-We have created a <a href="https://github.com/Appdynamics/ConfigMyApp/blob/master/integrations/Jenkins/Jenkinsfile" target="_blank"> `Jenkinsfile` </a> that can you easily adapt to suit your multi-stage CI/CD pipelines. The commands in the `Jenkinsfile` will automatically download the latest copy of ConfigMyApp from GitHub.  
+We have created a <a href="https://github.com/Appdynamics/ConfigMyApp/blob/master/integrations/Jenkins/Jenkinsfile" target="_blank"> `Jenkinsfile` </a> that can you easily adapt to suit your multi-stage CI/CD pipelines. The commands in the `Jenkinsfile` will automatically download the latest copy of ConfigMyApp from GitHub.  
 
-Besides running the Jenkis job from your pipeline, various teams can also manage AppDynamics configurations from Jenkins UI (Using the Build with Parameters options) once deployed - as shown below: 
+Besides running the Jenkins job from your pipeline, various teams can also manage AppDynamics configurations from Jenkins UI (Using the Build with Parameters options) once deployed - as shown below: 
 
 ![Jenkins_UI](https://raw.githubusercontent.com/Appdynamics/ConfigMyApp/master/integrations/Jenkins/jenkins-ui.png)
+
 
 ### Freestyle Job
 
