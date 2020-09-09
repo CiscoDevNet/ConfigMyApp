@@ -28,7 +28,7 @@ We have created a <a href="https://github.com/Appdynamics/ConfigMyApp/blob/maste
 
 Besides running the Jenkins job from your pipeline, various teams can also manage AppDynamics configurations from Jenkins UI (Using the Build with Parameters options) once deployed - as shown below: 
 
-![Jenkins_UI](https://user-images.githubusercontent.com/2548160/92592883-22bd3f00-f298-11ea-814a-5f9039d752f6.png)
+<img width="1047" alt="Jenkins UI" src="https://user-images.githubusercontent.com/2548160/92592883-22bd3f00-f298-11ea-814a-5f9039d752f6.png">
 
 
 ### Freestyle Job
