@@ -26,4 +26,6 @@ A local service account should be created in your controller with the following 
 5. View Database collector
 6. Create SIM health rules  
 
+Refer to the <a href="https://appdynamics.github.io/ConfigMyApp/usecases/5-encoded_pass.html#secret-managers">secret manager <a> section for a recommendation on how to store the service account's password securely. 
+ 
 *****Single Sign-On user will not work*****
