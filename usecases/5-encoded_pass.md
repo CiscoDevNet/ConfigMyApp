@@ -3,6 +3,8 @@ sort: 5
 
 ---
 
+# Encode Password
+
 # Secret Managers 
 
 ConfigMyApp is primarily designed to be executed from CI/CD tools, on this basis, we recommend that you utilise existing secret manager tools/plugins to securely store the service account password. 
