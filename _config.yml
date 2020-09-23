@@ -1,7 +1,8 @@
 title: "AppDynamics ConfigMyApp"
 description: "Configuration as code tool"
 # remote_theme: pmarsceill/just-the-docs
-remote_theme: rundocs/jekyll-rtd-theme
+#remote_theme: rundocs/jekyll-rtd-theme
+remote_theme: iogbole/jekyll-rtd-theme
 
 #baseurl: '/ConfigMyApp'
 #url: ''
