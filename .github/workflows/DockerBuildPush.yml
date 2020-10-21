@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   build_and_push_to_registry:
-    name: Push ConfigMyApp Docker image to Docker Hub
+    name: Build and Push ConfigMyApp Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -16,9 +16,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD_CX }}
           repository: appdynamicscx/configmyapp
           tags: "latest"
+          tag_with_ref: true
           dockerfile: docker/Dockerfile
       
-  DcokerImage-QA:
+  QA-DcokerImage:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
