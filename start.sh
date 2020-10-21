@@ -60,6 +60,8 @@ _arg_suppress_upload_files=false
 _arg_suppress_name=
 _arg_suppress_delete=
 
+_arg_upload_custom_dashboard=false
+
 _arg_debug=false
 
 _arg_controller_port_explicitly_set=false
@@ -75,6 +77,7 @@ _arg_use_branding_explicitly_set=false
 _arg_bt_only_explicitly_set=false
 _arg_suppress_action_explicitly_set=false
 _arg_suppress_upload_files_explicitly_set=false
+_arg_upload_custom_dashboard_explicitly_set=false
 
 print_help()
 {
@@ -121,6 +124,9 @@ print_help()
 	printf '\t%s\n' "--suppress-upload-files, --no-suppress-upload-files: upload action suppression files from a folder (${_arg_suppress_upload_files} by default)"
 	
 	printf '\t%s\n' "--suppress-delete: delete action suppression by passing action name to this parameter (no default)"
+
+	printf '\t%s\n' "--upload-custom-dashboard, --no-upload-custom-dashboard: creates custom dashboard(s)  from (${_arg_upload_custom_dashboard} by default)"
+
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -347,6 +353,11 @@ parse_commandline()
 			--suppress-delete=*)
 				_arg_suppress_delete="${_key##--suppress-delete=}"
 				;;
+			--no-upload-custom-dashboard|--upload-custom-dashboard)
+				_arg_upload_custom_dashboard=true
+				_arg_upload_custom_dashboard_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_upload_custom_dashboard=false
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -538,6 +549,11 @@ if ([ -z "${_arg_suppress_delete// }" ] && [ ! -z "${CMA_SUPPRESS_DELETE// }" ])
 	_arg_suppress_delete=${CMA_SUPPRESS_DELETE}
 fi
 
+# upload custom dashboards 
+if ([ $_arg_upload_custom_dashboard_explicitly_set = false ] && [ ! -z "${CMA_UPLOAD_CUSTOM_DASHBOARD// }" ]); then
+	_arg_upload_custom_dashboard=${CMA_UPLOAD_CUSTOM_DASHBOARD}
+fi
+
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
 
@@ -636,6 +652,11 @@ if [[ -z "${_arg_suppress_delete// }" ]]; then
 	_arg_suppress_delete=$(jq -r '.action_suppression[].suppress_delete' <${conf_file})
 fi
 
+# upload custom dashboards
+if ([[ $_arg_upload_custom_dashboard_explicitly_set = false ]] && [ -z "${CMA_UPLOAD_CUSTOM_DASHBOARD// }" ]); then
+	_arg_upload_custom_dashboard=$(jq -r '.configuration[].upload_custom_dashboard' <${conf_file})
+fi
+
 ### 2 VALIDATE ###
 
 # 2.1 Check if values are in expected ranges
@@ -683,6 +704,8 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --use-branding: $_arg_use_branding" 
 	echo "Value of --logo-name: $_arg_logo_name" 
 	echo "Value of --background-name: $_arg_background_name" 
+
+	echo "Value of --upload-custom-dashboard: $_arg_upload_custom_dashboard" 
 	
 fi
 
@@ -765,7 +788,13 @@ if [[ ! -z "${_arg_suppress_delete// }" ]]; then
 	exit 0 # only delete action suppression
 fi
 
-### 5 EXECUTE CMA SCRIPT ###
+### 5 ACTION SUPRESSION ###
+if [ $_arg_upload_custom_dashboard = true ]; then
+	./dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug"
+	exit 0 # only upload files
+fi
+
+### 6 EXECUTE CMA SCRIPT ###
 ./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
 
 

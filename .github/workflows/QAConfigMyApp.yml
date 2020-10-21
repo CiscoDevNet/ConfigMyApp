@@ -35,16 +35,35 @@ jobs:
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd 
           
     - name: TestCase2- BT_ONLY
+      env:
+        CMA_USE_HTTPS: false
       run: |
           echo Running BT_ONLY,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --bt-only
           
-    - name: TestCase3- Action suppression
+    - name: TestCase3- Action suppression.Default
       run: |
           echo Running Action Suppression,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action
           
-    - name: TestCase4- SIM and DB
+    - name: TestCase4- Action suppression. Date and duration 
+      run: |
+          echo Running Action Suppression 
+          #--suppress-start=$(date -d " + 20 minutes" -u  +%FT%T)
+          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action  --suppress-duration=120
+          
+    - name: TestCase5- SIM and DB
       run: |
           echo Running SIM and DB,
           ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd  --include-database  --database-name 'ConfigMyApp'  --include-sim
+          
+    - name: TestCase6- Upload dashboard
+      run: |
+          echo Running Dash upload
+          curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
+          export CMA_UPLOAD_CUSTOM_DASHBOARD=true
+          ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
+          
+          
+          
+          
