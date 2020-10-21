@@ -1,5 +1,4 @@
 {
-  "overwrite_health_rules": false,
   "are_passwords_encoded": false,
   
   "branding": [
@@ -31,6 +30,13 @@
       "configure_bt": false,
       "bt_only": false,
       "upload_custom_dashboard": false
+    }
+  ],
+  "health_rules": [
+    {
+      "health_rules_only": false,
+      "health_rules_overwrite": false,
+      "health_rules_delete": ""
     }
   ],
   "action_suppression": [

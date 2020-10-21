@@ -58,7 +58,7 @@ _include_database=${5}
 _database_name=${6}
 _include_sim=${7}
 _configure_bt=${8} 
-_overwrite_health_rules=${9} 
+_health_rules_overwrite=${9} 
 _bt_only=${10}
 
 _enable_branding=${11}
@@ -192,32 +192,32 @@ function func_cleanup() {
     rm -rf $tempFolder
 }
 
-function func_import_health_rules(){
-    local appId=$1
-    local folderPath=$2
+# function func_import_health_rules(){
+#     local appId=$1
+#     local folderPath=$2
 
-     # get all current health rules for application
-    allHealthRules=$(curl -s --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules ${_proxy_details})
+#      # get all current health rules for application
+#     allHealthRules=$(curl -s --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules ${_proxy_details})
 
-    for f in $folderPath; do 
-        echo "Processing $f health rule template"
-        # get health rule name from json file
-        healthRuleName=$(jq -r  '.name' <$f)
-        # use it to get health rule id (if exists)
-        healthRuleId=$(jq --arg hrName "$healthRuleName" '.[] | select(.name == $hrName) | .id' <<<$allHealthRules)
+#     for f in $folderPath; do 
+#         echo "Processing $f health rule template"
+#         # get health rule name from json file
+#         healthRuleName=$(jq -r  '.name' <$f)
+#         # use it to get health rule id (if exists)
+#         healthRuleId=$(jq --arg hrName "$healthRuleName" '.[] | select(.name == $hrName) | .id' <<<$allHealthRules)
 
-        # create new if health rule id does not exist
-        if [ "${healthRuleId}" == "" ]; then
-            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
-            func_check_http_status $httpCode "Error occured while importing server health rules."
-        # overwrite existing health rule only if flag is true
-        elif [ "${_overwrite_health_rules}" = true ]; then
-            httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
-            func_check_http_status $httpCode "Error occured while importing server health rules."
-        fi
+#         # create new if health rule id does not exist
+#         if [ "${healthRuleId}" == "" ]; then
+#             httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
+#             func_check_http_status $httpCode "Error occured while importing server health rules."
+#         # overwrite existing health rule only if flag is true
+#         elif [ "${_health_rules_overwrite}" = true ]; then
+#             httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
+#             func_check_http_status $httpCode "Error occured while importing server health rules."
+#         fi
 
-    done
-}
+#     done
+# }
 
 ### END FUNCTIONS ###
 
@@ -255,20 +255,23 @@ if [ "${_bt_only}" = true ]; then
 else
     # proceed as normal
 
-    # Server Visibility health rules
-    if [ "${_include_sim}" = true ]; then
-        echo "Creating Server Visibility Health Rules...Please wait"
-        echo ""
+    # Health rules
+    source ./modules/health_rules/upload_health_rules.sh "$_controller_url" "$_user_credentials" "$_application_name" "$_proxy_details" "false" "$_health_rules_overwrite" "$_include_sim"
 
-        func_import_health_rules $appId "${serverVizHealthRuleFile}"
-    fi
+    # # Server Visibility health rules
+    # if [ "${_include_sim}" = true ]; then
+    #     echo "Creating Server Visibility Health Rules...Please wait"
+    #     echo ""
 
-    # Application health rules
-    echo ""
-    echo "Creating ${_application_name} Health Rules..."
-    sleep 1
+    #     func_import_health_rules $appId "${serverVizHealthRuleFile}"
+    # fi
 
-    func_import_health_rules $appId "${applicationHealthRule}"
+    # # Application health rules
+    # echo ""
+    # echo "Creating ${_application_name} Health Rules..."
+    # sleep 1
+
+    # func_import_health_rules $appId "${applicationHealthRule}"
 
     echo ""
     sleep 1
