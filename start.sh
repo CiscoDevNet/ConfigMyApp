@@ -27,7 +27,7 @@ begins_with_short_option()
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_use_encoded_credentials=false
-_arg_overwrite_health_rules=true
+
 
 _arg_controller_host=
 _arg_controller_port=8090
@@ -49,6 +49,10 @@ _arg_configure_bt=false
 
 _arg_bt_only=false
 
+_arg_health_rules_only=false
+_arg_health_rules_overwrite=true
+_arg_health_rules_delete=
+
 _arg_use_branding=true
 _arg_logo_name=
 _arg_background_name=
@@ -66,7 +70,6 @@ _arg_debug=false
 
 _arg_controller_port_explicitly_set=false
 _arg_use_encoded_credentials_explicitly_set=false
-_arg_overwrite_health_rules_explicitly_set=false
 _arg_use_https_explicitly_set=false
 _arg_account_explicitly_set=false
 _arg_use_proxy_explicitly_set=false
@@ -78,6 +81,9 @@ _arg_bt_only_explicitly_set=false
 _arg_suppress_action_explicitly_set=false
 _arg_suppress_upload_files_explicitly_set=false
 _arg_upload_custom_dashboard_explicitly_set=false
+_arg_health_rules_only_explicitly_set=false
+_arg_health_rules_overwrite_explicitly_set=false
+
 
 print_help()
 {
@@ -112,8 +118,13 @@ print_help()
 	printf '\t%s\n' "-d, --database-name: mandatory if include-database set to true (no default)"
 	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
-	printf '\t%s\n' "--overwrite-health-rules, --no-overwrite-health-rules: overwrite health rules (${_arg_overwrite_health_rules} by default)"
+	#printf '\t%s\n' "--health-rules-overwrite, --no-health-rules-overwrite: overwrite health rules (${_arg_health_rules_overwrite} by default)"
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
+
+	printf '%s\n' "Health rules options:"
+	printf '\t%s\n' "--health-rules-only, --no-health-rules-only: configure health rules only (${_arg_health_rules_only} by default)"
+	printf '\t%s\n' "--health-rules-overwrite, --no-health-rules-overwrite: overwrite health rules if exist (${_arg_health_rules_overwrite} by default)"
+	printf '\t%s\n' "--health-rules-delete: health rule names to delete, array of strings (no default)"
 
 	printf '%s\n' "Action suppression options:"
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
@@ -145,11 +156,11 @@ parse_commandline()
 				_arg_use_encoded_credentials=true
 				test "${1:0:5}" = "--no-" && _arg_use_encoded_credentials=false
 				;;
-			--no-overwrite-health-rules|--overwrite-health-rules)
-				_arg_overwrite_health_rules_explicitly_set=true
-				_arg_overwrite_health_rules=true
-				test "${1:0:5}" = "--no-" && _arg_overwrite_health_rules=false
-				;;
+			# --no-health-rules-overwrite|--health-rules-overwrite)
+			# 	_arg_health_rules_overwrite_explicitly_set=true
+			# 	_arg_health_rules_overwrite=true
+			# 	test "${1:0:5}" = "--no-" && _arg_health_rules_overwrite=false
+			# 	;;
 			--no-bt-only|--bt-only)
 				_arg_bt_only_explicitly_set=true
 				_arg_bt_only=true
@@ -311,6 +322,24 @@ parse_commandline()
 			--background-name=*)
 				_arg_background_name="${_key##--background-name=}"
 				;;
+			--no-health-rules-only|--health-rules-only)
+				_arg_health_rules_only=true
+				_arg_health_rules_only_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_health_rules_only=false
+				;;
+			--no-health-rules-overwrite|--health-rules-overwrite)
+				_arg_health_rules_overwrite=true
+				_arg_health_rules_overwrite_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_health_rules_overwrite=false
+				;;
+			--health-rules-delete)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_health_rules_delete="$2"
+				shift
+				;;
+			--health-rules-delete=*)
+				_arg_health_rules_delete="${_key##--health-rules-delete=}"
+				;;
 			--no-suppress-action|--suppress-action)
 				_arg_suppress_action=true
 				_arg_suppress_action_explicitly_set=true
@@ -415,9 +444,13 @@ handle_expected_values_for_args()
 	if ([ ! $_arg_use_encoded_credentials = false ] && [ ! $_arg_use_encoded_credentials = true ] ); then 
 		_PRINT_HELP=no die "FATAL ERROR: -use-encoded-credentials value \"${_arg_use_encoded_credentials}\" not recognized" 1
 	fi
+
+	if ([ ! $_arg_health_rules_only = false ] && [ ! $_arg_health_rules_only = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --health-rules-only value \"${_arg_health_rules_only}\" not recognized" 1
+	fi
 	
-	if ([ ! $_arg_overwrite_health_rules = false ] && [ ! $_arg_overwrite_health_rules = true ] ); then 
-		_PRINT_HELP=no die "FATAL ERROR: --overwrite-health-rules value \"${_arg_overwrite_health_rules}\" not recognized" 1
+	if ([ ! $_arg_health_rules_overwrite = false ] && [ ! $_arg_health_rules_overwrite = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --health-rules-overwrite value \"${_arg_health_rules_overwrite}\" not recognized" 1
 	fi
 
 	if ([ ! $_arg_use_https = false ] && [ ! $_arg_use_https = true ] ); then 
@@ -461,8 +494,8 @@ parse_commandline "$@"
 if ([ $_arg_use_encoded_credentials_explicitly_set = false ] && [ ! -z "${CMA_USE_ENCODED_CREDENTIALS// }" ]); then
 	_arg_use_encoded_credentials=${CMA_USE_ENCODED_CREDENTIALS}
 fi
-if ([ $_arg_overwrite_health_rules_explicitly_set = false ] && [ ! -z "${CMA_OVERWRITE_HEALTH_RULES// }" ]); then
-	_arg_overwrite_health_rules=${CMA_OVERWRITE_HEALTH_RULES}
+if ([ $_arg_health_rules_overwrite_explicitly_set = false ] && [ ! -z "${CMA_OVERWRITE_HEALTH_RULES// }" ]); then
+	_arg_health_rules_overwrite=${CMA_OVERWRITE_HEALTH_RULES}
 fi
 
 # controller
@@ -529,6 +562,17 @@ if ([ $_arg_bt_only_explicitly_set = false ] && [ ! -z "${CMA_BT_ONLY// }" ]); t
 	_arg_bt_only=${CMA_BT_ONLY}
 fi
 
+# health rules
+if ([[ $_arg_health_rules_only_explicitly_set = false ]] && [ ! -z "${CMA_HEALTH_RULES_ONLY// }" ]); then
+	_arg_health_rules_only=${CMA_HEALTH_RULES_ONLY}
+fi
+if ([[ $_arg_health_rules_overwrite_explicitly_set = false ]] && [ ! -z "${CMA_HEALTH_RULES_OVERWRITE// }" ]); then
+	_arg_health_rules_overwrite=${CMA_HEALTH_RULES_OVERWRITE}
+fi
+if ([[ -z "${_arg_health_rules_delete// }" ]] && [ ! -z "${CMA_HEALTH_RULES_DELETE// }" ]); then
+	_arg_health_rules_delete=${CMA_HEALTH_RULES_DELETE}
+fi
+
 # action suppression
 if ([ $_arg_suppress_action_explicitly_set = false ] && [ ! -z "${CMA_SUPPRESS_ACTION// }" ]); then
 	_arg_suppress_action=${CMA_SUPPRESS_ACTION}
@@ -562,9 +606,9 @@ conf_file="config.json"
 if ([ $_arg_use_encoded_credentials_explicitly_set = false ] && [ -z "${CMA_USE_ENCODED_CREDENTIALS}" ]); then
 	_arg_use_encoded_credentials=$(jq -r '.are_passwords_encoded' <${conf_file})
 fi
-if ([ $_arg_overwrite_health_rules_explicitly_set = false ] && [ -z "${CMA_OVERWRITE_HEALTH_RULES}" ]); then
-	_arg_overwrite_health_rules=$(jq -r '.overwrite_health_rules' <${conf_file})
-fi
+# if ([ $_arg_health_rules_overwrite_explicitly_set = false ] && [ -z "${CMA_OVERWRITE_HEALTH_RULES}" ]); then
+# 	_arg_health_rules_overwrite=$(jq -r '.overwrite_health_rules' <${conf_file})
+# fi
 
 # controller
 if [[ -z "${_arg_controller_host// }" ]]; then
@@ -632,6 +676,17 @@ if ([[ $_arg_bt_only_explicitly_set = false ]] && [ -z "${CMA_BT_ONLY// }" ]); t
 	_arg_bt_only=$(jq -r '.configuration[].bt_only' <${conf_file})
 fi
 
+# health rules
+if ([[ $_arg_health_rules_only_explicitly_set = false ]] && [ -z "${CMA_HEALTH_RULES_ONLY// }" ]); then
+	_arg_health_rules_only=$(jq -r '.health_rules[].health_rules_only' <${conf_file})
+fi
+if ([[ $_arg_health_rules_overwrite_explicitly_set = false ]] && [ -z "${CMA_HEALTH_RULES_OVERWRITE// }" ]); then
+	_arg_health_rules_overwrite=$(jq -r '.health_rules[].health_rules_overwrite' <${conf_file})
+fi
+if [[ -z "${_arg_health_rules_delete// }" ]]; then
+	_arg_health_rules_delete=$(jq -r '.health_rules[].health_rules_delete' <${conf_file})
+fi
+
 # action suppression
 if ([[ $_arg_suppress_action_explicitly_set = false ]] && [ -z "${CMA_SUPPRESS_ACTION// }" ]); then
 	_arg_suppress_action=$(jq -r '.action_suppression[].suppress_action' <${conf_file})
@@ -674,7 +729,7 @@ handle_mandatory_args
 if [ $_arg_debug = true ]; then
 
 	echo "Value of --use-encoded-credentials: $_arg_use_encoded_credentials"
-	echo "Value of --overwrite-health-rules: $_arg_overwrite_health_rules"
+	echo "Value of --health-rules-overwrite: $_arg_health_rules_overwrite"
 
 	echo "Value of --controller-host: $_arg_controller_host"
 	echo "Value of --controller-port: $_arg_controller_port"
@@ -780,7 +835,7 @@ fi
 
 if [ $_arg_suppress_upload_files = true ]; then
 	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name"
-	exit 0 # only upload files
+	exit 0 # only upload action suppression files
 fi
 
 if [[ ! -z "${_arg_suppress_delete// }" ]]; then
@@ -788,15 +843,26 @@ if [[ ! -z "${_arg_suppress_delete// }" ]]; then
 	exit 0 # only delete action suppression
 fi
 
-### 5 ACTION SUPRESSION ###
+### 5 CUSTOM DASHBOARDS ###
 if [ $_arg_upload_custom_dashboard = true ]; then
 	./dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug"
-	exit 0 # only upload files
+	exit 0 # only upload custom dahboard files
+fi
+
+### 6 HEALTH RULES ###
+if [ $_arg_health_rules_only = true ]; then
+	./healthrules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_overwrite" "$_arg_include_sim"
+	exit 0 # only upload health rules
+fi
+
+if [ ! -z "${_arg_health_rules_delete// }" ]; then
+	./healthrules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_delete"
+	exit 0 # only delete health rules
 fi
 
 ### 6 EXECUTE CMA SCRIPT ###
-./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_overwrite_health_rules" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
+./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_health_rules_overwrite" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
 
 
- #  <-- needed, do not delete 
 # ] <-- needed, do not delete
+ #  <-- needed, do not delete 
