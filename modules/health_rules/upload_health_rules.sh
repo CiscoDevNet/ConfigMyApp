@@ -12,8 +12,8 @@ _health_rules_overwrite=${6}
 _include_sim=${7}
 
 #init HR templates
-serverVizHealthRuleFile="./healthrules/ServerVisibility/*.json"
-applicationHealthRule="./healthrules/Application/*.json"
+serverVizHealthRuleFile="./health_rules/ServerVisibility/*.json"
+applicationHealthRule="./health_rules/Application/*.json"
 
 # 2. FUNCTIONS
 function func_check_http_status() {
@@ -23,7 +23,6 @@ function func_check_http_status() {
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
         echo "${dt} ERROR "{$http_code: $message_on_failure}"" >> error.log
         echo "$http_code: $message_on_failure"
-        func_cleanup
         exit 1
     fi
 }
@@ -45,11 +44,11 @@ function func_import_health_rules(){
         # create new if health rule id does not exist
         if [ "${healthRuleId}" == "" ]; then
             httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
-            func_check_http_status $httpCode "Error occured while importing server health rule ${healthRuleName}."
+            func_check_http_status $httpCode "Error occured while importing health rule ${healthRuleName}."
         # overwrite existing health rule only if flag is true
         elif [ "${_health_rules_overwrite}" = true ]; then
             httpCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT --user ${_user_credentials} ${_controller_url}/alerting/rest/v1/applications/${appId}/health-rules/${healthRuleId} --header "Content-Type: application/json" --data "@${f}" ${_proxy_details})
-            func_check_http_status $httpCode "Error occured while importing server health rule ${healthRuleName}."
+            func_check_http_status $httpCode "Error occured while importing server rule ${healthRuleName}."
         fi
 
     done
