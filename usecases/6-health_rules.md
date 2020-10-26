@@ -27,7 +27,7 @@ ConfigMyApp will skip a health rule if it exists in the controller. You would ne
 
 ` "health_rules_only": true`
 
-## 2. Overwrite existing Health rules or Not
+## 2. Overwrite Existing Health Rules or Not
 
 <b> Runtime parameters</b>
 
