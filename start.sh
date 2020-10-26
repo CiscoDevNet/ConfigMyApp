@@ -156,11 +156,6 @@ parse_commandline()
 				_arg_use_encoded_credentials=true
 				test "${1:0:5}" = "--no-" && _arg_use_encoded_credentials=false
 				;;
-			# --no-health-rules-overwrite|--health-rules-overwrite)
-			# 	_arg_health_rules_overwrite_explicitly_set=true
-			# 	_arg_health_rules_overwrite=true
-			# 	test "${1:0:5}" = "--no-" && _arg_health_rules_overwrite=false
-			# 	;;
 			--no-bt-only|--bt-only)
 				_arg_bt_only_explicitly_set=true
 				_arg_bt_only=true
@@ -493,9 +488,6 @@ parse_commandline "$@"
 # general
 if ([ $_arg_use_encoded_credentials_explicitly_set = false ] && [ ! -z "${CMA_USE_ENCODED_CREDENTIALS// }" ]); then
 	_arg_use_encoded_credentials=${CMA_USE_ENCODED_CREDENTIALS}
-fi
-if ([ $_arg_health_rules_overwrite_explicitly_set = false ] && [ ! -z "${CMA_OVERWRITE_HEALTH_RULES// }" ]); then
-	_arg_health_rules_overwrite=${CMA_OVERWRITE_HEALTH_RULES}
 fi
 
 # controller
@@ -855,12 +847,12 @@ fi
 
 ### 6 HEALTH RULES ###
 if [ $_arg_health_rules_only = true ]; then
-	./modules/health_rules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_overwrite" "$_arg_include_sim"
+	./modules/health_rules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_overwrite" "$_arg_include_sim"
 	exit 0 # only upload health rules
 fi
 
 if [ ! -z "${_arg_health_rules_delete// }" ]; then
-	./modules/health_rules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_delete"
+	./modules/health_rules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_delete"
 	exit 0 # only delete health rules
 fi
 

@@ -6,10 +6,9 @@ _user_credentials=${2} # ${username}:${password}
 
 _application_name=${3}
 _proxy_details=${4}
-_debug=${5}
 
-_health_rules_overwrite=${6}
-_include_sim=${7}
+_health_rules_overwrite=${5}
+_include_sim=${6}
 
 #init HR templates
 serverVizHealthRuleFile="./health_rules/ServerVisibility/*.json"
