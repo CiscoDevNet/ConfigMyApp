@@ -750,6 +750,10 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --configure-bt: $_arg_configure_bt" 
 	echo "Value of --bt-only: $_arg_bt_only" 
 
+	echo "Value of --health-rules-only: ${_arg_health_rules_only}"
+	echo "Value of --health-rules-overwrite: ${_arg_health_rules_overwrite}"
+	echo "Value of --health-rules-delete: ${_arg_health_rules_delete}"
+
 	echo "Value of --suppress-action: $_arg_suppress_action" 
 	echo "Value of --suppress-start: $_arg_suppress_start" 
 	echo "Value of --suppress-duration: $_arg_suppress_duration" 
@@ -851,12 +855,12 @@ fi
 
 ### 6 HEALTH RULES ###
 if [ $_arg_health_rules_only = true ]; then
-	./healthrules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_overwrite" "$_arg_include_sim"
+	./modules/health_rules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_overwrite" "$_arg_include_sim"
 	exit 0 # only upload health rules
 fi
 
 if [ ! -z "${_arg_health_rules_delete// }" ]; then
-	./healthrules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_delete"
+	./modules/health_rules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug" "$_arg_health_rules_delete"
 	exit 0 # only delete health rules
 fi
 
