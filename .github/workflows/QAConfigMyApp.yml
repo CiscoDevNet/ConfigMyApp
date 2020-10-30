@@ -98,9 +98,9 @@ jobs:
           curl https://gist.githubusercontent.com/AlexJov/03317fd4271325fbd6678dded2df6e91/raw/bb33a4b3abcaed762f1a5b262586183c6efd4402/CpuUtilisationTooHighToDelete.json -o ./health_rules/ServerVisibility/CpuUtilisationTooHighToDelete.json
           
           echo Running health rules only, import additional health rules,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --health-rules-only
+          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --sim-enabled --health-rules-only
 
-          echo Delete health rules, delete health rules from TestCase10,
+          echo Delete health rules:
           ./start.sh -c http://configmyappdemo-2044no-uzyczrm0.appd-cx.com/ -a Jenkins_API -u appd -p appd --health-rules-delete "Agent Availability to Delete, Server Health: CPU Utilisation is too high to Delete"
 
     - name: TestCase11- delete health rules, non existing
