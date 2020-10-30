@@ -558,6 +558,11 @@ fi
 if ([[ $_arg_health_rules_only_explicitly_set = false ]] && [ ! -z "${CMA_HEALTH_RULES_ONLY// }" ]); then
 	_arg_health_rules_only=${CMA_HEALTH_RULES_ONLY}
 fi
+# backwards compatability for varaible name
+if ([[ $_arg_health_rules_overwrite_explicitly_set = false ]] && [ -z "${CMA_OVERWRITE_HEALTH_RULES// }" ]); then
+	_arg_health_rules_overwrite=${CMA_OVERWRITE_HEALTH_RULES}
+fi
+# but override with newer version if provided
 if ([[ $_arg_health_rules_overwrite_explicitly_set = false ]] && [ ! -z "${CMA_HEALTH_RULES_OVERWRITE// }" ]); then
 	_arg_health_rules_overwrite=${CMA_HEALTH_RULES_OVERWRITE}
 fi
