@@ -49,12 +49,12 @@ or
 
 <b> Runtime parameters</b>
 
-`./start.sh -c http://appd.saas.com -a MyApp --username=appd --password=appd --health-rules-delete "<health_rule_name>"`
+`./start.sh -c http://appd.saas.com -a MyApp --username=appd --password=appd --health-rules-delete "<health_rule_name>, <another_health_rule_name>"`
 
 <b>Environment variables</b>
 
-`CMA_HEALTH_RULES_DELETE=health_rule_name`
+`CMA_HEALTH_RULES_DELETE="health_rule_name, another_health_rule_name"`
 
 <b>Configuration file (`config.json`)</b>
 
-` "health_rules_delete": health_rule_name`
+` "health_rules_delete": "health_rule_name, another_health_rule_name"`
