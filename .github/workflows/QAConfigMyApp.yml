@@ -95,7 +95,7 @@ jobs:
         CMA_USE_HTTPS: false
       run: |
           curl https://gist.githubusercontent.com/AlexJov/d65f5e436bd54dd53aaad679f6b8d8e9/raw/57f3d2ec115f7411944b934c735f57a6a276d44b/Agent%2520Availability%2520to%2520Delete.json -o ./health_rules/Application/AgentAvailabilityToDelete.json
-          curl https://gist.githubusercontent.com/AlexJov/03317fd4271325fbd6678dded2df6e91/raw/bb33a4b3abcaed762f1a5b262586183c6efd4402/CpuUtilisationTooHighToDelete.json -o ./health_rules/Server/CpuUtilisationTooHighToDelete.json
+          curl https://gist.githubusercontent.com/AlexJov/03317fd4271325fbd6678dded2df6e91/raw/bb33a4b3abcaed762f1a5b262586183c6efd4402/CpuUtilisationTooHighToDelete.json -o ./health_rules/ServerVisibility/CpuUtilisationTooHighToDelete.json
           
           echo Running health rules only, import additional health rules,
           ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --health-rules-only
