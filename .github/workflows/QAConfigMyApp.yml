@@ -33,7 +33,7 @@ jobs:
           pwd
           ls -ltr
           ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
-          
+                 
     - name: TestCase2- BT_ONLY
       env:
         CMA_USE_HTTPS: false
@@ -110,6 +110,12 @@ jobs:
           echo Delete health rules, delete health rules from TestCase10,
           ./start.sh -a Jenkins_API --health-rules-delete "There is no this rule name" -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
-          
+    
+    - name: TestCase12- Overwrite Health rules - runtime 
+      run: |
+          echo Running basic CMA
+          pwd
+          ls -ltr
+          ./start.sh -a Jenkins_API --overwrite-health-rules -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
           
           
