@@ -322,7 +322,7 @@ parse_commandline()
 				_arg_health_rules_only_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_health_rules_only=false
 				;;
-			--overwrite-no-health-rules|--overwrite-health-rules)
+			--no-overwrite-health-rules|--overwrite-health-rules)
 				_arg_health_rules_overwrite=true
 				_arg_health_rules_overwrite_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_health_rules_overwrite=false
