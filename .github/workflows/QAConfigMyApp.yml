@@ -32,44 +32,44 @@ jobs:
           echo Running basic CMA
           pwd
           ls -ltr
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd 
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
           
     - name: TestCase2- BT_ONLY
       env:
         CMA_USE_HTTPS: false
       run: |
           echo Running BT_ONLY,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --bt-only
+          ./start.sh -a Jenkins_API --bt-only -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
     - name: TestCase3- Action suppression.Default
       run: |
           echo Running Action Suppression,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action
+          ./start.sh -a Jenkins_API --suppress-action -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
     - name: TestCase4- Action suppression. Date and duration 
       run: |
           echo Running Action Suppression 
           #--suppress-start=$(date -d " + 20 minutes" -u  +%FT%T)
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --suppress-action  --suppress-duration=120
+          ./start.sh -a Jenkins_API  --suppress-action  --suppress-duration=120 -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
     - name: TestCase5- SIM and DB
       run: |
           echo Running SIM and DB,
-          ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd  --include-database  --database-name 'ConfigMyApp'  --include-sim
+          ./start.sh -a IoT_API --include-database  --database-name 'ConfigMyApp' --include-sim -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
     - name: TestCase6- Upload dashboard
       run: |
           echo Running Dash upload
           curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
           export CMA_UPLOAD_CUSTOM_DASHBOARD=true
-          ./start.sh -a IoT_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
+          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
     - name: TestCase7- health rules only - no overwrite - parameters
       env:
         CMA_USE_HTTPS: false
       run: |
           echo Running health rules only, get values from runtime parameters,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --health-rules-only --no-health-rules-overwrite
+          ./start.sh -a Jenkins_API --health-rules-only --no-health-rules-overwrite -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
     - name: TestCase8- health rules only - overwrite - env variables
       env:
@@ -78,7 +78,7 @@ jobs:
         CMA_HEALTH_RULES_ONLY: true
       run: |
           echo Running health rules only, get values from environment variables,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
     - name: TestCase9- health rules only - overwrite default - config
       env:
@@ -87,7 +87,7 @@ jobs:
           cp config.json config.json.bkp
           curl https://gist.githubusercontent.com/AlexJov/63ccb17421208679ef63b55afafea712/raw/b8e5ebc5399a8d7df5422ff07c49c892f0c3bd63/config.json -o ./config.json
           echo Running health rules only, get values from config,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           cp config.json.bkp config.json
 
     - name: TestCase10- delete health rules, existing,
@@ -98,17 +98,17 @@ jobs:
           curl https://gist.githubusercontent.com/AlexJov/03317fd4271325fbd6678dded2df6e91/raw/bb33a4b3abcaed762f1a5b262586183c6efd4402/CpuUtilisationTooHighToDelete.json -o ./health_rules/ServerVisibility/CpuUtilisationTooHighToDelete.json
           
           echo Running health rules only, import additional health rules,
-          ./start.sh -a Jenkins_API -c configmyappdemo-2044no-uzyczrm0.appd-cx.com -p appd -u appd --include-sim --health-rules-only
+          ./start.sh -a Jenkins_API -u appd --include-sim --health-rules-only -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
           echo Delete health rules:
-          ./start.sh -c http://configmyappdemo-2044no-uzyczrm0.appd-cx.com/ -a Jenkins_API -u appd -p appd --health-rules-delete "Agent Availability to Delete, Server Health: CPU Utilisation is too high to Delete"
+          ./start.sh -a Jenkins_API --health-rules-delete "Agent Availability to Delete, Server Health: CPU Utilisation is too high to Delete" -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
     - name: TestCase11- delete health rules, non existing
       env:
         CMA_USE_HTTPS: false
       run: |
           echo Delete health rules, delete health rules from TestCase10,
-          ./start.sh -c http://configmyappdemo-2044no-uzyczrm0.appd-cx.com/ -a Jenkins_API -u appd -p appd --health-rules-delete "There is no this rule name"
+          ./start.sh -a Jenkins_API --health-rules-delete "There is no this rule name" -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           
           
           
