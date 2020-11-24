@@ -132,6 +132,14 @@ The table below describes the supported environment variables:
         <td style="text-align: left">overwrite health rules</td>
         <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
       </tr>
+        
+        <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_HEALTH_RULES_ONLY</code></td>
+        <td style="text-align: left">create health rules only</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
+        
       <tr>
         <td>Application</td>
         <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_BT_ONLY</code></td>
