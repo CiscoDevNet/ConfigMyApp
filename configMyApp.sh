@@ -202,7 +202,7 @@ url=${_controller_url}${endpoint}
 echo ""
 
 # Check if you can connect to a controler
-echo "Checking connection to controller ${_controller_url}..."
+echo "Checking connection to controller '${_controller_url}'..."
 echo ""
 
 # timeout after 10s
