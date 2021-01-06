@@ -45,6 +45,9 @@ bt_folder="./bt_api_templates"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
+log_error_prefix="ERROR"
+log_info_prefix="INFO"
+
 # echo "This Self Service Config tool configures application, server and business transaction health rules."
 
 ### START GETTING INPUT ARGUMENTS ###
@@ -126,10 +129,10 @@ function is_image_valid() {
 function func_check_http_status() {
     local http_code=$1
     local message_on_failure=$2
-    #echo "HTTP status code: $http_code"
+
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
-        echo "${dt} ERROR "{$http_code: $message_on_failure}"" >> error.log
-        echo "$http_code: $message_on_failure"
+        echo "${dt} ${log_error_prefix} "{$http_code: $message_on_failure}"" >> error.log
+        echo "${log_error_prefix} $http_code: $message_on_failure"
         func_cleanup
         exit 1
     fi
@@ -143,8 +146,8 @@ function func_check_http_response(){
             echo "Success"
             echo "*********************************************************************"
         else
-            echo "${dt} ERROR "{$http_message_body}"" >> error.log
-            echo "ERROR $http_message_body"
+            echo "${dt} ${log_error_prefix} "{$http_message_body}"" >> error.log
+            echo "${log_error_prefix} $http_message_body"
             func_cleanup
             exit 1
         fi
@@ -197,6 +200,17 @@ function func_cleanup() {
 url=${_controller_url}${endpoint}
 
 echo ""
+
+# Check if you can connect to a controler
+echo "Checking connection to controller ${_controller_url}..."
+echo ""
+
+# timeout after 10s
+controllerReponse=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications ${_proxy_details} --connect-timeout 10)
+
+if [ "$controllerReponse" = "" ]; then
+    func_check_http_status 400 "Unable to connect to controller: '"$_controller_url"'. Aborting..."
+fi
 
 # Check if application exists
 echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
