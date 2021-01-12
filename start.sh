@@ -809,7 +809,7 @@ _arg_controller_url="${_arg_controller_host_protocol}://${_arg_controller_host}:
 
 if [ "${protocol}" != "${_arg_controller_host_protocol}" ]; then
 	echo "WARNING --use-https / --no-use-https flag value '${protocol}' does not match controller host protocol '${_arg_controller_host_protocol}'."
-	echo "Note that controller host ptorocol takes precedence and final URL to connect to is: '${_arg_controller_url}'."
+	echo "Note that controller host protocol takes precedence and final URL to connect to is: '${_arg_controller_url}'."
 fi
 
 # 3.4 Prepare proxy details
