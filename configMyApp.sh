@@ -41,7 +41,6 @@ templatLogoImageName="ChangeImageUrlLogo"
 endpoint="/CustomDashboardImportExportServlet"
 
 tempFolder="temp"
-bt_folder="./bt_api_templates"
 
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
@@ -198,23 +197,23 @@ url=${_controller_url}${endpoint}
 
 echo ""
 
-# Check if application exists
-echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
-echo ""
-sleep 1
+# # Check if application exists
+# echo "Checking if ${_application_name} business application exist in ${_controller_url}..."
+# echo ""
+# sleep 1
 
-allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON ${_proxy_details})
+# allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON ${_proxy_details})
 
-applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
+# applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
 
-if [ "$applicationObject" = "" ]; then
-    func_check_http_status 404 "Application '"$_application_name"' not found. Aborting..."
-fi
+# if [ "$applicationObject" = "" ]; then
+#     func_check_http_status 404 "Application '"$_application_name"' not found. Aborting..."
+# fi
 
-appId=$(jq '.id' <<<$applicationObject)
+# appId=$(jq '.id' <<<$applicationObject)
 
-echo "Found ${_application_name} business application"
-echo ""
+# echo "Found ${_application_name} business application"
+# echo ""
 
 if [ "${_bt_only}" = true ]; then
     echo ""
