@@ -5,7 +5,7 @@ name: ConfigMyAppCI
 # Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
-    branches: [ master, develop, features/modular-flags ]
+    branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
 
@@ -61,6 +61,8 @@ jobs:
           
     - name: TestCase5- Upload custom dashboard - runtime
       run: |
+          echo Running Dash upload
+          curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
           echo Running SIM and DB,
           ./start.sh -a IoT_API --upload-custom-dashboard -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --no-upload-default-dashboard
           

@@ -933,9 +933,5 @@ if [ $_arg_bt_only = true ]; then
 	./modules/business_transactions/configBT.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" 
 fi
 
-### 6 EXECUTE CMA SCRIPT ###
-#./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_health_rules_overwrite" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
-
-
 # ] <-- needed, do not delete
  #  <-- needed, do not delete 
