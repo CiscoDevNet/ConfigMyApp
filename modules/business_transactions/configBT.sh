@@ -5,9 +5,10 @@
 bt_folder="./bt_api_templates"
 bt_conf="./bt_config/configBT.json"
 bt_config_template="bt_config_template.xml"
-app_name="$1"
+
+controller_url="$1"
 user_credentials="$2"
-controller_url="$3"
+app_name="$3"
 
 poco_temp_file="poco_temp_file.xml"
 poco_scope_temp_file="poco_scope_temp_file.xml"
