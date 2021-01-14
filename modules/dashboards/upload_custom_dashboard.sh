@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./modules/common/http_check.sh # func_check_http_status, func_check_http_response
+
 _controller_url=${1}   # hostname + /controller
 _user_credentials=${2} # ${username}:${password}
 
@@ -12,26 +14,7 @@ _temp_dash_dir="$_custom_dash_dir/temp"
 templateAppName="ChangeApplicationName"
 dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
-function func_check_http_response() {
-    local http_message_body="$1"
-    local string_success_response_contains="$2"
-    if [[ "$http_message_body" =~ "$string_success_response_contains" ]]; then # contains
-        echo ""
-        echo "*********************************************************************"
-        echo "The $_dash_file dashboard was created successfull. "
-        echo "Please check the $_controller_url controller "
-        echo "*********************************************************************"
-
-        echo ""
-    else
-        echo "${dt} ERROR "{$http_message_body}"" >>error.log
-        echo "ERROR $http_message_body"
-        exit 1
-    fi
-}
-
 #check if custom dashboards exist
-
 if [ "$(ls -A $_custom_dash_dir/*.json)" ]; then
     echo ""
     echo "Found custom JSON file(s) in $_custom_dash_dir"
@@ -46,13 +29,13 @@ fi
 
 #check if App exist
 
-allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON $_proxy_details)
+# allApplications=$(curl -s --user ${_user_credentials} ${_controller_url}/rest/applications?output=JSON $_proxy_details)
 
-applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
+# applicationObject=$(jq --arg appName "$_application_name" '.[] | select(.name == $appName)' <<<$allApplications)
 
-if [ "$applicationObject" = "" ]; then
-    func_check_http_response 404 "Application '"$_application_name"' not found. Aborting..."
-fi
+# if [ "$applicationObject" = "" ]; then
+#     func_check_http_response 404 "Application '"$_application_name"' not found. Aborting..."
+# fi
 
 #All conditions met.. processing dashboards.
 
