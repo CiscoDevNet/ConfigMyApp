@@ -42,9 +42,6 @@ _arg_proxy_url=
 _arg_proxy_port=
 
 _arg_application_name=
-_arg_include_database=false
-_arg_database_name=
-_arg_include_sim=false
 _arg_configure_bt=false
 
 _arg_bt_only=false
@@ -65,6 +62,10 @@ _arg_suppress_name=
 _arg_suppress_delete=
 
 _arg_upload_custom_dashboard=false
+_arg_upload_default_dashboard=true
+_arg_include_database=false
+_arg_database_name=
+_arg_include_sim=false
 
 _arg_debug=false
 
@@ -80,6 +81,7 @@ _arg_use_branding_explicitly_set=false
 _arg_bt_only_explicitly_set=false
 _arg_suppress_action_explicitly_set=false
 _arg_suppress_upload_files_explicitly_set=false
+_arg_upload_default_dashboard_explicitly_set=false
 _arg_upload_custom_dashboard_explicitly_set=false
 _arg_health_rules_only_explicitly_set=false
 _arg_health_rules_overwrite_explicitly_set=false
@@ -114,17 +116,15 @@ print_help()
 
 	printf '%s\n' "Application options:"
 	printf '\t%s\n' "-a, --application-name: application name (no default)"
-	printf '\t%s\n' "--include-database, --no-include-database: include database (${_arg_include_database} by default)"
-	printf '\t%s\n' "-d, --database-name: mandatory if include-database set to true (no default)"
-	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
+	#todo --configure-bt flag to be depreciated
 	printf '\t%s\n' "-b, --configure-bt, --no-configure-bt: configure busness transactions (${_arg_configure_bt} by default)"
-	#printf '\t%s\n' "--health-rules-overwrite, --no-health-rules-overwrite: overwrite health rules (${_arg_health_rules_overwrite} by default)"
 	printf '\t%s\n' "--bt-only, --no-bt-only: Configure business transactions only (${_arg_bt_only} by default)"
 
 	printf '%s\n' "Health rules options:"
 	printf '\t%s\n' "--health-rules-only, --no-health-rules-only: configure health rules only (${_arg_health_rules_only} by default)"
 	printf '\t%s\n' "--health-rules-overwrite, --no-health-rules-overwrite: overwrite health rules if exist (${_arg_health_rules_overwrite} by default)"
 	printf '\t%s\n' "--health-rules-delete: health rule names to delete, array of strings (no default)"
+	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
 
 	printf '%s\n' "Action suppression options:"
 	printf '\t%s\n' "--suppress-action, --no-suppress-action: use application action suppression (${_arg_suppress_action} by default)"
@@ -136,8 +136,12 @@ print_help()
 	
 	printf '\t%s\n' "--suppress-delete: delete action suppression by passing action name to this parameter (no default)"
 
-	printf '\t%s\n' "--upload-custom-dashboard, --no-upload-custom-dashboard: creates custom dashboard(s)  from (${_arg_upload_custom_dashboard} by default)"
-
+	printf '%s\n' "Dashboard options:"
+	printf '\t%s\n' "--upload-custom-dashboard, --no-upload-custom-dashboard: creates custom dashboard(s) from a file (${_arg_upload_custom_dashboard} by default)"
+	printf '\t%s\n' "--upload-default-dashboard, --no-upload-default-dashboard: creates default dashboard (${_arg_upload_default_dashboard} by default)"
+	printf '\t%s\n' "--include-database, --no-include-database: set true to include database (${_arg_include_database} by default)"
+	printf '\t%s\n' "-d, --database-name: mandatory if --include-database set to true (no default)"
+	printf '\t%s\n' "-s, --include-sim, --no-include-sim: include server visibility (${_arg_include_sim} by default)"
 
 	printf '%s\n' "Help options:"
 	printf '\t%s\n' "-h, --help: Prints help"
@@ -387,6 +391,11 @@ parse_commandline()
 				_arg_upload_custom_dashboard_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_upload_custom_dashboard=false
 				;;
+			--no-upload-default-dashboard|--upload-default-dashboard)
+				_arg_upload_default_dashboard=true
+				_arg_upload_default_dashboard_explicitly_set=true
+				test "${1:0:5}" = "--no-" && _arg_upload_default_dashboard=false
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -479,6 +488,14 @@ handle_expected_values_for_args()
 
 	if ([ ! $_arg_use_branding = false ] && [ ! $_arg_use_branding = true ] ); then 
 		_PRINT_HELP=no die "FATAL ERROR: --use-branding value \"${_arg_use_branding}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_upload_custom_dashboard = false ] && [ ! $_arg_upload_custom_dashboard = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --upload-custom-dashboardvalue \"${_arg_upload_custom_dashboard}\" not recognized" 1
+	fi
+
+	if ([ ! $_arg_upload_default_dashboard = false ] && [ ! $_arg_upload_default_dashboard = true ] ); then 
+		_PRINT_HELP=no die "FATAL ERROR: --upload-default-dashboard value \"${_arg_upload_default_dashboard}\" not recognized" 1
 	fi
 }
 
@@ -600,6 +617,11 @@ if ([ $_arg_upload_custom_dashboard_explicitly_set = false ] && [ ! -z "${CMA_UP
 	_arg_upload_custom_dashboard=${CMA_UPLOAD_CUSTOM_DASHBOARD}
 fi
 
+# upload default dashboards 
+if ([ $_arg_upload_default_dashboard_explicitly_set = false ] && [ ! -z "${CMA_UPLOAD_DEFAULT_DASHBOARD// }" ]); then
+	_arg_upload_default_dashboard=${CMA_UPLOAD_DEFAULT_DASHBOARD}
+fi
+
 # 1.3 If value not set replace with configuration file values
 conf_file="config.json"
 
@@ -714,6 +736,11 @@ if ([[ $_arg_upload_custom_dashboard_explicitly_set = false ]] && [ -z "${CMA_UP
 	_arg_upload_custom_dashboard=$(jq -r '.configuration[].upload_custom_dashboard' <${conf_file})
 fi
 
+# upload deafult dashboards
+if ([[ $_arg_upload_default_dashboard_explicitly_set = false ]] && [ -z "${CMA_UPLOAD_DEFAULT_DASHBOARD// }" ]); then
+	_arg_upload_default_dashboard=$(jq -r '.configuration[].upload_default_dashboard' <${conf_file})
+fi
+
 ### 2 VALIDATE ###
 
 # 2.1 Check if values are in expected ranges
@@ -767,6 +794,7 @@ if [ $_arg_debug = true ]; then
 	echo "Value of --background-name: $_arg_background_name" 
 
 	echo "Value of --upload-custom-dashboard: $_arg_upload_custom_dashboard" 
+	echo "Value of --upload-default-dashboard: $_arg_upload_default_dashboard" 
 	
 fi
 
@@ -833,42 +861,77 @@ if [ $_arg_suppress_action = true ]; then
 	fi
 fi
 
+## VALIDATIONS [prereqs]
+## 1. packages
+
+./modules/validations/packages.sh; ec=$? 
+
+case $ec in
+    0) ;;
+    1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
+esac
+
+## 2. contrtoller connection
+#todo 
+
+## 3. application
+
+./modules/validations/application.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name"; ec=$? 
+
+case $ec in
+    0) ;;
+    1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
+esac
+
 ### 4 ACTION SUPRESSION ###
 if [ $_arg_suppress_action = true ]; then
-	./api_actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_application_name" "$_arg_suppress_name"
-	exit 0 # only do action suppression
+	echo -e "\n> Running 'Action Supression' module"
+	echo -e ">> Action 'Create'\n"
+	./modules/actions/application-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_suppress_start" "$_arg_suppress_duration" "$_arg_suppress_name" "$_arg_debug"
 fi
 
 if [ $_arg_suppress_upload_files = true ]; then
-	./api_actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name"
-	exit 0 # only upload action suppression files
+	echo -e "\n> Running 'Action Supression' module"
+	echo -e ">> Action 'Upload from File'\n"
+	./modules/actions/upload-files-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_debug"
 fi
 
 if [[ ! -z "${_arg_suppress_delete// }" ]]; then
-	./api_actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_suppress_delete" "$_arg_application_name"
-	exit 0 # only delete action suppression
+	echo -e "\n> Running 'Action Supression' module"
+	echo -e ">> Action 'Delete'\n"
+	./modules/actions/delete-action-suppression.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_suppress_delete" "$_arg_debug"
 fi
 
 ### 5 CUSTOM DASHBOARDS ###
 if [ $_arg_upload_custom_dashboard = true ]; then
-	./dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug"
-	exit 0 # only upload custom dahboard files
+	echo -e "\n> Running 'Custom Dashboard' module\n"
+	./modules/dashboards/upload_custom_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_debug"
+fi
+
+### PREDEFINED/default DASHBOARDS
+if [ $_arg_upload_default_dashboard = true ]; then
+	echo -e "\n> Running 'Default Dashboard' module\n"
+	./modules/dashboards/upload_default_dashboard.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_use_branding" "$_arg_background_name" "$_arg_logo_name" "$_arg_debug"
 fi
 
 ### 6 HEALTH RULES ###
 if [ $_arg_health_rules_only = true ]; then
-	./modules/health_rules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_overwrite" "$_arg_include_sim"
-	exit 0 # only upload health rules
+	echo -e "\n> Running 'Health Rules' module"
+	echo -e ">> Action 'Upload from File'\n"
+	./modules/health_rules/upload_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_overwrite" "$_arg_include_sim" "$_arg_debug"
 fi
 
 if [ ! -z "${_arg_health_rules_delete// }" ]; then
-	./modules/health_rules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_delete"
-	exit 0 # only delete health rules
+	echo -e "\n> Running 'Health Rules' module"
+	echo -e ">> Action 'Delete'\n"
+	./modules/health_rules/delete_health_rules.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" "$_arg_proxy_details" "$_arg_health_rules_delete" "$_arg_debug"
 fi
 
-### 6 EXECUTE CMA SCRIPT ###
-./configMyApp.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_include_database" "$_arg_database_name" "$_arg_include_sim" "$_arg_configure_bt" "$_arg_health_rules_overwrite" "$_arg_bt_only" "$_arg_use_branding" "$_arg_logo_name" "$_arg_background_name"
-
+### BUSINESS TRANSACTIONS
+if [ $_arg_bt_only = true ]; then
+	echo -e "\n> Running 'Business Transactions' module\n"
+	./modules/business_transactions/configBT.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_application_name" 
+fi
 
 # ] <-- needed, do not delete
  #  <-- needed, do not delete 
