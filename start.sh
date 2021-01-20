@@ -872,7 +872,12 @@ case $ec in
 esac
 
 ## 2. contrtoller connection
-#todo 
+./modules/validations/controller.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" ; ec=$? 
+
+case $ec in
+    0) ;;
+    1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
+esac
 
 ## 3. application
 
