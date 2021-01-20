@@ -29,7 +29,8 @@
       "include_sim": false,
       "configure_bt": false,
       "bt_only": false,
-      "upload_custom_dashboard": false
+      "upload_custom_dashboard": false,
+      "upload_default_dashboard": true
     }
   ],
   "health_rules": [
