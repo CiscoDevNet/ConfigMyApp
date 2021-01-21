@@ -152,6 +152,12 @@ The table below describes the supported environment variables:
         <td style="text-align: left">Upload existing custom dashboard</td>
         <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
       </tr>
+       <tr>
+        <td>Application</td>
+        <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_UPLOAD_DEFAULT_DASHBOARD</code></td>
+        <td style="text-align: left">Upload default dashboard</td>
+        <td style="text-align: center"><img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" width="20" height="20"></td>
+      </tr>
         <tr>
         <td>Action Suppression</td>
         <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CMA_SUPPRESS_ACTION</code></td>
