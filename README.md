@@ -2,7 +2,7 @@
 # ConfigMyApp
 
                                                         . . .
-ConfigMyApp is a <b>Monitoring as Code</b> solution that the declaratively configures AppDynamics business applications, Server Viz, dashboards, and more, without the need to manually login to the controller. 
+ConfigMyApp is a <b>Monitoring as Code</b> solution. ConfigMyApp declaratively configures AppDynamics business applications, Server Viz, dashboards, and more, without the need to manually login to the controller. 
 
 ConfigMyApp enhances rapid rollout of AppDynamics. We built it based on the DevOps configuration-as-code paradigm with a simple objective – the ability to configure AppDynamics from your Continuous Integration and Deployment (CI/CD) platform - such as Jenkins, Harness, Azure DevOps, TeamCity, GitLab, Bamboo, etc. In addition, ConfigMyApp can be executed from the <a href="https://appdynamics.github.io/ConfigMyApp/integrations/2-docker.html">`official Docker image`</a> and Kubernetes. 
 
