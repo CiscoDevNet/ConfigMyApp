@@ -813,10 +813,19 @@ _arg_user_credentials="$_arg_username@$_arg_account:$_arg_password"
 
 # 3.2 Set protocol
 
+# extract protocol based on input flags
 if [ $_arg_use_https = true ]; then
 	protocol="https"
 else 
 	protocol="http"
+fi
+
+# extract protocol from controller host variable, without trailing :// and convert to lower caps
+_arg_controller_host_protocol="$(echo $_arg_controller_host | grep :// | sed -e's,^\(.*://\).*,\1,g' | sed 's/.\{3\}$//' | tr '[:upper:]' '[:lower:]')"
+
+# if host url does not contain protocol
+if [ -z "${_arg_controller_host_protocol}" ]; then
+	_arg_controller_host_protocol=$protocol
 fi
 
 # 3.3 Prepare controller url
@@ -824,7 +833,12 @@ fi
 # remove anything before // (protocol) and after : or / (path and/or port) in hostname - to keep only domain name
 _arg_controller_host="$(echo $_arg_controller_host | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's|:.*$||')"
 
-_arg_controller_url="$protocol://$_arg_controller_host:$_arg_controller_port/controller"
+_arg_controller_url="$_arg_controller_host_protocol://$_arg_controller_host:$_arg_controller_port/controller"
+
+if [ "${protocol}" != "${_arg_controller_host_protocol}" ]; then
+	echo "WARNING --use-https / --no-use-https flag value '${protocol}' does not match controller host protocol '${_arg_controller_host_protocol}'."
+	echo "        Note that controller host protocol takes precedence and final URL to connect to is: '${_arg_controller_url}'."
+fi
 
 # 3.4 Prepare proxy details
 
@@ -872,7 +886,12 @@ case $ec in
 esac
 
 ## 2. contrtoller connection
-#todo 
+./modules/validations/controller.sh "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" ; ec=$? 
+
+case $ec in
+    0) ;;
+    1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
+esac
 
 ## 3. application
 
