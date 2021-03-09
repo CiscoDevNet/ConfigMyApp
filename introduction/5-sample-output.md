@@ -12,5 +12,5 @@ The server visibility and database monitoring health rule configurations are opt
 
 
 ````tip 
-The branding, which consists of the logo and the background image can be easily changed by copying your own chosen custom images into the `branding` folder in the root directory. Refer to the <a href="https://appdynamics.github.io/ConfigMyApp/usecases/3-branding.html"> branding section</a> for further details.
+The branding, which consists of the logo and the background image can be easily changed by copying your own chosen custom images into the `branding` folder in the root directory. Refer to the branding section</a> for further details.
 ````
