@@ -12,8 +12,11 @@ function func_get_all_roles() {
     local _proxy_details=${4} 
     local _debug=${6}
 
+    _method="GET"
+    if [ $_debug = true ]; then _output="-v"; else _output="-s"; fi
+
     # Get all roles
-    allRoles=$(curl -s --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
+    allRoles=$(curl ${_output} -X ${_method} --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
 
     echo "${allRoles}"
 
