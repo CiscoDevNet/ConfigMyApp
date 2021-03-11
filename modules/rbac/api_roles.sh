@@ -3,7 +3,7 @@
 source ./modules/common/http_check.sh # func_check_http_status
 source ./modules/common/application.sh # func_get_application_id
 
-_endpoint_url="/api/rbac/v1/roles"
+
 
 function func_get_all_roles() {
     local _controller_url=${1} # hostname + /controller
@@ -12,8 +12,9 @@ function func_get_all_roles() {
     local _proxy_details=${4} 
     local _debug=${6}
 
+    _endpoint_url="/api/rbac/v1/roles"
     _method="GET"
-    if [ $_debug = true ]; then _output="-v"; else _output="-s"; fi
+    if [[ _debug = true ]]; then _output="-v"; else _output="-s"; fi
 
     # Get all roles
     allRoles=$(curl ${_output} -X ${_method} --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
@@ -34,12 +35,13 @@ function func_create_role() {
 
     if [ ! -z "${_role_name// }" ]; then
 
+        _endpoint_url="/api/rbac/v1/roles"
         _method="POST"
         _header="Content-Type: application/vnd.appd.cntrl+json;v=1"
         _payload="{\"name\": \"${_role_name}\",\"description\": \"${_role_description}\"}"
         if [ $_debug = true ]; then _output="-v"; else _output="-s"; fi
     
-        httpCode=$(curl ${_output} -o /dev/null -w "%{http_code}" -X ${_method} -H "${_header}" -d "${_payload}" --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
+        httpCode=$(curl ${_output} -o /dev/null -w "%{http_code}" -X ${_method} -H "${_header}" -d "${_payload}" --user ${_user_credentials} ${_controller_url}${_endpoint_url} ${_proxy_details})
         func_check_http_status $httpCode "Error occured creating a role '${_role_name}'."
     else
         func_check_http_status 404 "Role name must be provided."
@@ -59,6 +61,7 @@ function func_add_role_to_group() {
     local _role_id=${7}
     local _group_id=${8}
 
+    _endpoint_url="/api/rbac/v1/roles"
     _method="PUT"
     _header="Content-Type: application/vnd.appd.cntrl+json;v=1"
     _endpoint_url="${_endpoint_url0}/${_role_id}/groups/${_group_id}"
