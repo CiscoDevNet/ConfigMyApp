@@ -49,6 +49,7 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     _uploaded_path="${_files_directory}/uploaded"
 
     _payload_path="${_uploaded_path}/payload-${dt}.json"
+    _payload_header="Content-Type: application/json; charset=utf8"
 
     application_permission_final="${_uploaded_path}/tmp-permissions_view_edit_app.json-${dt}"
 
@@ -77,14 +78,13 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
         _file_name="$(basename -- $_json_file)"
 
-        _updated_file_path="${_uploaded_path}/${_file_name}-${dt}"
-        _tmp_updated_file_path="${_uploaded_path}/tmp-${_file_name}-${dt}"
+        _updated_file_path="${_uploaded_path}/tmp-${_file_name}-${dt}"
+        _tmp_updated_file_path="${_uploaded_path}/tmp-edited-${_file_name}-${dt}"
 
         # set overall permissions
         if grep -q $_overall_permissions_placeholder ${_json_file}; then
-            #echo "$(cat ${_overall_permissions_path})"
+            # replace newline with space
             value=$(sed -e ':a' -e 'N;$!ba' -e 's/\n/ /g' ${_overall_permissions_path})
-            #echo "VALUE IS >>>> ${value}"
             sed -e "s/${_overall_permissions_placeholder}/${value}/g" "${_json_file}" > "${_tmp_updated_file_path}"
         else
             echo -e "WARNING Placeholder value '$_overall_permissions_placeholder' not found in '${_file_name}'. "
@@ -92,6 +92,7 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
         # set application-specific permissions
         if grep -q $_application_permissions_placeholder ${_tmp_updated_file_path}; then
+            # replace newline with space
             value=$(sed -e ':a' -e 'N;$!ba' -e 's/\n/ /g' ${application_permission_final})
             sed -e "s/${_application_permissions_placeholder}/${value}/" "${_tmp_updated_file_path}" > "${_updated_file_path}"
         else
@@ -106,12 +107,15 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     _endpoint_url="/restui/accountRoleAdministrationUiService/accountRoles/create"
     _method="POST"
 
-    echo ">>>> END !!!"
+    # echo -e " \n payload >>>>> $_payload_path"
+    # echo "curl -i -v -s -b cookie.appd -H /"$X_CSRF_TOKEN_HEADER/" -X ${_method} --data /"@${_payload_path}" /"${_controller_url}${_endpoint_url}/""
 
-    #curl -i -v -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -X ${_method} --data "@${_payload_path}" "${_controller_url}${_endpoint_url}"
+    curl -i -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -H "${_payload_header}" -X ${_method} --data "@${_payload_path}" "${_controller_url}${_endpoint_url}"
 
     # remove temporaty files
-    #rm "${_uploaded_path}" -r tmp-*.json
+    rm ${_uploaded_path}/tmp-*
+
+    echo ">>>> END !!!"
 
 }
 
