@@ -18,3 +18,4 @@ api_actions/actions/*.json*
 custom_dashboards/*.json*
 custom_dashboards/uploaded/*.json*
 cookie.appd
+rbac/restui_role_files/uploaded/*
