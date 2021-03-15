@@ -1,6 +1,6 @@
 {
     "action": "VIEW",
-    "allowed": false,
+    "allowed": true,
     "affectedEntity": {
         "entityId": 0,
         "entityType": "APPLICATION"
