@@ -29,8 +29,8 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
     local X_CSRF_TOKEN_HEADER=${6}
 
-    _role_name="test-me"
-    _role_description="test-me-desc"
+    local _role_name=${7}
+    local _role_description=${8}
 
     dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
@@ -56,7 +56,6 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     # get application id
     _app_id=$(func_get_application_id "${_controller_url}" "${_user_credentials}" "${_application_name}" "${_proxy_details}")
 
-    
     # prepare payload
     for _json_file in ${_application_permissions_path}; do
 
@@ -71,8 +70,6 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
             echo -e "WARNING Placeholder value '$_application_id_placeholder' not found in '${_file_name}'. "
         fi
     done 
-
-    echo ">>> replace file values"
     
     for _json_file in ${_permissions_base_path}; do
 
@@ -115,7 +112,6 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     # remove temporaty files
     rm ${_uploaded_path}/tmp-*
 
-    echo ">>>> END !!!"
 
 }
 
