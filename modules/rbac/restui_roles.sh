@@ -104,14 +104,10 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     _endpoint_url="/restui/accountRoleAdministrationUiService/accountRoles/create"
     _method="POST"
 
-    # echo -e " \n payload >>>>> $_payload_path"
-    # echo "curl -i -v -s -b cookie.appd -H /"$X_CSRF_TOKEN_HEADER/" -X ${_method} --data /"@${_payload_path}" /"${_controller_url}${_endpoint_url}/""
-
     curl -i -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -H "${_payload_header}" -X ${_method} --data "@${_payload_path}" "${_controller_url}${_endpoint_url}"
 
     # remove temporaty files
     rm ${_uploaded_path}/tmp-*
-
 
 }
 
