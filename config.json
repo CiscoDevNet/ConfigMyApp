@@ -49,5 +49,14 @@
       "suppress_upload_files": false,
       "suppress_delete": ""
     }
+  ],
+  "rbac": [
+    {
+      "rbac_only": false,
+      "rbac_action": "role-saml",
+      "rbac_role_name": "",
+      "rbac_role_description": "",
+      "rbac_saml_group_name": ""
+    }
   ]
 }
