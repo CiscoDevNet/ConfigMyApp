@@ -6,7 +6,7 @@ function func_check_http_status() {
     #echo "HTTP status code: $http_code"
     if [[ $http_code -lt 200 ]] || [[ $http_code -gt 299 ]]; then
         echo "${dt} ERROR "{$http_code: $message_on_failure}"" >> ../../error.log
-        echo "$http_code: $message_on_failure"
+        echo "ERROR $http_code: $message_on_failure"
         exit 1
     fi
 }
