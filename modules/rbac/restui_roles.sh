@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ./modules/common/http_check.sh # func_check_http_status
 source ./modules/common/application.sh #func_get_application_id
 
 function func_restui_get_roles() {
@@ -12,11 +13,14 @@ function func_restui_get_roles() {
 
     local X_CSRF_TOKEN_HEADER=${6}
 
+    if [[ _debug = true ]]; then echo ">> func_restui_get_roles"; fi
+
     _endpoint_url="/restui/accountRoleAdministrationUiService/accountRoleSummaries"
     _method="GET"
 
-    curl -i -v -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -X ${_method} "${_controller_url}${_endpoint_url}"
-
+    roleSummaries=$(curl -v -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -X ${_method} "${_controller_url}${_endpoint_url}")
+    
+    echo "${roleSummaries}"
 }
 
 function func_restui_create_role_with_default_view_and_view_edit_app_permissions() {
@@ -31,6 +35,10 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
     local _role_name=${7}
     local _role_description=${8}
+
+    echo "||Creating role '${_role_name}'..."
+
+    #if [[ _debug = true ]]; then echo ">> func_restui_create_role_with_default_view_and_view_edit_app_permissions"; fi
 
     dt=$(date '+%Y-%m-%d_%H-%M-%S')
 
@@ -61,7 +69,7 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
         _file_name="$(basename -- $_json_file)"
         
-        echo -e "Processing '${_file_name}' json file, setting permissions for '${_application_name}' application. \n"
+        echo -e "Processing '${_file_name}' json file, setting permissions for '${_application_name}' application."
 
         # replacing application id
         if grep -q $_application_id_placeholder ${_json_file}; then
@@ -77,6 +85,8 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
 
         _updated_file_path="${_uploaded_path}/tmp-${_file_name}-${dt}"
         _tmp_updated_file_path="${_uploaded_path}/tmp-edited-${_file_name}-${dt}"
+
+        echo -e "Processing '${_file_name}' json file, setting global permissions."
 
         # set overall permissions
         if grep -q $_overall_permissions_placeholder ${_json_file}; then
@@ -104,10 +114,12 @@ function func_restui_create_role_with_default_view_and_view_edit_app_permissions
     _endpoint_url="/restui/accountRoleAdministrationUiService/accountRoles/create"
     _method="POST"
 
-    curl -i -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -H "${_payload_header}" -X ${_method} --data "@${_payload_path}" "${_controller_url}${_endpoint_url}"
+    response=$(curl -s -b cookie.appd -H "$X_CSRF_TOKEN_HEADER" -H "${_payload_header}" -X ${_method} --data "@${_payload_path}" "${_controller_url}${_endpoint_url}")
 
-    # remove temporaty files
+    # remove temporary files, save only final payload backup
     rm ${_uploaded_path}/tmp-*
+
+    echo "${response}"
 
 }
 

@@ -9,6 +9,6 @@ function func_restui_get_cookie() {
     X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd|rev|cut -d$'\t' -f1|rev)"
     X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
 
-    echo "${X_CSRF_TOKEN_HEADER}"
+    echo "${X_CSRF_TOKEN_HEADER}" # echo header value only (to be used by other functions)
 }
 
