@@ -12,6 +12,8 @@ function func_get_all_roles() {
     local _proxy_details=${4} 
     local _debug=${6}
 
+    if [[ _debug = true ]]; then echo ">> func_get_all_roles"; fi
+
     _endpoint_url="/api/rbac/v1/roles"
     _method="GET"
     if [[ _debug = true ]]; then _output="-v"; else _output="-s"; fi
@@ -20,6 +22,27 @@ function func_get_all_roles() {
     allRoles=$(curl ${_output} -X ${_method} --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
 
     echo "${allRoles}"
+
+}
+
+function func_get_role_by_name() {
+    local _controller_url=${1} # hostname + /controller
+    local _user_credentials=${2} # ${username}:${password}
+    local _proxy_details=${3} 
+    
+    local _application_name=${4}
+    local _debug=${5}
+
+    local _role_name=${6}
+
+    _endpoint_url="/api/rbac/v1/roles/name/${_role_name}"
+    _method="GET"
+    if [[ _debug = true ]]; then _output="-v"; else _output="-s"; fi
+
+    # Get all roles
+    response=$(curl ${_output} -X ${_method} --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
+
+    echo "${response}"
 
 }
 
@@ -32,6 +55,8 @@ function func_create_role() {
 
     local _role_name=${7}
     local _role_description=${8}
+
+    if [[ _debug = true ]]; then echo ">> func_create_role"; fi
 
     if [ ! -z "${_role_name// }" ]; then
 
@@ -61,6 +86,8 @@ function func_add_role_to_group() {
     local _role_id=${7}
     local _group_id=${8}
 
+    if [[ _debug = true ]]; then echo ">> func_add_role_to_group"; fi
+
     _endpoint_url="/api/rbac/v1/roles"
     _method="PUT"
     _header="Content-Type: application/vnd.appd.cntrl+json;v=1"
@@ -68,10 +95,10 @@ function func_add_role_to_group() {
     if [ $_debug = true ]; then _output="-v"; else _output="-s"; fi
 
     # Add role to a group
-    httpCode=$(curl ${_output} -o /dev/null -w "%{http_code}" -X ${_method} -H "${_header}" --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
-    func_check_http_status $httpCode "Error occured adding role '${_role_id}' to a group '${_group_id}'."
+    response=$(curl ${_output} -X ${_method} -H "${_header}" --user ${_user_credentials} ${_controller_url}{$_endpoint_url} ${_proxy_details})
+    #func_check_http_status $httpCode "Error occured adding role '${_role_id}' to a group '${_group_id}'."
 
-    echo "Role '${_role_id}' added to a group '${_group_id}'."
+    echo "${response}"
 
 }
 
