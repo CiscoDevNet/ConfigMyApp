@@ -6,7 +6,7 @@ source ./modules/rbac/api_groups.sh
 
 source ./modules/rbac/restui_auth.sh
 source ./modules/rbac/restui_roles.sh
-
+source ./modules/rbac/restui_saml.sh
 
 
 _controller_url=${1} # hostname + /controller
@@ -54,7 +54,14 @@ echo "____________"
 
 #func_restui_get_roles  "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_application_name}" "${_debug}" "${_token_header}"
 
-_role_name="test-me-from-bash"
-_role_description="test-me-desc"
+# _role_name="test-me-from-bash"
+# _role_description="test-me-desc"
 
-func_restui_create_role_with_default_view_and_view_edit_app_permissions "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_application_name}" "${_debug}" "${_token_header}" "${_role_name}" "${_role_description}"
+# func_restui_create_role_with_default_view_and_view_edit_app_permissions "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_application_name}" "${_debug}" "${_token_header}" "${_role_name}" "${_role_description}"
+
+echo "____________"
+
+_role_ids="28,16" #no space! roles have to be existing ones to be created
+_saml_group_name="API-CREATED-ME"
+
+func_update_saml_configuration "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_debug}" "${_token_header}" "${_role_ids}" "${_saml_group_name}" 
