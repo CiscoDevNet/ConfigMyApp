@@ -1037,8 +1037,6 @@ if ([[ $_arg_rbac_only = true ]] && [ $_arg_rbac_action = "role-saml" ]); then
 	./modules/rbac/create_role_with_app_edit_and_attach_to_saml.sh  "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_debug" "$_arg_rbac_role_name" "$_arg_rbac_role_description" "$_arg_rbac_saml_group_name"
 fi
 
-exit 1 #todo testing -> remove
-
 ### 4 ACTION SUPRESSION ###
 if [ $_arg_suppress_action = true ]; then
 	echo -e "\n> Running 'Action Supression' module"
