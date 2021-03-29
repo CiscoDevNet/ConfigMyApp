@@ -28,7 +28,6 @@ begins_with_short_option()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_use_encoded_credentials=false
 
-
 _arg_controller_host=
 _arg_controller_port=8090
 _arg_use_https=false
@@ -67,6 +66,8 @@ _arg_include_database=false
 _arg_database_name=
 _arg_include_sim=false
 
+_valid_rbac_actions=("role-saml") # array of valid rbac actions e.g. ("role" "role-saml" "saml") 
+
 _arg_rbac_only=false
 _arg_rbac_action="role-saml" # the only action for now in rbac module is "role-saml"
 _arg_rbac_role_name=
@@ -93,6 +94,8 @@ _arg_health_rules_only_explicitly_set=false
 _arg_health_rules_overwrite_explicitly_set=false
 _arg_rbac_only_explicitly_set=false
 _arg_rbac_action_explicitly_set=false
+
+
 
 
 print_help()
@@ -411,7 +414,7 @@ parse_commandline()
 				_arg_upload_default_dashboard_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_upload_default_dashboard=false
 				;;
-			--no-rbac-only|_arg_rbac_only)
+			--no-rbac-only|--rbac-only)
 				_arg_rbac_only=true
 				_arg_rbac_only_explicitly_set=true
 				test "${1:0:5}" = "--no-" && _arg_rbac_only=false
@@ -965,17 +968,40 @@ if [ $_arg_suppress_action = true ]; then
 		# set to current datetime if empty
 		# UTC / GMT
 		_arg_suppress_start=$(date -u +%FT%T+0000)
+		echo "DEF|Default action suppression start time created '${_arg_suppress_start}'"
 	fi
 	if [ -z "${_arg_suppress_duration// }" ]; then
 		# set to one hour if empty
 		_arg_suppress_duration=60
+		echo "DEF|Default action suppression duration created '${_arg_suppress_duration}'"
 	fi
 fi
 
-# todo prepare RBAC
-# validate action (check if valid option)
-# create saml group name (if empty)
-# create role name (if empty)
+# 3.6 Prepare RBAC
+if [ $_arg_rbac_only = true ]; then
+	# validate action (check if valid option)
+	if [[ ! " ${_valid_rbac_actions[@]} " =~ " ${_arg_rbac_action} " ]]; then
+		# whatever you want to do when array doesn't contain value
+		_PRINT_HELP=no die "FATAL ERROR: --rbac-action value \"${_arg_rbac_action}\" not recognized" 1
+	fi
+
+	_rbac_prefix="cma"
+	_rbac_rnd=$((1 + $RANDOM % 1000))
+
+	# default saml group name
+	if [ -z "${_arg_rbac_saml_group_name// }" ]; then
+		# if empty
+		_arg_rbac_saml_group_name="${_rbac_prefix}_group_${_arg_application_name}_${_rbac_rnd}"
+		echo "DEF|Default RBAC SAML group name created '${_arg_rbac_saml_group_name}'"
+	fi
+
+	# default role name
+	if [ -z "${_arg_rbac_role_name// }" ]; then
+		# if empty
+		_arg_rbac_role_name="${_rbac_prefix}_role_${_arg_application_name}_${_rbac_rnd}"
+		echo "DEF|Default RBAC role name created '${_arg_rbac_role_name}'"
+	fi
+fi
 
 ## VALIDATIONS [prereqs]
 ## 1. packages
@@ -1004,19 +1030,10 @@ case $ec in
     1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
 esac
 
-# _arg_rbac=true
-# _arg_rbac_action="saml"
 
-# _arg_rbac_role_name="role-start-script-13"
-# _arg_rbac_role_description="desc" # ignore if empty, not mandatory
-
-# # Note: if you run again with the same group name - new role gets created getting and attached to the existing saml group as well
-# _arg_rbac_saml_group_name="Newest coolest" # deafult to name cma-role_name-xyz 
-
-
-if ([[ $_arg_rbac = true ]] && [ $_arg_rbac_action = "role-saml" ]); then
+if ([[ $_arg_rbac_only = true ]] && [ $_arg_rbac_action = "role-saml" ]); then
 	echo -e "\n> Running 'RBAC' module"
-	echo -e ">> Action 'SAML'\n"
+	echo -e ">> Action 'Role and SAML'\n"
 	./modules/rbac/create_role_with_app_edit_and_attach_to_saml.sh  "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_debug" "$_arg_rbac_role_name" "$_arg_rbac_role_description" "$_arg_rbac_saml_group_name"
 fi
 
