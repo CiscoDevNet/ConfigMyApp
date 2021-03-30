@@ -149,7 +149,7 @@ jobs:
           echo Running RBAC, runtime parameters
           ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --rbac-only --rbac-action="role-saml"
 
-    - name: TestCase16- Upload default dashboard - env variables
+    - name: TestCase16- rbac roles and saml groups - env variables
       env:
         CMA_UPLOAD_DEFAULT_DASHBOARD: false
         CMA_RBAC_ONLY: true
@@ -157,6 +157,15 @@ jobs:
         CMA_RBAC_ROLE_NAME: "test-role"
         CMA_RBAC_ROLE_DESCRIPTION: "test-role-desc"
         CMA_RBAC_SAML_GROUP_NAME: "test-saml-group"
+      run: |
+          echo Running RBAC, env vars
+          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
+
+    - name: TestCase17- rbac roles and saml groups - no names provided - env variables
+      env:
+        CMA_UPLOAD_DEFAULT_DASHBOARD: false
+        CMA_RBAC_ONLY: true
+        CMA_RBAC_ACTION: "role-saml"
       run: |
           echo Running RBAC, env vars
           ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
