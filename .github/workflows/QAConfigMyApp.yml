@@ -5,7 +5,7 @@ name: ConfigMyAppCI
 # Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, features/rbac ]
   pull_request:
     branches: [ master, develop ]
 
@@ -141,4 +141,23 @@ jobs:
       run: |
           echo Running SIM and DB, env vars
           ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
+      
+    - name: TestCase15- rbac roles and saml groups - runtime 
+      env:
+        CMA_UPLOAD_DEFAULT_DASHBOARD: false
+      run: |
+          echo Running RBAC, runtime parameters
+          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --rbac-only --rbac-action="role-saml"
+
+    - name: TestCase16- Upload default dashboard - env variables
+      env:
+        CMA_UPLOAD_DEFAULT_DASHBOARD: false
+        CMA_RBAC_ONLY: true
+        CMA_RBAC_ACTION: "role-saml"
+        CMA_RBAC_ROLE_NAME: "test-role"
+        CMA_RBAC_ROLE_DESCRIPTION: "test-role-desc"
+        CMA_RBAC_SAML_GROUP_NAME: "test-saml-group"
+      run: |
+          echo Running RBAC, env vars
+          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
       
