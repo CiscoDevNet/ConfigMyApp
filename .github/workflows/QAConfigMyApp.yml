@@ -64,14 +64,14 @@ jobs:
           echo Running Dash upload
           curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
           echo Running SIM and DB,
-          ./start.sh -a IoT_API --upload-custom-dashboard -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --no-upload-default-dashboard
+          ./start.sh -a Jenkins_API --upload-custom-dashboard -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --no-upload-default-dashboard
           
     - name: TestCase6- Upload custom dashboard - env variables
       run: |
           echo Running Dash upload
           curl https://gist.githubusercontent.com/iogbole/48e7568454b066132700c4fe039c2cff/raw/4aa417193e7ce9f3cce2410e67d525761cb6d678/gistfile1.txt -o ./custom_dashboards/CustomDashboard_vanilla.json
           export CMA_UPLOAD_CUSTOM_DASHBOARD=true
-          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --no-upload-default-dashboard
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --no-upload-default-dashboard
 
     - name: TestCase7- Health rules only - no overwrite - parameters
       env:
@@ -129,7 +129,7 @@ jobs:
     - name: TestCase13- Upload default dashboard SIM and DB - runtime
       run: |
           echo Running SIM and DB, runtime
-          ./start.sh -a IoT_API --upload-default-dashboard --include-database  --database-name 'ConfigMyApp' --include-sim -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
+          ./start.sh -a Jenkins_API --upload-default-dashboard --include-database  --database-name 'ConfigMyApp' --include-sim -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
     
     - name: TestCase14- Upload default dashboard - env variables
       env:
@@ -140,14 +140,14 @@ jobs:
         CMA_INCLUDE_SIM: true
       run: |
           echo Running SIM and DB, env vars
-          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} 
       
     - name: TestCase15- rbac roles and saml groups - runtime 
       env:
         CMA_UPLOAD_DEFAULT_DASHBOARD: false
       run: |
           echo Running RBAC, runtime parameters
-          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --rbac-only --rbac-action="role-saml"
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }} --rbac-only --rbac-action="role-saml"
 
     - name: TestCase16- rbac roles and saml groups - env variables
       env:
@@ -159,7 +159,7 @@ jobs:
         CMA_RBAC_SAML_GROUP_NAME: "test-saml-group"
       run: |
           echo Running RBAC, env vars
-          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
 
     - name: TestCase17- rbac roles and saml groups - no names provided - env variables
       env:
@@ -168,5 +168,5 @@ jobs:
         CMA_RBAC_ACTION: "role-saml"
       run: |
           echo Running RBAC, env vars
-          ./start.sh -a IoT_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
+          ./start.sh -a Jenkins_API -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
       
