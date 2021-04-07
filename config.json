@@ -61,7 +61,7 @@
   ],
   "sensitive_data": [
     {
-      "data_masking": true,
+      "data_masking": false,
       "data_masking_patterns": "configmyapp-prod, https://, -.*8090",
       "data_masking_strategy": "exact"
     }
