@@ -58,5 +58,12 @@
       "rbac_role_description": "",
       "rbac_saml_group_name": ""
     }
+  ],
+  "sensitive_data": [
+    {
+      "data_masking": true,
+      "data_masking_patterns": "configmyapp-prod, https://, -.*8090",
+      "data_masking_strategy": "exact"
+    }
   ]
 }
