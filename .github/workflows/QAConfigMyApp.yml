@@ -5,7 +5,7 @@ name: ConfigMyAppCI
 # Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, features/rbac ]
   pull_request:
     branches: [ master, develop ]
 
@@ -178,7 +178,7 @@ jobs:
         CMA_DATA_MASKING_STRATEGY: "exact"
       run: |
           echo Running sensitive data masking, env vars
-          ./start.sh -a Jenkins_API_Demo -c ${{ secrets.CONTROLLER_HOST }} -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
+          ./start.sh -a Jenkins_API_Demo -c NonExistingControllerSoItLogsError -p ${{ secrets.CONTROLLER_USERNAME }} -u ${{ secrets.CONTROLLER_PASSWORD }}
           last_log_line=$(tail -n 1 error.log)
           echo "Logged: ${last_log_line}" 
 
