@@ -66,7 +66,7 @@ _arg_include_database=false
 _arg_database_name=
 _arg_include_sim=false
 
-_valid_rbac_actions=("role-saml") # array of valid rbac actions e.g. ("role" "role-saml" "saml") 
+_valid_rbac_actions=("role-saml" "license-rule") # array of valid rbac actions e.g. ("role" "role-saml" "saml") 
 
 _arg_rbac_only=false
 _arg_rbac_action="role-saml" # the only action for now in rbac module is "role-saml"
@@ -1030,11 +1030,17 @@ case $ec in
     1) printf '%s\n' "Command exited with non-zero code"; exit 1;;
 esac
 
-
+### RBAC ###
 if ([[ $_arg_rbac_only = true ]] && [ $_arg_rbac_action = "role-saml" ]); then
 	echo -e "\n> Running 'RBAC' module"
-	echo -e ">> Action 'Role and SAML'\n"
+	echo -e ">> Action 'Create Role and SAML Attach'\n"
 	./modules/rbac/create_role_with_app_edit_and_attach_to_saml.sh  "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_debug" "$_arg_rbac_role_name" "$_arg_rbac_role_description" "$_arg_rbac_saml_group_name"
+fi
+
+if ([[ $_arg_rbac_only = true ]] && [ $_arg_rbac_action = "license-rule" ]); then
+	echo -e "\n> Running 'RBAC' module"
+	echo -e ">> Action 'Create License Rule'\n"
+	./modules/rbac/create_license_rules.sh  "$_arg_controller_url" "$_arg_user_credentials" "$_arg_proxy_details" "$_arg_application_name" "$_arg_debug" "$_arg_rbac_role_name" "$_arg_rbac_role_description" "$_arg_rbac_saml_group_name"
 fi
 
 ### 4 ACTION SUPRESSION ###
