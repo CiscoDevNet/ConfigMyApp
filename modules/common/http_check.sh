@@ -13,7 +13,6 @@ function func_check_http_status() {
         # mask sensitive info (if needed)
         message_on_failure=$(func_data_masking "${message_on_failure}" "" "")
         logged_to_file=$(func_log_error_to_file "${message_on_failure}" "ERROR" "$http_code")
-        echo " logged_to_file > ${logged_to_file}"
         exit 1
     fi
 }
