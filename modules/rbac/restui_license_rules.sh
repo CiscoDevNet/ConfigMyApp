@@ -34,7 +34,7 @@ function func_restui_create_license_rules() {
 
     local X_CSRF_TOKEN_HEADER=${6}
 
-    local _rule_name=${7}
+    local _license_rule_name=${7}
 
     #if [[ _debug = true ]]; then echo ">> func_restui_create_role_with_default_view_and_view_edit_app_permissions"; fi
 
@@ -52,6 +52,10 @@ function func_restui_create_license_rules() {
 
     _payload_header="Content-Type: application/json; charset=utf8"
 
+    _rbac_rnd=$((1 + $RANDOM % 1000))
+
+    itt=1
+
     # prepare payload
     for _json_file in $_files_directory/*.json; do
 
@@ -64,8 +68,7 @@ function func_restui_create_license_rules() {
         _tmp_updated_file_path_final="${_uploaded_path}/tmp-fin-${_file_name}-${dt}"
 
         # generate for each file found in directory
-        _rbac_rnd=$((1 + $RANDOM % 1000))
-        _rule_name="${_rule_name}-${_rbac_rnd}"
+        _rule_name="${_license_rule_name}-${_rbac_rnd}-${itt}"
         _rule_id=$(uuidgen)
         _rule_key=$(uuidgen)
         
@@ -117,6 +120,9 @@ function func_restui_create_license_rules() {
 
         # remove temporary files, save only final payload backup
         rm ${_uploaded_path}/tmp-*
+
+        _rule_name="${_license_rule_name}"
+        itt=$((itt + 1))  
 
     done 
 
