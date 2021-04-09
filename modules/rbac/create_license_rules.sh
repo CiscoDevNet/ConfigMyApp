@@ -10,6 +10,8 @@ _proxy_details=${3}
 _application_name=${4}
 _debug=${5}
 
+_arg_rbac_license_rule_name=${6}
+
 echo "| Create auth header and cookie."
 
 _token_header=$(func_restui_get_cookie "${_controller_url}" "${_user_credentials}" "${_proxy_details}")
@@ -19,10 +21,8 @@ _token_header=$(func_restui_get_cookie "${_controller_url}" "${_user_credentials
 
 echo "| Creating license rule."
 # create role
-_create_license_rule_response=$(func_restui_create_license_rules "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_application_name}" "${_debug}" "${_token_header}")
+_create_license_rule_response=$(func_restui_create_license_rules "${_controller_url}" "${_user_credentials}" "${_proxy_details}" "${_application_name}" "${_debug}" "${_token_header}" "${_arg_rbac_license_rule_name}")
 
-echo "| Check if rule created successfully."
-_expected_response='"id" :' # returns id with space before : on success
-func_check_http_response "\{$_create_license_rule_response}" "${_expected_response}"
+echo "${_create_license_rule_response}"
 
 echo "Done"

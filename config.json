@@ -56,7 +56,8 @@
       "rbac_action": "role-saml",
       "rbac_role_name": "",
       "rbac_role_description": "",
-      "rbac_saml_group_name": ""
+      "rbac_saml_group_name": "",
+      "rbac_license_rule_name": ""
     }
   ],
   "sensitive_data": [
