@@ -17,14 +17,8 @@
     },
     {
         "entity_type_id": "com.appdynamics.modules.apm.topology.impl.persistenceapi.model.MachineEntity",
-        "constraint_type": "ALLOW_SELECTED",
-        "match_conditions": [
-            {
-                "match_type": "CONTAINS",
-                "attribute_type": "UNIQUE_HOST_ID",
-                "match_string": "team-pluto"
-            }
-        ]
+        "constraint_type": "ALLOW_ALL",
+        "match_conditions": []
     }
     ],
     "entitlements": [
