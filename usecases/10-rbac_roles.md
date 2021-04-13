@@ -14,7 +14,7 @@ Running module multiple times with the same SAML group name and different Role n
 
 <b> Runtime parameters</b>
 
-The run time parameter that controls running this module is `--rbac-only` / `--no-rbac-only` and it defaults to `false`. In order to run his module using runtime parameters, run the following:
+The runtime parameter that controls running this module is `--rbac-only` / `--no-rbac-only` and it defaults to `false`. In order to run his module using runtime parameters, run the following:
 
 `./start.sh -c http://appd.saas.com -a MyApp --username=appd --password=appd --rbac-only`
 
