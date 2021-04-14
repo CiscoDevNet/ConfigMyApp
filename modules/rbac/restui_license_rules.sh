@@ -76,6 +76,7 @@ function func_restui_create_license_rules() {
 
         # replacing license rule name 
         if grep -q $_rule_name_placeholder ${_json_file}; then
+            touch "${_tmp_updated_file_path}"
             sed -e "s/${_rule_name_placeholder}/${_rule_name}/g" "${_json_file}" > "${_tmp_updated_file_path}"
         else
             echo -e "|| WARNING Placeholder value '$_rule_name_placeholder' not found in '${_file_name}'. Value not replaced."
@@ -101,6 +102,7 @@ function func_restui_create_license_rules() {
         fi
         
         # replace rule id and key
+        touch "${_payload_path}"
         sed -e "s/${_rule_id_placeholder}/${_rule_id}/g" -e "s/${_rule_key_placeholder}/${_rule_key}/g" "${_tmp_updated_file_path_final}" > "${_payload_path}"
 
         _endpoint_url="/restui/licenseRule/create"
