@@ -707,7 +707,7 @@ if ([ -z "${_arg_rbac_saml_group_name// }" ] && [ ! -z "${CMA_RBAC_SAML_GROUP_NA
 	_arg_rbac_saml_group_name=${CMA_RBAC_SAML_GROUP_NAME}
 fi
 if ([ -z "${_arg_rbac_license_rule_name// }" ] && [ ! -z "${CMA_RBAC_LICENSE_RULE_NAME// }" ]); then
-	_arg_rbac_saml_group_name=${CMA_RBAC_LICENSE_RULE_NAME}
+	_arg_rbac_license_rule_name=${CMA_RBAC_LICENSE_RULE_NAME}
 fi
 
 # 1.3 If value not set replace with configuration file values
